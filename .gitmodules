@@ -1,6 +1,6 @@
-[submodule "harmonAIze/external/pybind11"]
-	path = harmonAIze/external/pybind11
+[submodule "harmonaize/external/pybind11"]
+	path = harmonaize/external/pybind11
 	url = https://github.com/pybind/pybind11
-[submodule "harmonAIze/external/JUCE"]
-	path = harmonAIze/external/JUCE
+[submodule "harmonaize/external/JUCE"]
+	path = harmonaize/external/JUCE
 	url = https://github.com/WeAreROLI/JUCE.git
