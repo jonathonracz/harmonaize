@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="OexI64" name="harmonaize" displaySplashScreen="1" reportAppUsage="1"
-              splashScreenColour="Dark" projectType="guiapp" version="1.0.0"
+<JUCERPROJECT id="OexI64" name="harmonaize" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.yourcompany.harmonaize" includeBinaryInAppConfig="1"
-              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.0">
+              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.0"
+              displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark">
   <MAINGROUP id="TpvEFM" name="harmonaize">
     <GROUP id="{A448A5B7-701B-9CE5-B49A-61243B254169}" name="Source">
-      <FILE id="bJQAKY" name="MainComponent.cpp" compile="1" resource="0"
-            file="Source/MainComponent.cpp"/>
-      <FILE id="nfTaJ8" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
-      <FILE id="O1PXYS" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="H3nS2R" name="hmnz_MainToolbarFactory.h" compile="0" resource="0"
+            file="Source/hmnz_MainToolbarFactory.h"/>
+      <FILE id="InvRfR" name="hmnz_Identifiers.h" compile="0" resource="0"
+            file="Source/hmnz_Identifiers.h"/>
+      <FILE id="KtYKY2" name="hmnz_ValueTreeObjectArray.h" compile="0" resource="0"
+            file="Source/hmnz_ValueTreeObjectArray.h"/>
+      <FILE id="Xv3NML" name="hmnz_ValueTreeObject.h" compile="0" resource="0"
+            file="Source/hmnz_ValueTreeObject.h"/>
+      <FILE id="XA4JeV" name="hmnz_Clip.h" compile="0" resource="0" file="Source/hmnz_Clip.h"/>
+      <FILE id="eKmbq8" name="hmnz_Track.h" compile="0" resource="0" file="Source/hmnz_Track.h"/>
+      <FILE id="YdnPis" name="hmnz_Edit.h" compile="0" resource="0" file="Source/hmnz_Edit.h"/>
+      <FILE id="bJQAKY" name="hmnz_MainComponent.cpp" compile="1" resource="0"
+            file="Source/hmnz_MainComponent.cpp"/>
+      <FILE id="nfTaJ8" name="hmnz_MainComponent.h" compile="0" resource="0"
+            file="Source/hmnz_MainComponent.h"/>
+      <FILE id="O1PXYS" name="hmnz_Main.cpp" compile="1" resource="0" file="Source/hmnz_Main.cpp"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
@@ -27,9 +39,6 @@
         <MODULEPATH id="juce_data_structures" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_video" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_opengl" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../JUCE/modules"/>
@@ -43,14 +52,11 @@
     <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
   </MODULES>
   <JUCEOPTIONS/>
 </JUCERPROJECT>
