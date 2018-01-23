@@ -10,8 +10,8 @@
 
 #pragma once
 
-#include "hmnz_ValueTreeObject.h"
 #include "hmnz_ValueTreeObjectArray.h"
+#include "hmnz_Track.h"
 
 /**
     Represents an active edit (also known as a project).
@@ -20,8 +20,17 @@ class Edit  : public ValueTreeObject<IDs::Edit>
 {
 public:
     Edit (const ValueTree& v)
-        : ValueTreeObject (v, undoManager) {}
+        : ValueTreeObject (v, &undoManager), tracks (v, &undoManager)
+    {
+        ValueTree state = getState();
+        stateDebugger.setSource (state);
+    }
 
 private:
     UndoManager undoManager;
+    ValueTreeObjectArray<Track> tracks;
+
+    jcf::ValueTreeDebugger stateDebugger;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Edit)
 };

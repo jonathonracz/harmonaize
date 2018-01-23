@@ -4,3 +4,6 @@
 [submodule "harmonaize/external/pybind11"]
 	path = harmonaize/external/pybind11
 	url = https://github.com/pybind/pybind11.git
+[submodule "app/Source/External/juce_toys"]
+	path = app/Source/External/juce_toys
+	url = https://github.com/jcredland/juce-toys.git

@@ -19,7 +19,7 @@ template<const Identifier& identifierType>
 class ValueTreeObject : ValueTree::Listener
 {
 public:
-    ValueTreeObject (const ValueTree& v, UndoManager& um)
+    ValueTreeObject (const ValueTree& v, UndoManager* um)
         : state (v), undoManager (um)
     {
         state.addListener (this);
@@ -32,16 +32,27 @@ public:
         return state;
     }
 
-    UndoManager& getUndoManager() const
+    void setState (const ValueTree& v)
+    {
+        jassert (v.getType() == identifier);
+        state = v;
+    }
+
+    UndoManager* getUndoManager() const
     {
         return undoManager;
+    }
+
+    void setUndoManager (UndoManager* um)
+    {
+        undoManager = um;
     }
 
     static constexpr const Identifier& identifier = identifierType;
 
 protected:
     ValueTree state;
-    UndoManager& undoManager;
+    UndoManager* undoManager;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override {}
     void valueTreeChildAdded (ValueTree&, ValueTree&) override {}

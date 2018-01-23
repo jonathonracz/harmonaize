@@ -7,7 +7,7 @@
 */
 
 #include "hmnz_MainComponent.h"
-
+#include "hmnz_MidiImporter.h"
 
 //==============================================================================
 MainContentComponent::MainContentComponent()

@@ -16,11 +16,11 @@
     Generic list of ValueTree-backed objects. Originally based on code by David
     Rowland (drowaudio)
 */
-template<typename ObjectType, typename CriticalSectionType = DummyCriticalSection>
+template<class ObjectType, class CriticalSectionType = DummyCriticalSection>
 class ValueTreeObjectArray   : public ValueTree::Listener
 {
 public:
-    ValueTreeObjectArray (const ValueTree& parentTree, UndoManager& um)
+    ValueTreeObjectArray (const ValueTree& parentTree, UndoManager* um)
         : parent (parentTree), undoManager (um)
     {
         parent.addListener (this);
@@ -37,20 +37,58 @@ public:
         deleteObject (objects.removeAndReturn (objects.size() - 1));
     }
 
+    UndoManager* getUndoManager() const
+    {
+        return undoManager;
+    }
+
+    void setUndoManager (UndoManager* um)
+    {
+        undoManager = um;
+        for (auto object : objects)
+            object->setUndoManager (um);
+    }
+
     ObjectType* getObject(int index) const { return objects.objectAtIndex(index); }
 
     int getNumObjects() const { return objects.size(); }
 
+    bool isChildTree (ValueTree& v) const
+    {
+        return isSuitableType (v) && v.getParent() == parent;
+    }
+
+    int indexOf (const ValueTree& v) const noexcept
+    {
+        for (int i = 0; i < objects.size(); ++i)
+        if (objects.getUnchecked (i)->getState() == v)
+        return i;
+
+        return -1;
+    }
+
+    void sortArray()
+    {
+        objects.sort (*this);
+    }
+
+    int compareElements (ObjectType* first, ObjectType* second) const
+    {
+        int index1 = parent.indexOf (first->getState());
+        int index2 = parent.indexOf (second->getState());
+        return index1 - index2;
+    }
+
 protected:
     ValueTree parent;
-    UndoManager& undoManager;
+    UndoManager* undoManager;
     Array<ObjectType*> objects;
     CriticalSectionType arrayLock;
     typedef typename CriticalSectionType::ScopedLockType ScopedLockType;
 
     //==============================================================================
     virtual bool isSuitableType (const ValueTree& v) const { return ObjectType::identifier == v.getType(); }
-    virtual ObjectType* createNewObject (const ValueTree& v, UndoManager& um) { return new ObjectType(v, um); }
+    virtual ObjectType* createNewObject (const ValueTree& v, UndoManager* um) { return new ObjectType(v, um); }
     virtual void deleteObject (ObjectType* object) { delete object; }
 
     virtual void newObjectAdded (ObjectType*) {}
@@ -122,32 +160,6 @@ protected:
     void valueTreeParentChanged (ValueTree&) override {}
     void valueTreeRedirected (ValueTree&) override { jassertfalse; } // may need to add handling if this is hit
 
-    bool isChildTree (ValueTree& v) const
-    {
-        return isSuitableType (v) && v.getParent() == parent;
-    }
-
-    int indexOf (const ValueTree& v) const noexcept
-    {
-        for (int i = 0; i < objects.size(); ++i)
-            if (objects.getUnchecked (i)->state == v)
-                return i;
-
-        return -1;
-    }
-
-    void sortArray()
-    {
-        objects.sort (*this);
-    }
-
 private:
-    int compareElements (ObjectType* first, ObjectType* second) const
-    {
-        int index1 = parent.indexOf (first->state);
-        int index2 = parent.indexOf (second->state);
-        return index1 - index2;
-    }
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ValueTreeObjectArray)
 };

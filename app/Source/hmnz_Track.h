@@ -9,3 +9,16 @@
 */
 
 #pragma once
+
+#include "hmnz_ValueTreeObjectArray.h"
+#include "hmnz_Clip.h"
+
+class Track : public ValueTreeObject<IDs::Track>
+{
+public:
+    Track (const ValueTree& v, UndoManager* um)
+        : ValueTreeObject (v, um), clips (v, um) {}
+
+private:
+    ValueTreeObjectArray<Clip> clips;
+};
