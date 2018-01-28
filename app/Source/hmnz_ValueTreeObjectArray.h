@@ -24,10 +24,6 @@ public:
         : parent (parentTree), undoManager (um)
     {
         parent.addListener (this);
-        for (const auto& v : parent)
-            if (isSuitableType (v))
-                if (ObjectType* newObject = createNewObject (v, undoManager))
-                    objects.add (newObject);
     }
 
     virtual ~ValueTreeObjectArray()
@@ -67,6 +63,16 @@ public:
         return index1 - index2;
     }
 
+    const ObjectType** begin() const
+    {
+        return objects.begin();
+    }
+
+    const ObjectType** end() const
+    {
+        return objects.end();
+    }
+
 protected:
     ValueTree parent;
     UndoManager* undoManager;
@@ -74,15 +80,25 @@ protected:
     CriticalSectionType arrayLock;
     typedef typename CriticalSectionType::ScopedLockType ScopedLockType;
 
+    // Call this in your derived constructor.
+    void addObjects()
+    {
+        for (const auto& v : parent)
+            if (isSuitableType (v))
+                if (ObjectType* newObject = createNewObject (v, undoManager))
+                    objects.add (newObject);
+    }
+
     //==============================================================================
     virtual bool isSuitableType (const ValueTree& v) const { return ObjectType::identifier == v.getType(); }
-    virtual ObjectType* createNewObject (const ValueTree& v, UndoManager* um) { return new ObjectType (v, um); }
+    virtual ObjectType* createNewObject (const ValueTree& v, UndoManager* um) = 0;
     virtual void deleteObject (ObjectType* object) { delete object; }
 
     virtual void newObjectAdded (ObjectType*) {}
     virtual void objectRemoved (ObjectType*) {}
     virtual void objectOrderChanged() {}
 
+private:
     //==============================================================================
     void valueTreeChildAdded (ValueTree&, ValueTree& tree) override
     {

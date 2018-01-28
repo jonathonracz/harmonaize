@@ -12,8 +12,13 @@
 
 #include "hmnz_ValueTreeObject.h"
 
+class Clip;
+
 class Note  : public ValueTreeObject<IDs::Note>
 {
 public:
-    Note (const ValueTree& v, UndoManager* um);
+    Note (const ValueTree& v, UndoManager* um, const Clip* owner);
+
+private:
+    const Clip* owner;
 };

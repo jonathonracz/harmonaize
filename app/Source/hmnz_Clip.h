@@ -11,14 +11,18 @@
 #pragma once
 
 #include "hmnz_ValueTreeObject.h"
-#include "hmnz_ValueTreeObjectArray.h"
-#include "hmnz_Note.h"
+#include "hmnz_NoteArray.h"
+
+class Track;
 
 class Clip  : public ValueTreeObject<IDs::Clip>
 {
 public:
-    Clip (const ValueTree& v, UndoManager* um);
+    Clip (const ValueTree& v, UndoManager* um, const Track* owner);
+    ~Clip() = default;
 
 private:
-    ValueTreeObjectArray<Note> notes;
+    const Track* owner;
+
+    NoteArray notes;
 };

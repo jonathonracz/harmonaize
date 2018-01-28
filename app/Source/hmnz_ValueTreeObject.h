@@ -32,7 +32,7 @@ public:
         return state;
     }
 
-    const UndoManager* getUndoManager() const
+    UndoManager* getUndoManager() const
     {
         return undoManager;
     }

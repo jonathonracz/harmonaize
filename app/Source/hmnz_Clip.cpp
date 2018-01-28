@@ -9,8 +9,9 @@
 */
 
 #include "hmnz_Clip.h"
+#include "hmnz_Track.h"
 
-Clip::Clip (const ValueTree& v, UndoManager* um)
-    : ValueTreeObject (v, um), notes (v, um)
+Clip::Clip (const ValueTree& v, UndoManager* um, const Track* _owner)
+    : ValueTreeObject (v, um), owner (_owner), notes (this)
 {
 }

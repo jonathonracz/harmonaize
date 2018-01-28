@@ -9,8 +9,9 @@
 */
 
 #include "hmnz_Note.h"
+#include "hmnz_Clip.h"
 
-Note::Note (const ValueTree& v, UndoManager* um)
-    : ValueTreeObject (v, um)
+Note::Note (const ValueTree& v, UndoManager* um, const Clip* _owner)
+    : ValueTreeObject (v, um), owner (_owner)
 {
 }

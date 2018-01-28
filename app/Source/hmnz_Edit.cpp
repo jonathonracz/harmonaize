@@ -11,7 +11,7 @@
 #include "hmnz_Edit.h"
 
 Edit::Edit (const ValueTree& v)
-    : ValueTreeObject<IDs::Edit> (v, &undoManager), tracks (v, &undoManager)
+    : ValueTreeObject<IDs::Edit> (v, &undoManager), tracks (this)
 {
     // TODO: Validate the ValueTree data model, display an error if
     // something unexpected occurs, etc...

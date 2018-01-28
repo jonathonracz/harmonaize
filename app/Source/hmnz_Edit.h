@@ -11,13 +11,10 @@
 #pragma once
 
 #include "hmnz_ValueTreeObject.h"
-#include "hmnz_ValueTreeObjectArray.h"
+#include "hmnz_TrackArray.h"
 #include "hmnz_MasterTack.h"
 #include "hmnz_Transport.h"
 #include "hmnz_Track.h"
-
-class MasterTrack;
-class Transport;
 
 /**
     Represents an active edit (also known as a project).
@@ -35,7 +32,7 @@ private:
     UndoManager undoManager;
     std::unique_ptr<MasterTrack> masterTrack;
     std::unique_ptr<Transport> transport;
-    ValueTreeObjectArray<Track> tracks;
+    TrackArray tracks;
 
     std::mutex playbackLock;
 

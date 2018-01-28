@@ -11,18 +11,21 @@
 #pragma once
 
 #include "hmnz_ValueTreeObject.h"
-#include "hmnz_ValueTreeObjectArray.h"
-#include "hmnz_Clip.h"
+#include "hmnz_ClipArray.h"
+
+class Edit;
 
 class Track : public ValueTreeObject<IDs::Track>,
               public PositionableAudioSource
 {
 public:
-    Track (const ValueTree& v, UndoManager* um);
+    Track (const ValueTree& v, UndoManager* um, const Edit* owner);
     virtual ~Track() = default;
 
 private:
-    ValueTreeObjectArray<Clip> clips;
+    const Edit* owner;
+    ClipArray clips;
+    int64 currentReadPosition;
 
     // PositionableAudioSource methods
     void setNextReadPosition (int64 newPosition) override;
