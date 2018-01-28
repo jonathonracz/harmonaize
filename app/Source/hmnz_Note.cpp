@@ -1,19 +1,16 @@
 /*
   ==============================================================================
 
-    hmnz_Note.h
-    Created: 23 Jan 2018 1:41:45am
+    hmnz_Note.cpp
+    Created: 28 Jan 2018 1:44:47pm
     Author:  Jonathon Racz
 
   ==============================================================================
 */
 
-#pragma once
+#include "hmnz_Note.h"
 
-#include "hmnz_ValueTreeObject.h"
-
-class Note  : public ValueTreeObject<IDs::Note>
+Note::Note (const ValueTree& v, UndoManager* um)
+    : ValueTreeObject (v, um)
 {
-public:
-    Note (const ValueTree& v, UndoManager* um);
-};
+}

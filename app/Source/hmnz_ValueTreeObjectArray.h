@@ -26,7 +26,7 @@ public:
         parent.addListener (this);
         for (const auto& v : parent)
             if (isSuitableType (v))
-                if (ObjectType* newObject = createNewObject (v, um))
+                if (ObjectType* newObject = createNewObject (v, undoManager))
                     objects.add (newObject);
     }
 
@@ -35,18 +35,6 @@ public:
         const ScopedLockType sl (arrayLock);
         while (objects.size() > 0)
         deleteObject (objects.removeAndReturn (objects.size() - 1));
-    }
-
-    UndoManager* getUndoManager() const
-    {
-        return undoManager;
-    }
-
-    void setUndoManager (UndoManager* um)
-    {
-        undoManager = um;
-        for (auto object : objects)
-            object->setUndoManager (um);
     }
 
     ObjectType* getObject(int index) const { return objects.objectAtIndex(index); }
@@ -88,7 +76,7 @@ protected:
 
     //==============================================================================
     virtual bool isSuitableType (const ValueTree& v) const { return ObjectType::identifier == v.getType(); }
-    virtual ObjectType* createNewObject (const ValueTree& v, UndoManager* um) { return new ObjectType(v, um); }
+    virtual ObjectType* createNewObject (const ValueTree& v, UndoManager* um) { return new ObjectType (v, um); }
     virtual void deleteObject (ObjectType* object) { delete object; }
 
     virtual void newObjectAdded (ObjectType*) {}

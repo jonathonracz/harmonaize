@@ -21,12 +21,12 @@ public:
     ValueTree import (const File& midiFile)
     {
         FileInputStream* inputStream = midiFile.createInputStream();
-
+        return ValueTree();
     }
 
     ValueTree import (const MidiFile& midiFile)
     {
-
+        return ValueTree();
     }
 
 private:

@@ -1,8 +1,8 @@
 /*
   ==============================================================================
 
-    hmnz_Clip.h
-    Created: 22 Jan 2018 12:57:58am
+    hmnz_MasterTack.h
+    Created: 26 Jan 2018 4:00:25pm
     Author:  Jonathon Racz
 
   ==============================================================================
@@ -11,14 +11,10 @@
 #pragma once
 
 #include "hmnz_ValueTreeObject.h"
-#include "hmnz_ValueTreeObjectArray.h"
-#include "hmnz_Note.h"
 
-class Clip  : public ValueTreeObject<IDs::Clip>
+class MasterTrack   : public ValueTreeObject<IDs::MasterTrack>
 {
 public:
-    Clip (const ValueTree& v, UndoManager* um);
-
-private:
-    ValueTreeObjectArray<Note> notes;
+    MasterTrack (const ValueTree& v, UndoManager* um)
+        : ValueTreeObject (v, um) {}
 };

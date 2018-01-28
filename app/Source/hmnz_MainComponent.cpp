@@ -21,6 +21,9 @@ MainContentComponent::MainContentComponent()
 
     addAndMakeVisible (openEditButton);
     addAndMakeVisible (importMidiButton);
+
+    activeEdit = std::unique_ptr<Edit> (new Edit (Edit::createSkeletonEdit()));
+    activeEdit->addToDesktop(ComponentPeer::StyleFlags::windowAppearsOnTaskbar | ComponentPeer::StyleFlags::windowHasTitleBar);
 }
 
 MainContentComponent::~MainContentComponent()
@@ -39,8 +42,10 @@ void MainContentComponent::paint (Graphics& g)
 
 void MainContentComponent::resized()
 {
-    openEditButton.setBounds (getBounds().removeFromLeft (getBounds().getWidth() / 2));
-    importMidiButton.setBounds (getBounds().removeFromRight (getBounds().getWidth() / 2));
+    int amountToRemoveX = getBounds().getWidth() / 2;
+    int amountToRemoveY = getBounds().getHeight() / 2;
+    openEditButton.setBounds (getBounds().removeFromBottom(amountToRemoveY).removeFromLeft (amountToRemoveX));
+    importMidiButton.setBounds (getBounds().removeFromBottom(amountToRemoveY).removeFromRight (amountToRemoveX));
 }
 
 void MainContentComponent::buttonClicked (Button* button)

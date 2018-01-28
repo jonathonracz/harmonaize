@@ -1,19 +1,16 @@
 /*
   ==============================================================================
 
-    hmnz_Note.h
-    Created: 23 Jan 2018 1:41:45am
+    hmnz_Clip.cpp
+    Created: 28 Jan 2018 1:45:02pm
     Author:  Jonathon Racz
 
   ==============================================================================
 */
 
-#pragma once
+#include "hmnz_Clip.h"
 
-#include "hmnz_ValueTreeObject.h"
-
-class Note  : public ValueTreeObject<IDs::Note>
+Clip::Clip (const ValueTree& v, UndoManager* um)
+    : ValueTreeObject (v, um), notes (v, um)
 {
-public:
-    Note (const ValueTree& v, UndoManager* um);
-};
+}
