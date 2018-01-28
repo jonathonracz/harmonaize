@@ -20,6 +20,6 @@ TrackArray::TrackArray (const Edit* _owner)
 
 Track* TrackArray::createNewObject (const ValueTree& v, UndoManager* um)
 {
-    jassert (owner->getState() == v && um == owner->getUndoManager());
+    jassert (um == owner->getUndoManager());
     return new Track (v, um, owner);
 }

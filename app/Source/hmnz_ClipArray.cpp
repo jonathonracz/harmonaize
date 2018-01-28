@@ -20,6 +20,6 @@ ClipArray::ClipArray (const Track* _owner)
 
 Clip* ClipArray::createNewObject (const ValueTree& v, UndoManager* um)
 {
-    jassert (owner->getState() == v && um == owner->getUndoManager());
+    jassert (um == owner->getUndoManager());
     return new Clip (v, um, owner);
 }

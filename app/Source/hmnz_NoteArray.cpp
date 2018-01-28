@@ -20,6 +20,6 @@ NoteArray::NoteArray (const Clip* _owner)
 
 Note* NoteArray::createNewObject (const ValueTree& v, UndoManager* um)
 {
-    jassert (owner->getState() == v && um == owner->getUndoManager());
+    jassert (um == owner->getUndoManager());
     return new Note (v, um, owner);
 }
