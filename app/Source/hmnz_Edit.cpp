@@ -45,7 +45,7 @@ ValueTree Edit::createSkeletonEdit()
     edit.setProperty (IDs::EditProps::OriginTime, 0.0f, nullptr);
     edit.setProperty (IDs::EditProps::EndTime, editLength, nullptr);
     edit.setProperty (IDs::EditProps::PulsesPerQuarterNote, 960, nullptr);
-    edit.setProperty (IDs::EditProps::SampleRate, 44100, nullptr);
+    edit.setProperty (IDs::EditProps::SampleRate, 44100.0, nullptr);
 
     {
         ValueTree transport (IDs::Transport);
@@ -141,6 +141,7 @@ int64 Edit::getTotalLength() const
 
 void Edit::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
+    DBG ("Edit: preparing to play");
 }
 
 void Edit::releaseResources()
@@ -149,4 +150,5 @@ void Edit::releaseResources()
 
 void Edit::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
+    DBG ("Edit: Getting next audio block");
 }

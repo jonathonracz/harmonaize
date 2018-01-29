@@ -34,6 +34,16 @@ public:
     int64 getNextReadPosition() const override;
     int64 getTotalLength() const override;
 
+    // AudioSource methods
+    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
+    void releaseResources() override;
+    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
+
+    CachedValue<double> originTime;
+    CachedValue<double> endTime;
+    CachedValue<int> pulsesPerQuarterNote;
+    CachedValue<double> sampleRate;
+
 private:
     UndoManager undoManager;
     std::unique_ptr<MasterTrack> masterTrack;
@@ -42,11 +52,6 @@ private:
     std::mutex playbackLock;
     int64 currentPlaybackPosition;
     jcf::ValueTreeDebugger stateDebugger;
-
-    CachedValue<double> originTime;
-    CachedValue<double> endTime;
-    CachedValue<int> pulsesPerQuarterNote;
-    CachedValue<double> sampleRate;
 
     // ValueTree methods
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
@@ -58,11 +63,6 @@ private:
     // PositionableAudioSource methods
     bool isLooping() const override { return false; }
     void setLooping (bool shouldLoop) override {}
-
-    // AudioSource methods
-    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
-    void releaseResources() override;
-    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Edit)
 };

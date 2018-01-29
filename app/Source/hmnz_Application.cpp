@@ -10,6 +10,17 @@
 
 #include "hmnz_Application.h"
 
+HarmonaizeApplication::HarmonaizeApplication()
+{
+    // TODO: Hardcoded yuckiness here
+    audioDeviceManager.initialiseWithDefaultDevices (0, 2);
+}
+
+HarmonaizeApplication::~HarmonaizeApplication()
+{
+    audioDeviceManager.closeAudioDevice();
+}
+
 HarmonaizeApplication& HarmonaizeApplication::getApp()
 {
     HarmonaizeApplication* const app = static_cast<HarmonaizeApplication*> (HarmonaizeApplication::getInstance());

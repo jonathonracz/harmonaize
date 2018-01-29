@@ -18,7 +18,8 @@ class EditWindow;
 class HarmonaizeApplication  : public JUCEApplication
 {
 public:
-    HarmonaizeApplication() {}
+    HarmonaizeApplication();
+    ~HarmonaizeApplication();
 
     static HarmonaizeApplication& getApp();
     static AudioDeviceManager& getDeviceManager();
