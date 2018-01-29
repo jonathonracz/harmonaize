@@ -20,14 +20,11 @@ class ValueTreeObject : protected ValueTree::Listener
 {
 public:
     ValueTreeObject (const ValueTree& v, UndoManager* um)
-        : state (v), undoManager (um)
-    {
-        state.addListener (this);
-    }
+        : state (v), undoManager (um) {}
 
     virtual ~ValueTreeObject() = default;
 
-    ValueTree getState() const
+    ValueTree& getState()
     {
         return state;
     }

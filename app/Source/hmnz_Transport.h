@@ -12,11 +12,29 @@
 
 #include "hmnz_ValueTreeObject.h"
 
-class Transport : public ValueTreeObject<IDs::Transport>
+class Edit;
+
+class Transport : public ValueTreeObject<IDs::Transport>,
+                  public ChangeListener
 {
 public:
-    Transport (const ValueTree& v, UndoManager* um)
-        : ValueTreeObject (v, um) {}
+    enum State : int
+    {
+        stopped,
+        playing
+    };
 
+    Transport (Edit* const source);
+    ~Transport();
+
+private:
+    Edit* const source;
+    AudioSourcePlayer output;
     AudioTransportSource transportSource;
+
+    void changeListenerCallback (ChangeBroadcaster* source) override;
+    void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
+
+    CachedValue<double> playPositionTime;
+    CachedValue<int> playState;
 };

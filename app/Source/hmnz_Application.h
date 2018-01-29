@@ -10,35 +10,29 @@
 
 #pragma once
 
+#include "JuceHeader.h"
 #include "hmnz_EditWindow.h"
+
+class EditWindow;
 
 class HarmonaizeApplication  : public JUCEApplication
 {
 public:
-    //==============================================================================
     HarmonaizeApplication() {}
+
+    static HarmonaizeApplication& getApp();
+    static AudioDeviceManager& getDeviceManager();
 
     const String getApplicationName() override       { return ProjectInfo::projectName; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }
     bool moreThanOneInstanceAllowed() override       { return true; }
 
-    //==============================================================================
-    void initialise (const String& commandLine) override
-    {
-        editWindow = new EditWindow ();
-    }
+    void initialise (const String& commandLine) override;
+    void shutdown() override;
+    void systemRequestedQuit() override;
 
-    void shutdown() override
-    {
-        editWindow = nullptr;
-    }
-
-    //==============================================================================
-    void systemRequestedQuit() override
-    {
-        quit();
-    }
+    std::unique_ptr<EditWindow> editWindow;
 
 private:
-    ScopedPointer<EditWindow> editWindow;
+    AudioDeviceManager audioDeviceManager;
 };

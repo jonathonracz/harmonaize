@@ -19,8 +19,6 @@ namespace IDs
     DECLARE_ID (Edit)
     namespace EditProps
     {
-        DECLARE_ID (WindowWidth)
-        DECLARE_ID (WindowHeight)
         DECLARE_ID (OriginTime)
         DECLARE_ID (EndTime)
         DECLARE_ID (PulsesPerQuarterNote)
@@ -34,6 +32,7 @@ namespace IDs
         DECLARE_ID (LoopStartTime)
         DECLARE_ID (LoopEndTime)
         DECLARE_ID (IsLooping)
+        DECLARE_ID (PlayState)
     }
 
     DECLARE_ID (MasterTrack)

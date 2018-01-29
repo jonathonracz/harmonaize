@@ -21,15 +21,9 @@
           file="Source/hmnz_EditWindow.cpp"/>
     <FILE id="DtfSsB" name="hmnz_EditWindow.h" compile="0" resource="0"
           file="Source/hmnz_EditWindow.h"/>
-    <FILE id="m1oMyB" name="hmnz_GlobalAudioDeviceManager.h" compile="0"
-          resource="0" file="Source/hmnz_GlobalAudioDeviceManager.h"/>
     <FILE id="InvRfR" name="hmnz_Identifiers.h" compile="0" resource="0"
           file="Source/hmnz_Identifiers.h"/>
     <FILE id="O1PXYS" name="hmnz_Main.cpp" compile="1" resource="0" file="Source/hmnz_Main.cpp"/>
-    <FILE id="bJQAKY" name="hmnz_MainComponent.cpp" compile="1" resource="0"
-          file="Source/hmnz_MainComponent.cpp"/>
-    <FILE id="nfTaJ8" name="hmnz_MainComponent.h" compile="0" resource="0"
-          file="Source/hmnz_MainComponent.h"/>
     <FILE id="H3nS2R" name="hmnz_MainToolbarFactory.h" compile="0" resource="0"
           file="Source/hmnz_MainToolbarFactory.h"/>
     <FILE id="qVsK1W" name="hmnz_MasterTack.h" compile="0" resource="0"
@@ -56,6 +50,8 @@
           file="Source/hmnz_ValueTreeObject.h"/>
     <FILE id="KtYKY2" name="hmnz_ValueTreeObjectArray.h" compile="0" resource="0"
           file="Source/hmnz_ValueTreeObjectArray.h"/>
+    <FILE id="oGqJ3e" name="hmnz_VariantConverters.h" compile="0" resource="0"
+          file="Source/hmnz_VariantConverters.h"/>
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="" extraLinkerFlags="">

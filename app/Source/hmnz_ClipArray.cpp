@@ -11,7 +11,7 @@
 #include "hmnz_ClipArray.h"
 #include "hmnz_Track.h"
 
-ClipArray::ClipArray (const Track* _owner)
+ClipArray::ClipArray (Track* const _owner)
     : ValueTreeObjectArray (_owner->getState(), _owner->getUndoManager()),
       owner (_owner)
 {

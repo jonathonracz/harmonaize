@@ -10,6 +10,7 @@
 
 #include "hmnz_Clip.h"
 #include "hmnz_Track.h"
+#include "hmnz_ValueTreeObject.h"
 
 Clip::Clip (const ValueTree& v, UndoManager* um, const Track* _owner)
     : ValueTreeObject (v, um), owner (_owner), notes (this)

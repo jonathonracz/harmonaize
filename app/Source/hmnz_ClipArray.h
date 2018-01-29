@@ -16,10 +16,10 @@
 class ClipArray : public ValueTreeObjectArray<Clip>
 {
 public:
-    ClipArray (const Track* owner);
+    ClipArray (Track* const owner);
 
 private:
-    const Track* owner;
+    Track* const owner;
 
     Clip* createNewObject (const ValueTree& v, UndoManager* um) override;
 };

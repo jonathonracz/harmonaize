@@ -11,7 +11,7 @@
 #include "hmnz_NoteArray.h"
 #include "hmnz_Clip.h"
 
-NoteArray::NoteArray (const Clip* _owner)
+NoteArray::NoteArray (Clip* const _owner)
     : ValueTreeObjectArray (_owner->getState(), _owner->getUndoManager()),
       owner (_owner)
 {

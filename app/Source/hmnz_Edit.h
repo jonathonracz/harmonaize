@@ -35,7 +35,6 @@ public:
     int64 getTotalLength() const override;
 
 private:
-    AudioSourcePlayer output;
     UndoManager undoManager;
     std::unique_ptr<MasterTrack> masterTrack;
     std::unique_ptr<Transport> transport;
@@ -43,6 +42,11 @@ private:
     std::mutex playbackLock;
     int64 currentPlaybackPosition;
     jcf::ValueTreeDebugger stateDebugger;
+
+    CachedValue<double> originTime;
+    CachedValue<double> endTime;
+    CachedValue<int> pulsesPerQuarterNote;
+    CachedValue<double> sampleRate;
 
     // ValueTree methods
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;

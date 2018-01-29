@@ -9,7 +9,8 @@
 */
 
 #include "hmnz_Edit.h"
-#include "hmnz_GlobalAudioDeviceManager.h"
+#include "hmnz_Application.h"
+#include "hmnz_Transport.h"
 
 Edit::Edit (const ValueTree& v)
     : ValueTreeObject<IDs::Edit> (v, &undoManager), tracks (this)
@@ -17,15 +18,21 @@ Edit::Edit (const ValueTree& v)
     setOpaque (true);
     // TODO: Validate the ValueTree data model, display an error if
     // something unexpected occurs, etc...
-    masterTrack = std::unique_ptr<MasterTrack>(new MasterTrack (v.getChildWithName (IDs::MasterTrack), &undoManager));
-    transport = std::unique_ptr<Transport>(new Transport (v.getChildWithName (IDs::Transport), &undoManager));
-    ValueTree state = getState();
-    stateDebugger.setSource (state);
+    originTime.referTo (getState(), IDs::EditProps::OriginTime, &undoManager, 0.0f);
+    endTime.referTo (getState(), IDs::EditProps::EndTime, &undoManager, 60.0);
+    pulsesPerQuarterNote.referTo (getState(), IDs::EditProps::PulsesPerQuarterNote, &undoManager, 960);
+    sampleRate.referTo (getState(), IDs::EditProps::SampleRate, &undoManager, 44100.0);
+
+    masterTrack = std::unique_ptr<MasterTrack> (new MasterTrack (v.getChildWithName (IDs::MasterTrack), &undoManager));
+    transport = std::unique_ptr<Transport> (new Transport (this));
+
+    getState().addListener (this);
+
+    stateDebugger.setSource (getState());
 }
 
 Edit::~Edit()
 {
-
 }
 
 ValueTree Edit::createSkeletonEdit()
@@ -106,13 +113,6 @@ ValueTree Edit::createSkeletonEdit()
 
 void Edit::valueTreePropertyChanged (ValueTree& tree, const Identifier& id)
 {
-    if (tree == getState())
-    {
-        if (id == IDs::EditProps::WindowWidth || id == IDs::EditProps::WindowHeight)
-        {
-            setSize(getState()[IDs::EditProps::WindowWidth], getState()[IDs::EditProps::WindowHeight]);
-        }
-    }
 }
 
 void Edit::resized()
@@ -121,7 +121,7 @@ void Edit::resized()
 
 void Edit::paint (Graphics& g)
 {
-    g.fillAll(Colours::red);
+    g.fillAll (Colours::red);
 }
 
 void Edit::setNextReadPosition (int64 newPosition)
@@ -136,9 +136,6 @@ int64 Edit::getNextReadPosition() const
 
 int64 Edit::getTotalLength() const
 {
-    float endTime = getState()[IDs::EditProps::EndTime];
-    float originTime = getState()[IDs::EditProps::OriginTime];
-    float sampleRate = getState()[IDs::EditProps::SampleRate];
     return (endTime - originTime) * sampleRate;
 }
 
