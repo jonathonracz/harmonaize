@@ -1,14 +1,11 @@
 /*
   ==============================================================================
 
-    This file was auto-generated!
-
-    It contains the basic startup code for a Juce application.
+    hmnz_Application.cpp
+    Created: 28 Jan 2018 11:42:51pm
+    Author:  Jonathon Racz
 
   ==============================================================================
 */
 
-#include "JuceHeader.h"
 #include "hmnz_Application.h"
-
-START_JUCE_APPLICATION (HarmonaizeApplication)

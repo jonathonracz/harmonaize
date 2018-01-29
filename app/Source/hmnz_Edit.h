@@ -25,26 +25,23 @@ class Edit  : public ValueTreeObject<IDs::Edit>,
 {
 public:
     Edit (const ValueTree& v);
+    ~Edit();
 
     static ValueTree createSkeletonEdit();
 
+    // PositionableAudioSource methods
+    void setNextReadPosition (int64 newPosition) override;
+    int64 getNextReadPosition() const override;
+    int64 getTotalLength() const override;
+
 private:
+    AudioSourcePlayer output;
     UndoManager undoManager;
     std::unique_ptr<MasterTrack> masterTrack;
     std::unique_ptr<Transport> transport;
     TrackArray tracks;
-
     std::mutex playbackLock;
-
-    Value windowWidth;
-    Value windowHeight;
-    Value originTime;
-    Value endTime;
-    Value pulsesPerQuarterNote;
-    Value sampleRate;
-
     int64 currentPlaybackPosition;
-
     jcf::ValueTreeDebugger stateDebugger;
 
     // ValueTree methods
@@ -55,9 +52,6 @@ private:
     void paint (Graphics&) override;
 
     // PositionableAudioSource methods
-    void setNextReadPosition (int64 newPosition) override;
-    int64 getNextReadPosition() const override;
-    int64 getTotalLength() const override;
     bool isLooping() const override { return false; }
     void setLooping (bool shouldLoop) override {}
 

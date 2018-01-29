@@ -11,7 +11,7 @@
 #include "hmnz_TrackArray.h"
 #include "hmnz_Edit.h"
 
-TrackArray::TrackArray (const Edit* _owner)
+TrackArray::TrackArray (Edit* const _owner)
     : ValueTreeObjectArray (_owner->getState(), _owner->getUndoManager()),
       owner (_owner)
 {

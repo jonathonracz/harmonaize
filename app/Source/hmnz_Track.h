@@ -19,11 +19,11 @@ class Track : public ValueTreeObject<IDs::Track>,
               public PositionableAudioSource
 {
 public:
-    Track (const ValueTree& v, UndoManager* um, const Edit* owner);
+    Track (const ValueTree& v, UndoManager* um, Edit* const owner);
     virtual ~Track() = default;
 
 private:
-    const Edit* owner;
+    Edit* const owner;
     ClipArray clips;
     int64 currentReadPosition;
 

@@ -9,25 +9,26 @@
 */
 
 #include "hmnz_Track.h"
+#include "hmnz_Edit.h"
 
-Track::Track (const ValueTree& v, UndoManager* um, const Edit* _owner)
+Track::Track (const ValueTree& v, UndoManager* um, Edit* const _owner)
     : ValueTreeObject (v, um), owner (_owner), clips (this)
 {
 }
 
 void Track::setNextReadPosition (int64 newPosition)
 {
-    currentReadPosition = newPosition;
+    owner->setNextReadPosition (newPosition);
 }
 
 int64 Track::getNextReadPosition() const
 {
-    return currentReadPosition;
+    return owner->getNextReadPosition();
 }
 
 int64 Track::getTotalLength() const
 {
-
+    return owner->getTotalLength();
 }
 
 void Track::prepareToPlay (int samplesPerBlockExpected, double sampleRate)

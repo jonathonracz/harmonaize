@@ -16,10 +16,10 @@
 class TrackArray    : public ValueTreeObjectArray<Track>
 {
 public:
-    TrackArray (const Edit* owner);
+    TrackArray (Edit* const owner);
 
 private:
-    const Edit* owner;
+    Edit* const owner;
 
     Track* createNewObject (const ValueTree& v, UndoManager* um) override;
 };

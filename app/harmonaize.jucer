@@ -5,6 +5,10 @@
               cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.0"
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark">
   <MAINGROUP id="TpvEFM" name="harmonaize">
+    <FILE id="IdMZgo" name="hmnz_Application.cpp" compile="1" resource="0"
+          file="Source/hmnz_Application.cpp"/>
+    <FILE id="iDgIBJ" name="hmnz_Application.h" compile="0" resource="0"
+          file="Source/hmnz_Application.h"/>
     <FILE id="GQsi7H" name="hmnz_Clip.cpp" compile="1" resource="0" file="Source/hmnz_Clip.cpp"/>
     <FILE id="XA4JeV" name="hmnz_Clip.h" compile="0" resource="0" file="Source/hmnz_Clip.h"/>
     <FILE id="NDGLkI" name="hmnz_ClipArray.cpp" compile="1" resource="0"
@@ -13,6 +17,10 @@
           file="Source/hmnz_ClipArray.h"/>
     <FILE id="Ay8orM" name="hmnz_Edit.cpp" compile="1" resource="0" file="Source/hmnz_Edit.cpp"/>
     <FILE id="YdnPis" name="hmnz_Edit.h" compile="0" resource="0" file="Source/hmnz_Edit.h"/>
+    <FILE id="z4vhcu" name="hmnz_EditWindow.cpp" compile="1" resource="0"
+          file="Source/hmnz_EditWindow.cpp"/>
+    <FILE id="DtfSsB" name="hmnz_EditWindow.h" compile="0" resource="0"
+          file="Source/hmnz_EditWindow.h"/>
     <FILE id="m1oMyB" name="hmnz_GlobalAudioDeviceManager.h" compile="0"
           resource="0" file="Source/hmnz_GlobalAudioDeviceManager.h"/>
     <FILE id="InvRfR" name="hmnz_Identifiers.h" compile="0" resource="0"
@@ -40,6 +48,8 @@
           file="Source/hmnz_TrackArray.cpp"/>
     <FILE id="lnkPt3" name="hmnz_TrackArray.h" compile="0" resource="0"
           file="Source/hmnz_TrackArray.h"/>
+    <FILE id="pKfzEv" name="hmnz_Transport.cpp" compile="1" resource="0"
+          file="Source/hmnz_Transport.cpp"/>
     <FILE id="AMG9hy" name="hmnz_Transport.h" compile="0" resource="0"
           file="Source/hmnz_Transport.h"/>
     <FILE id="Xv3NML" name="hmnz_ValueTreeObject.h" compile="0" resource="0"

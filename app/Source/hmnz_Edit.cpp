@@ -9,6 +9,7 @@
 */
 
 #include "hmnz_Edit.h"
+#include "hmnz_GlobalAudioDeviceManager.h"
 
 Edit::Edit (const ValueTree& v)
     : ValueTreeObject<IDs::Edit> (v, &undoManager), tracks (this)
@@ -20,6 +21,11 @@ Edit::Edit (const ValueTree& v)
     transport = std::unique_ptr<Transport>(new Transport (v.getChildWithName (IDs::Transport), &undoManager));
     ValueTree state = getState();
     stateDebugger.setSource (state);
+}
+
+Edit::~Edit()
+{
+
 }
 
 ValueTree Edit::createSkeletonEdit()
@@ -130,7 +136,10 @@ int64 Edit::getNextReadPosition() const
 
 int64 Edit::getTotalLength() const
 {
-    return (float(endTime.getValue()) - float(originTime.getValue())) * float(sampleRate.getValue());
+    float endTime = getState()[IDs::EditProps::EndTime];
+    float originTime = getState()[IDs::EditProps::OriginTime];
+    float sampleRate = getState()[IDs::EditProps::SampleRate];
+    return (endTime - originTime) * sampleRate;
 }
 
 void Edit::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
