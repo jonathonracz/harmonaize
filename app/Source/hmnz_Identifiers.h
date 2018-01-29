@@ -19,6 +19,8 @@ namespace IDs
     DECLARE_ID (Edit)
     namespace EditProps
     {
+        DECLARE_ID (WindowWidth)
+        DECLARE_ID (WindowHeight)
         DECLARE_ID (OriginTime)
         DECLARE_ID (EndTime)
         DECLARE_ID (PulsesPerQuarterNote)

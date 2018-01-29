@@ -16,7 +16,7 @@
     A run-time class which represents an abstract ValueTree node.
 */
 template<const Identifier& identifierType>
-class ValueTreeObject : private ValueTree::Listener
+class ValueTreeObject : protected ValueTree::Listener
 {
 public:
     ValueTreeObject (const ValueTree& v, UndoManager* um)
@@ -40,42 +40,15 @@ public:
     static constexpr const Identifier& identifier = identifierType;
 
 protected:
-    Value getPropertyAsValue (const Identifier& name, var defaultValue = var())
-    {
-        Value ret = state.getPropertyAsValue (name, undoManager);
-        if (ret.getValue().isUndefined() && !defaultValue.isUndefined())
-            ret = defaultValue;
-
-        return ret;
-    }
-
-    Value getPropertyAsValueChecked (const Identifier& name)
-    {
-        jassert (state.hasProperty (name));
-        Value ret = getPropertyAsValue (name, undoManager);
-        return ret;
-    }
-
-    virtual void statePropertyChanged(const Identifier& property) {}
-    virtual void stateParentChanged() {}
+    void valueTreePropertyChanged (ValueTree&, const Identifier&) override {}
+    void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
+    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
+    void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
+    void valueTreeParentChanged (ValueTree&) override {}
 
 private:
     ValueTree state;
     UndoManager* undoManager;
-
-    void valueTreePropertyChanged (ValueTree& tree, const Identifier& property) override
-    {
-        if (tree == state)
-            statePropertyChanged (property);
-    }
-
-    void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
-    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
-    void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
-    void valueTreeParentChanged (ValueTree&) override
-    {
-        stateParentChanged();
-    }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ValueTreeObject)
 };

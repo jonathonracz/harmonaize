@@ -23,7 +23,17 @@ MainContentComponent::MainContentComponent()
     addAndMakeVisible (importMidiButton);
 
     activeEdit = std::unique_ptr<Edit> (new Edit (Edit::createSkeletonEdit()));
-    activeEdit->addToDesktop(ComponentPeer::StyleFlags::windowAppearsOnTaskbar | ComponentPeer::StyleFlags::windowHasTitleBar);
+    activeEdit->setVisible (true);
+    activeEdit->setSize (800, 600);
+    activeEdit->setCentreRelative (0.5f, 0.5f);
+    activeEdit->addToDesktop (ComponentPeer::StyleFlags::windowAppearsOnTaskbar |
+                              ComponentPeer::StyleFlags::windowHasTitleBar |
+                              ComponentPeer::StyleFlags::windowIsResizable |
+                              ComponentPeer::StyleFlags::windowHasMinimiseButton |
+                              ComponentPeer::StyleFlags::windowHasMaximiseButton |
+                              ComponentPeer::StyleFlags::windowHasCloseButton |
+                              ComponentPeer::StyleFlags::windowHasDropShadow);
+    activeEdit->toFront (true);
 }
 
 MainContentComponent::~MainContentComponent()

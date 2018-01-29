@@ -36,6 +36,8 @@ private:
 
     std::mutex playbackLock;
 
+    Value windowWidth;
+    Value windowHeight;
     Value originTime;
     Value endTime;
     Value pulsesPerQuarterNote;
@@ -44,6 +46,13 @@ private:
     int64 currentPlaybackPosition;
 
     jcf::ValueTreeDebugger stateDebugger;
+
+    // ValueTree methods
+    void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
+
+    // Component methods
+    void resized() override;
+    void paint (Graphics&) override;
 
     // PositionableAudioSource methods
     void setNextReadPosition (int64 newPosition) override;

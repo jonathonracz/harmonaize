@@ -13,12 +13,9 @@
 Edit::Edit (const ValueTree& v)
     : ValueTreeObject<IDs::Edit> (v, &undoManager), tracks (this)
 {
+    setOpaque (true);
     // TODO: Validate the ValueTree data model, display an error if
     // something unexpected occurs, etc...
-    originTime = getPropertyAsValue (IDs::EditProps::OriginTime);
-    endTime = getPropertyAsValue (IDs::EditProps::EndTime);
-    pulsesPerQuarterNote = getPropertyAsValue (IDs::EditProps::PulsesPerQuarterNote);
-
     masterTrack = std::unique_ptr<MasterTrack>(new MasterTrack (v.getChildWithName (IDs::MasterTrack), &undoManager));
     transport = std::unique_ptr<Transport>(new Transport (v.getChildWithName (IDs::Transport), &undoManager));
     ValueTree state = getState();
@@ -99,6 +96,26 @@ ValueTree Edit::createSkeletonEdit()
     }
 
     return edit;
+}
+
+void Edit::valueTreePropertyChanged (ValueTree& tree, const Identifier& id)
+{
+    if (tree == getState())
+    {
+        if (id == IDs::EditProps::WindowWidth || id == IDs::EditProps::WindowHeight)
+        {
+            setSize(getState()[IDs::EditProps::WindowWidth], getState()[IDs::EditProps::WindowHeight]);
+        }
+    }
+}
+
+void Edit::resized()
+{
+}
+
+void Edit::paint (Graphics& g)
+{
+    g.fillAll(Colours::red);
 }
 
 void Edit::setNextReadPosition (int64 newPosition)
