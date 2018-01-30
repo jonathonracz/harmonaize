@@ -21,8 +21,7 @@
     Represents an active edit (also known as a project).
 */
 class Edit  : public ValueTreeObject<IDs::Edit>,
-              public Component,
-              public PositionableAudioSource
+              public AudioSource
 {
 public:
     Edit (const ValueTree& v);
@@ -30,40 +29,23 @@ public:
 
     static ValueTree createSkeletonEdit();
 
-    // PositionableAudioSource methods
-    void setNextReadPosition (int64 newPosition) override;
-    int64 getNextReadPosition() const override;
-    int64 getTotalLength() const override;
-
     // AudioSource methods
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
 
-    CachedValue<SPSCAtomicWrapper<double>> originTime;
-    CachedValue<SPSCAtomicWrapper<double>> endTime;
     CachedValue<int> pulsesPerQuarterNote;
-    CachedValue<SPSCAtomicWrapper<double>> sampleRate;
 
 private:
     UndoManager undoManager;
     std::unique_ptr<MasterTrack> masterTrack;
     std::unique_ptr<Transport> transport;
     TrackArray tracks;
-    std::mutex playbackLock;
-    int64 currentPlaybackPosition;
     jcf::ValueTreeDebugger stateDebugger;
 
     // ValueTree methods
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
 
-    // Component methods
-    void resized() override;
-    void paint (Graphics&) override;
-
-    // PositionableAudioSource methods
-    bool isLooping() const override { return false; }
-    void setLooping (bool shouldLoop) override {}
-
+    JUCE_DECLARE_WEAK_REFERENCEABLE (Edit)
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Edit)
 };

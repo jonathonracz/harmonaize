@@ -16,23 +16,16 @@
 class Edit;
 
 class Track : public ValueTreeObject<IDs::Track>,
-              public PositionableAudioSource
+              public AudioSource
 {
 public:
-    Track (const ValueTree& v, UndoManager* um, Edit* const owner);
+    Track (const ValueTree& v, UndoManager* um, Edit* const edit);
     virtual ~Track() = default;
 
-private:
-    Edit* const owner;
-    ClipArray clips;
-    int64 currentReadPosition;
+    Edit* const edit;
 
-    // PositionableAudioSource methods
-    void setNextReadPosition (int64 newPosition) override;
-    int64 getNextReadPosition() const override;
-    int64 getTotalLength() const override;
-    bool isLooping() const override { return false; }
-    void setLooping (bool shouldLoop) override {}
+private:
+    ClipArray clips;
 
     // AudioSource methods
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;

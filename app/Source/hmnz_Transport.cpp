@@ -16,17 +16,24 @@ Transport::Transport (Edit* const _edit)
     : ValueTreeObject (_edit->getState(), _edit->getUndoManager()),
       edit (_edit),
       desiredReadPositionTime (0.0f),
-      playPositionTime (getState(), IDs::TransportProps::PlayPositionTime, getUndoManager(), 0.0),
-      playState (getState(), IDs::TransportProps::PlayState, getUndoManager(), State::stopped)
+      originTime (getState(), IDs::EditProps::OriginTime, nullptr),
+      endTime (getState(), IDs::EditProps::EndTime, nullptr),
+      sampleRate (getState(), IDs::EditProps::SampleRate, nullptr),
+      playPositionTime (getState(), IDs::TransportProps::PlayPositionTime, nullptr, 0.0),
+      playState (getState(), IDs::TransportProps::PlayState, nullptr, State::stopped)
 {
-    transportSource.setSource (this, 0, nullptr, edit->sampleRate.get());
+    playPositionTime.get();
+    playState.get();
+
+    transportSource.setSource (this, 0, nullptr, sampleRate.get());
+    std::atomic_thread_fence (std::memory_order_acquire);
     output.setSource (&transportSource);
     HarmonaizeApplication::getDeviceManager().addAudioCallback (&output);
 
     keyboardState.addListener (&midiMessageCollector);
     String firstMidiInput = MidiInput::getDevices()[0];
     if (firstMidiInput.isNotEmpty())
-        HarmonaizeApplication::getDeviceManager().addMidiInputCallback(firstMidiInput, &midiMessageCollector);
+        HarmonaizeApplication::getDeviceManager().addMidiInputCallback (firstMidiInput, &midiMessageCollector);
 
     transportSource.addChangeListener (this);
     getState().addListener (this);
@@ -52,7 +59,9 @@ int64 Transport::getNextReadPosition() const
 
 int64 Transport::getTotalLength() const
 {
-    return (edit->endTime.get() - edit->originTime.get()) * edit->sampleRate.get();
+    int64 totalLength = (endTime.get() - originTime.get()) * sampleRate.get();
+    std::atomic_thread_fence (std::memory_order_acquire);
+    return totalLength;
 }
 
 void Transport::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
@@ -108,11 +117,12 @@ void Transport::valueTreePropertyChanged (ValueTree& tree, const Identifier& ide
                 default: jassertfalse;
             }
         }
-        else if (identifier == edit->sampleRate.getPropertyID())
+        else if (identifier == sampleRate.getPropertyID())
         {
             bool wasPlaying = (playState == State::playing);
             transportSource.stop();
-            transportSource.setSource (this, 0, nullptr, edit->sampleRate.get());
+            transportSource.setSource (this, 0, nullptr, sampleRate.get());
+            std::atomic_thread_fence (std::memory_order_acquire);
             if (wasPlaying)
                 transportSource.start();
         }

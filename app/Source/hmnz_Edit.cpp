@@ -15,20 +15,16 @@
 Edit::Edit (const ValueTree& v)
     : ValueTreeObject<IDs::Edit> (v, &undoManager), tracks (this)
 {
-    setOpaque (true);
     // TODO: Validate the ValueTree data model, display an error if
     // something unexpected occurs, etc...
-    originTime.referTo (getState(), IDs::EditProps::OriginTime, &undoManager, 0.0f);
-    endTime.referTo (getState(), IDs::EditProps::EndTime, &undoManager, 60.0);
     pulsesPerQuarterNote.referTo (getState(), IDs::EditProps::PulsesPerQuarterNote, &undoManager, 960);
-    sampleRate.referTo (getState(), IDs::EditProps::SampleRate, &undoManager, 44100.0);
 
     masterTrack = std::unique_ptr<MasterTrack> (new MasterTrack (v.getChildWithName (IDs::MasterTrack), &undoManager));
     transport = std::unique_ptr<Transport> (new Transport (this));
 
     getState().addListener (this);
 
-    stateDebugger.setSource (getState());
+    //stateDebugger.setSource (getState());
 }
 
 Edit::~Edit()
@@ -113,30 +109,6 @@ ValueTree Edit::createSkeletonEdit()
 
 void Edit::valueTreePropertyChanged (ValueTree& tree, const Identifier& id)
 {
-}
-
-void Edit::resized()
-{
-}
-
-void Edit::paint (Graphics& g)
-{
-    g.fillAll (Colours::red);
-}
-
-void Edit::setNextReadPosition (int64 newPosition)
-{
-    currentPlaybackPosition = newPosition;
-}
-
-int64 Edit::getNextReadPosition() const
-{
-    return currentPlaybackPosition;
-}
-
-int64 Edit::getTotalLength() const
-{
-    return (endTime.get() - originTime.get()) * sampleRate.get();
 }
 
 void Edit::prepareToPlay (int samplesPerBlockExpected, double sampleRate)

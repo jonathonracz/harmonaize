@@ -11,6 +11,7 @@
 #pragma once
 
 #include "hmnz_ValueTreeObject.h"
+#include "hmnz_CacheValueWrappers.h"
 
 class Edit;
 
@@ -29,6 +30,10 @@ public:
     Transport (Edit* const edit);
     ~Transport();
 
+    void setNextReadPosition (int64 newPosition) override;
+    int64 getNextReadPosition() const override;
+    int64 getTotalLength() const override;
+
 private:
     Edit* const edit;
 
@@ -43,14 +48,9 @@ private:
     MidiMessageCollector midiMessageCollector;
     MidiKeyboardState keyboardState;
 
-    // PositionableAudioSource methods
-    void setNextReadPosition (int64 newPosition) override;
-    int64 getNextReadPosition() const override;
-    int64 getTotalLength() const override;
+    // PositionableAudioSource overrides
     bool isLooping() const override { return false; }
     void setLooping (bool shouldLoop) override {}
-
-    // AudioSource methods
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
@@ -58,6 +58,10 @@ private:
     void changeListenerCallback (ChangeBroadcaster* source) override;
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
     void handleAsyncUpdate() override;
+
+    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> originTime;
+    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> endTime;
+    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> sampleRate;
 
     CachedValue<double> playPositionTime;
     CachedValue<int> playState;

@@ -11,6 +11,7 @@
 #pragma once
 
 #include "hmnz_Edit.h"
+#include "hmnz_EditView.h"
 
 class EditWindow    : public DocumentWindow
 {

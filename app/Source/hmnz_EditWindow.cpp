@@ -18,7 +18,9 @@ EditWindow::EditWindow()
 {
     setUsingNativeTitleBar (true);
     setResizeLimits(800, 600, std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
-    setContentOwned (new Edit (Edit::createSkeletonEdit()), false);
+    currentEdit = std::unique_ptr<Edit> (new Edit (Edit::createSkeletonEdit()));
+    setContentOwned (new EditView(), false);
+    static_cast<EditView*> (getContentComponent())->setEdit (currentEdit.get());
     centreWithSize (getWidth(), getHeight());
     setVisible (true);
 }
