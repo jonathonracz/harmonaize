@@ -31,12 +31,17 @@ public:
 
 private:
     Edit* const edit;
+
+    // Audio bits
     AudioSourcePlayer output;
     AudioTransportSource transportSource;
     int64 readPosition;
     std::atomic<double> desiredReadPositionTime;
     std::atomic<double> readPositionTime;
-    std::mutex callbackLock;
+
+    // MIDI bits
+    MidiMessageCollector midiMessageCollector;
+    MidiKeyboardState keyboardState;
 
     // PositionableAudioSource methods
     void setNextReadPosition (int64 newPosition) override;
@@ -56,5 +61,4 @@ private:
 
     CachedValue<double> playPositionTime;
     CachedValue<int> playState;
-    CachedValue<double> sampleRate;
 };

@@ -15,6 +15,7 @@
 #include "hmnz_MasterTack.h"
 #include "hmnz_Transport.h"
 #include "hmnz_Track.h"
+#include "hmnz_CacheValueWrappers.h"
 
 /**
     Represents an active edit (also known as a project).
@@ -39,10 +40,10 @@ public:
     void releaseResources() override;
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
 
-    CachedValue<double> originTime;
-    CachedValue<double> endTime;
+    CachedValue<SPSCAtomicWrapper<double>> originTime;
+    CachedValue<SPSCAtomicWrapper<double>> endTime;
     CachedValue<int> pulsesPerQuarterNote;
-    CachedValue<double> sampleRate;
+    CachedValue<SPSCAtomicWrapper<double>> sampleRate;
 
 private:
     UndoManager undoManager;

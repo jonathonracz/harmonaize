@@ -136,12 +136,11 @@ int64 Edit::getNextReadPosition() const
 
 int64 Edit::getTotalLength() const
 {
-    return (endTime - originTime) * sampleRate;
+    return (endTime.get() - originTime.get()) * sampleRate.get();
 }
 
 void Edit::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
-    DBG ("Edit: preparing to play");
 }
 
 void Edit::releaseResources()
@@ -150,5 +149,4 @@ void Edit::releaseResources()
 
 void Edit::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    DBG ("Edit: Getting next audio block");
 }

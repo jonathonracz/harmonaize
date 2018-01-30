@@ -19,9 +19,14 @@ Transport::Transport (Edit* const _edit)
       playPositionTime (getState(), IDs::TransportProps::PlayPositionTime, getUndoManager(), 0.0),
       playState (getState(), IDs::TransportProps::PlayState, getUndoManager(), State::stopped)
 {
-    transportSource.setSource (this, 0, nullptr, sampleRate);
+    transportSource.setSource (this, 0, nullptr, edit->sampleRate.get());
     output.setSource (&transportSource);
     HarmonaizeApplication::getDeviceManager().addAudioCallback (&output);
+
+    keyboardState.addListener (&midiMessageCollector);
+    String firstMidiInput = MidiInput::getDevices()[0];
+    if (firstMidiInput.isNotEmpty())
+        HarmonaizeApplication::getDeviceManager().addMidiInputCallback(firstMidiInput, &midiMessageCollector);
 
     transportSource.addChangeListener (this);
     getState().addListener (this);
@@ -47,7 +52,7 @@ int64 Transport::getNextReadPosition() const
 
 int64 Transport::getTotalLength() const
 {
-    return edit->getTotalLength();
+    return (edit->endTime.get() - edit->originTime.get()) * edit->sampleRate.get();
 }
 
 void Transport::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
@@ -107,7 +112,7 @@ void Transport::valueTreePropertyChanged (ValueTree& tree, const Identifier& ide
         {
             bool wasPlaying = (playState == State::playing);
             transportSource.stop();
-            transportSource.setSource (this, 0, nullptr, sampleRate);
+            transportSource.setSource (this, 0, nullptr, edit->sampleRate.get());
             if (wasPlaying)
                 transportSource.start();
         }

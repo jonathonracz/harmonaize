@@ -9,6 +9,8 @@
           file="Source/hmnz_Application.cpp"/>
     <FILE id="iDgIBJ" name="hmnz_Application.h" compile="0" resource="0"
           file="Source/hmnz_Application.h"/>
+    <FILE id="j8omJZ" name="hmnz_CacheValueWrappers.h" compile="0" resource="0"
+          file="Source/hmnz_CacheValueWrappers.h"/>
     <FILE id="GQsi7H" name="hmnz_Clip.cpp" compile="1" resource="0" file="Source/hmnz_Clip.cpp"/>
     <FILE id="XA4JeV" name="hmnz_Clip.h" compile="0" resource="0" file="Source/hmnz_Clip.h"/>
     <FILE id="NDGLkI" name="hmnz_ClipArray.cpp" compile="1" resource="0"
@@ -46,6 +48,7 @@
           file="Source/hmnz_Transport.cpp"/>
     <FILE id="AMG9hy" name="hmnz_Transport.h" compile="0" resource="0"
           file="Source/hmnz_Transport.h"/>
+    <FILE id="xkySKO" name="hmnz_Utility.h" compile="0" resource="0" file="Source/hmnz_Utility.h"/>
     <FILE id="Xv3NML" name="hmnz_ValueTreeObject.h" compile="0" resource="0"
           file="Source/hmnz_ValueTreeObject.h"/>
     <FILE id="KtYKY2" name="hmnz_ValueTreeObjectArray.h" compile="0" resource="0"
