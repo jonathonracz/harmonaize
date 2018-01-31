@@ -49,23 +49,68 @@ Transport::~Transport()
 
 void Transport::setNextReadPosition (int64 newPosition)
 {
+    HMNZ_ASSERT_IS_NOT_ON_MESSAGE_THREAD
     readPosition = newPosition;
 }
 
 int64 Transport::getNextReadPosition() const
 {
+    HMNZ_ASSERT_IS_NOT_ON_MESSAGE_THREAD
     return readPosition;
 }
 
 int64 Transport::getTotalLength() const
 {
+    HMNZ_ASSERT_IS_NOT_ON_MESSAGE_THREAD
     int64 totalLength = (endTime.get() - originTime.get()) * sampleRate.get();
     std::atomic_thread_fence (std::memory_order_acquire);
     return totalLength;
 }
 
+double Transport::getCurrentPosition() const
+{
+    HMNZ_ASSERT_IS_NOT_ON_MESSAGE_THREAD
+    return transportSource.getCurrentPosition();
+}
+
+double Transport::getLengthInSeconds() const
+{
+    HMNZ_ASSERT_IS_NOT_ON_MESSAGE_THREAD
+    return transportSource.getLengthInSeconds();
+}
+
+bool Transport::getCurrentPosition (AudioPlayHead::CurrentPositionInfo& result)
+{
+    HMNZ_ASSERT_IS_NOT_ON_MESSAGE_THREAD
+    if (!HMNZ_IS_ON_MESSAGE_THREAD)
+        return false;
+
+    return currentPositionInfo;
+}
+
+
+void Transport::transportPlay (bool shouldStartPlaying)
+{
+    HMNZ_IS_ON_MESSAGE_THREAD
+    if (shouldStartPlaying)
+        transportSource.start();
+    else
+        transportSource.stop();
+}
+
+void Transport::transportRecord (bool shouldStartRecording)
+{
+    HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
+}
+
+void Transport::transportRewind()
+{
+    HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
+}
+
 void Transport::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
+    std::atomic_thread_fence (std::memory_order_acquire);
     edit->prepareToPlay (samplesPerBlockExpected, sampleRate);
 }
 
@@ -76,8 +121,9 @@ void Transport::releaseResources()
 
 void Transport::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    readPositionTime.store (transportSource.getCurrentPosition(), std::memory_order_release);
-    triggerAsyncUpdate();
+    currentPositionInfo.bpm = edit->masterTrack->getBeatsPerMinuteAtTime (getCurrentPositionInSeconds());
+    currentPositionInfo.timeSigNumerator = 
+
     edit->getNextAudioBlock (bufferToFill);
 
     double loadedDesiredReadPositionTime = desiredReadPositionTime.load (std::memory_order_acquire);
@@ -90,6 +136,9 @@ void Transport::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
     {
         setNextReadPosition (getNextReadPosition() + bufferToFill.numSamples);
     }
+
+    readPositionTime.store (transportSource.getCurrentPosition(), std::memory_order_release);
+    triggerAsyncUpdate();
 }
 
 void Transport::changeListenerCallback (ChangeBroadcaster* source)
@@ -112,19 +161,19 @@ void Transport::valueTreePropertyChanged (ValueTree& tree, const Identifier& ide
         {
             switch (playState)
             {
-                case playing: transportSource.start(); break;
-                case stopped: transportSource.stop(); break;
+                case playing: transportPlay (true); break;
+                case stopped: transportPlay (false); break;
                 default: jassertfalse;
             }
         }
         else if (identifier == sampleRate.getPropertyID())
         {
             bool wasPlaying = (playState == State::playing);
-            transportSource.stop();
+            transportPlay (false);
             transportSource.setSource (this, 0, nullptr, sampleRate.get());
             std::atomic_thread_fence (std::memory_order_acquire);
             if (wasPlaying)
-                transportSource.start();
+                transportPlay (true);
         }
     }
 }

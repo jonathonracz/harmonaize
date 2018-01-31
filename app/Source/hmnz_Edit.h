@@ -12,7 +12,7 @@
 
 #include "hmnz_ValueTreeObject.h"
 #include "hmnz_TrackArray.h"
-#include "hmnz_MasterTack.h"
+#include "hmnz_MasterTrack.h"
 #include "hmnz_Transport.h"
 #include "hmnz_Track.h"
 #include "hmnz_CacheValueWrappers.h"
@@ -34,12 +34,11 @@ public:
     void releaseResources() override;
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
 
-    CachedValue<int> pulsesPerQuarterNote;
+    std::unique_ptr<MasterTrack> masterTrack;
+    std::unique_ptr<Transport> transport;
 
 private:
     UndoManager undoManager;
-    std::unique_ptr<MasterTrack> masterTrack;
-    std::unique_ptr<Transport> transport;
     TrackArray tracks;
     jcf::ValueTreeDebugger stateDebugger;
 

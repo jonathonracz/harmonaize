@@ -21,7 +21,6 @@ namespace IDs
     {
         DECLARE_ID (OriginTime)
         DECLARE_ID (EndTime)
-        DECLARE_ID (PulsesPerQuarterNote)
         DECLARE_ID (SampleRate)
     }
 
@@ -41,6 +40,7 @@ namespace IDs
         DECLARE_ID (BeatsPerMinute)
         DECLARE_ID (TimeSigNumerator)
         DECLARE_ID (TimeSigDenominator)
+        DECLARE_ID (PulsesPerQuarterNote)
     }
 
     DECLARE_ID (Track)

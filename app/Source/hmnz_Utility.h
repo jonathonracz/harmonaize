@@ -10,5 +10,11 @@
 
 #pragma once
 
+#define HMNZ_IS_ON_MESSAGE_THREAD \
+    MessageManager::getInstance()->currentThreadHasLockedMessageManager()
+
 #define HMNZ_ASSERT_IS_ON_MESSAGE_THREAD \
-    jassert (MessageManager::getInstance()->currentThreadHasLockedMessageManager());
+    jassert (HMNZ_IS_ON_MESSAGE_THREAD);
+
+#define HMNZ_ASSERT_IS_NOT_ON_MESSAGE_THREAD \
+    jassert (!HMNZ_IS_ON_MESSAGE_THREAD);

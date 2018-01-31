@@ -18,6 +18,7 @@ class Edit;
 class Transport : public ValueTreeObject<IDs::Transport>,
                   public ChangeListener,
                   public PositionableAudioSource,
+                  public AudioPlayHead,
                   public AsyncUpdater
 {
 public:
@@ -30,9 +31,19 @@ public:
     Transport (Edit* const edit);
     ~Transport();
 
-    void setNextReadPosition (int64 newPosition) override;
+    bool canControlTransport() override { return true; }
+
+    // Note that these should ONLY be called on the audio thread.
     int64 getNextReadPosition() const override;
     int64 getTotalLength() const override;
+    double getCurrentPosition() const;
+    double getLengthInSeconds() const;
+    bool getCurrentPosition (AudioPlayHead::CurrentPositionInfo& result) override;
+
+    // These should ONLY be called on the message thread.
+    void transportPlay (bool shouldStartPlaying) override;
+    void transportRecord (bool shouldStartRecording) override;
+    void transportRewind() override;
 
 private:
     Edit* const edit;
@@ -49,6 +60,7 @@ private:
     MidiKeyboardState keyboardState;
 
     // PositionableAudioSource overrides
+    void setNextReadPosition (int64 newPosition) override;
     bool isLooping() const override { return false; }
     void setLooping (bool shouldLoop) override {}
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
@@ -59,9 +71,17 @@ private:
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
     void handleAsyncUpdate() override;
 
+    AudioPlayHead::CurrentPositionInfo currentPositionInfo;
+
+    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> pulsesPerQuarterNote;
+
     CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> originTime;
     CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> endTime;
     CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> sampleRate;
+
+    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> beatsPerMinute;
+    CachedValue<SPSCRelaxedLoadAtomicWrapper<int>> timeSigNumerator;
+    CachedValue<SPSCRelaxedLoadAtomicWrapper<int>> timeSigDenominator;
 
     CachedValue<double> playPositionTime;
     CachedValue<int> playState;

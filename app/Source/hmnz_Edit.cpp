@@ -17,14 +17,13 @@ Edit::Edit (const ValueTree& v)
 {
     // TODO: Validate the ValueTree data model, display an error if
     // something unexpected occurs, etc...
-    pulsesPerQuarterNote.referTo (getState(), IDs::EditProps::PulsesPerQuarterNote, &undoManager, 960);
 
-    masterTrack = std::unique_ptr<MasterTrack> (new MasterTrack (v.getChildWithName (IDs::MasterTrack), &undoManager));
+    masterTrack = std::unique_ptr<MasterTrack> (new MasterTrack (this));
     transport = std::unique_ptr<Transport> (new Transport (this));
 
     getState().addListener (this);
 
-    //stateDebugger.setSource (getState());
+    stateDebugger.setSource (getState());
 }
 
 Edit::~Edit()
@@ -40,7 +39,6 @@ ValueTree Edit::createSkeletonEdit()
     ValueTree edit (IDs::Edit);
     edit.setProperty (IDs::EditProps::OriginTime, 0.0f, nullptr);
     edit.setProperty (IDs::EditProps::EndTime, editLength, nullptr);
-    edit.setProperty (IDs::EditProps::PulsesPerQuarterNote, 960, nullptr);
     edit.setProperty (IDs::EditProps::SampleRate, 44100.0, nullptr);
 
     {
@@ -57,6 +55,7 @@ ValueTree Edit::createSkeletonEdit()
         masterTrack.setProperty (IDs::MasterTrackProps::BeatsPerMinute, bpm, nullptr);
         masterTrack.setProperty (IDs::MasterTrackProps::TimeSigNumerator, 4, nullptr);
         masterTrack.setProperty (IDs::MasterTrackProps::TimeSigDenominator, 4, nullptr);
+        masterTrack.setProperty (IDs::MasterTrackProps::PulsesPerQuarterNote, 960, nullptr);
         edit.addChild (masterTrack, -1, nullptr);
     }
 
@@ -113,12 +112,15 @@ void Edit::valueTreePropertyChanged (ValueTree& tree, const Identifier& id)
 
 void Edit::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
+    masterTrack->prepareToPlay (samplesPerBlockExpected, sampleRate);
 }
 
 void Edit::releaseResources()
 {
+    masterTrack->releaseResources();
 }
 
 void Edit::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
+    masterTrack->getNextAudioBlock (bufferToFill);
 }

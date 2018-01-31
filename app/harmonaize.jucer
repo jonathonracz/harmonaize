@@ -27,8 +27,10 @@
       <FILE id="YdnPis" name="hmnz_Edit.h" compile="0" resource="0" file="Source/hmnz_Edit.h"/>
       <FILE id="InvRfR" name="hmnz_Identifiers.h" compile="0" resource="0"
             file="Source/hmnz_Identifiers.h"/>
-      <FILE id="qVsK1W" name="hmnz_MasterTack.h" compile="0" resource="0"
-            file="Source/hmnz_MasterTack.h"/>
+      <FILE id="qVsK1W" name="hmnz_MasterTrack.h" compile="0" resource="0"
+            file="Source/hmnz_MasterTrack.h"/>
+      <FILE id="P5Kohq" name="hmnz_MasterTrack.cpp" compile="1" resource="0"
+            file="Source/hmnz_MasterTrack.cpp"/>
       <FILE id="n1nyh4" name="hmnz_Note.cpp" compile="1" resource="0" file="Source/hmnz_Note.cpp"/>
       <FILE id="Bytcg2" name="hmnz_Note.h" compile="0" resource="0" file="Source/hmnz_Note.h"/>
       <FILE id="cDrf3H" name="hmnz_NoteArray.cpp" compile="1" resource="0"
