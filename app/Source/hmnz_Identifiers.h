@@ -43,6 +43,8 @@ namespace IDs
         DECLARE_ID (PulsesPerQuarterNote)
     }
 
+    DECLARE_ID (Tempo)
+
     DECLARE_ID (Track)
     namespace TrackProps
     {
@@ -76,6 +78,15 @@ namespace IDs
         DECLARE_ID (Length)
         DECLARE_ID (Velocity)
         DECLARE_ID (Value)
+    }
+
+    DECLARE_ID (Automation)
+    DECLARE_ID (AutomationMarker)
+    namespace AutomationMarkerProps
+    {
+        DECLARE_ID (Beat)
+        DECLARE_ID (Value)
+        DECLARE_ID (Type)
     }
 
 #undef DECLARE_ID

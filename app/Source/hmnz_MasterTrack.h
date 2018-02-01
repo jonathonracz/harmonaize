@@ -12,6 +12,7 @@
 
 #include "hmnz_ValueTreeObject.h"
 #include "hmnz_CacheValueWrappers.h"
+#include "hmnz_Tempo.h"
 
 class Edit;
 

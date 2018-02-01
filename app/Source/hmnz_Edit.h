@@ -16,6 +16,7 @@
 #include "hmnz_Transport.h"
 #include "hmnz_Track.h"
 #include "hmnz_CacheValueWrappers.h"
+#include "hmnz_AutomationMarker.h"
 
 /**
     Represents an active edit (also known as a project).

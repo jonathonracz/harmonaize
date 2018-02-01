@@ -15,6 +15,13 @@
       <FILE id="uFs8Cd" name="hmnz_EditView.h" compile="0" resource="0" file="Source/hmnz_EditView.h"/>
     </GROUP>
     <GROUP id="{186A05D2-465A-EAF5-224F-706A2514D5F8}" name="Model">
+      <FILE id="lvaPMG" name="hmnz_Tempo.h" compile="0" resource="0" file="Source/hmnz_Tempo.h"/>
+      <FILE id="uGFuW0" name="hmnz_AutomationMarkerArray.h" compile="0" resource="0"
+            file="Source/hmnz_AutomationMarkerArray.h"/>
+      <FILE id="FEJaCc" name="hmnz_Automation.h" compile="0" resource="0"
+            file="Source/hmnz_Automation.h"/>
+      <FILE id="BO2kwJ" name="hmnz_AutomationMarker.h" compile="0" resource="0"
+            file="Source/hmnz_AutomationMarker.h"/>
       <FILE id="j8omJZ" name="hmnz_CacheValueWrappers.h" compile="0" resource="0"
             file="Source/hmnz_CacheValueWrappers.h"/>
       <FILE id="GQsi7H" name="hmnz_Clip.cpp" compile="1" resource="0" file="Source/hmnz_Clip.cpp"/>
