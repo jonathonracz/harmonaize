@@ -12,6 +12,8 @@
 
 HarmonaizeApplication::HarmonaizeApplication()
 {
+    unitTestRunner.runAllTests();
+
     // TODO: Hardcoded yuckiness here
     audioDeviceManager.initialiseWithDefaultDevices (0, 2);
 }

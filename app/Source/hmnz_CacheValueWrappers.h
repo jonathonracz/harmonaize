@@ -117,3 +117,55 @@ struct SPSCRelaxedLoadAtomicWrapper
 
     std::atomic<Type> value { Type() };
 };
+
+/**
+    Doesn't actually constrain.
+*/
+template<typename Type>
+struct DefaultConstrainer
+{
+    static Type constrain (const Type& value)
+    {
+        return value;
+    }
+};
+
+template<typename Type, class Constrainer = DefaultConstrainer<Type>>
+struct ConstrainerWrapper
+{
+    ConstrainerWrapper() = default;
+
+    template<typename OtherType>
+    ConstrainerWrapper (const OtherType& other)
+    {
+        value = Constrainer::constrain (other);
+    }
+
+    ConstrainerWrapper& operator= (const ConstrainerWrapper& other) noexcept
+    {
+        value = Constrainer::constrain (other.value);
+        return *this;
+    }
+
+    bool operator== (const ConstrainerWrapper& other) const noexcept
+    {
+        return value == other.value;
+    }
+
+    bool operator!= (const ConstrainerWrapper& other) const noexcept
+    {
+        return value != other.value;
+    }
+
+    operator var() const noexcept
+    {
+        return Constrainer::constrain (value);
+    }
+
+    operator Type() const noexcept
+    {
+        return Constrainer::constrain (value);
+    }
+
+    Type value = Type();
+};

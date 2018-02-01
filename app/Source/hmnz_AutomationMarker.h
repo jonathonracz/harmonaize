@@ -15,6 +15,8 @@
 
 /**
     Represents a single marker in an automation lane's beat map.
+
+    This isn't intended to be used anywhere outside an Automation object.
 */
 template<typename ValueType>
 class AutomationMarker  : public ValueTreeObject<IDs::AutomationMarker>
@@ -24,15 +26,15 @@ public:
     {
         origin,
         linear,
-        exponential,
         step
     };
 
     AutomationMarker (const ValueTree& v, UndoManager* um)
         : ValueTreeObject (v, um),
-          beat (getState(), IDs::AutomationMarkerProps::Beat, getUndoManager()),
-          value (getState(), IDs::AutomationMarkerProps::Value, getUndoManager()),
-          type (getState(), IDs::AutomationMarkerProps::Type, getUndoManager())
+          // Due to sibling constraints and other factors, undo is handled by the owner Automation object.
+          beat (getState(), IDs::AutomationMarkerProps::Beat, nullptr),
+          value (getState(), IDs::AutomationMarkerProps::Value, nullptr),
+          type (getState(), IDs::AutomationMarkerProps::Type, nullptr)
     {
         static_assert(std::is_arithmetic<ValueType>::value, "Must be arithmetic");
         jassert (v.getType() == IDs::AutomationMarker);
@@ -41,9 +43,10 @@ public:
     static ValueTree createDefaultState()
     {
         ValueTree ret (identifier);
-        ret[IDs::AutomationMarkerProps::Beat] = 0.0;
-        ret[IDs::AutomationMarkerProps::Value] = 0.0;
-        ret[IDs::AutomationMarkerProps::Type] = Type::origin;
+        ret.setProperty (IDs::AutomationMarkerProps::Beat, std::numeric_limits<double>::min(), nullptr);
+        ret.setProperty (IDs::AutomationMarkerProps::Value, ValueType(), nullptr);
+        ret.setProperty (IDs::AutomationMarkerProps::Type, Type::origin, nullptr);
+        return ret;
     }
 
     CachedValue<SPSCAtomicWrapper<double>> beat;

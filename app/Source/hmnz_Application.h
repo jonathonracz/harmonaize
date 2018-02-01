@@ -35,5 +35,6 @@ public:
     std::unique_ptr<EditWindow> editWindow;
 
 private:
+    UnitTestRunner unitTestRunner;
     AudioDeviceManager audioDeviceManager;
 };

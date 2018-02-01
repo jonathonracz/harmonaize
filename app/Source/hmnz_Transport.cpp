@@ -85,13 +85,14 @@ bool Transport::getCurrentPosition (AudioPlayHead::CurrentPositionInfo& result)
     if (!HMNZ_IS_ON_MESSAGE_THREAD)
         return false;
 
-    return currentPositionInfo;
+    result = currentPositionInfo;
+    return true;
 }
 
 
 void Transport::transportPlay (bool shouldStartPlaying)
 {
-    HMNZ_IS_ON_MESSAGE_THREAD
+    HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
     if (shouldStartPlaying)
         transportSource.start();
     else
@@ -121,8 +122,7 @@ void Transport::releaseResources()
 
 void Transport::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    currentPositionInfo.bpm = edit->masterTrack->getBeatsPerMinuteAtTime (getCurrentPositionInSeconds());
-    currentPositionInfo.timeSigNumerator = 
+    //currentPositionInfo.bpm = edit->masterTrack->getBeatsPerMinuteAtTime (getCurrentPositionInSeconds());
 
     edit->getNextAudioBlock (bufferToFill);
 

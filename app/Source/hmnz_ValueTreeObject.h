@@ -34,6 +34,12 @@ public:
         return undoManager;
     }
 
+    void beginNewTransaction (const String& actionName = String())
+    {
+        if (undoManager)
+            undoManager->beginNewTransaction (actionName);
+    }
+
     static constexpr const Identifier& identifier = identifierType;
 
 protected:
