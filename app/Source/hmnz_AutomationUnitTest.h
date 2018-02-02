@@ -22,23 +22,63 @@ public:
 
     void runTest() override
     {
+        beginTest ("Main automation test");
+
         ValueTree defaultAutomation = Automation<double>::createDefaultState();
         Automation<double> automation (defaultAutomation, nullptr);
 
-        ValueTree newMarker1 = AutomationMarker<double>::createDefaultState();
-        newMarker1.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::linear, nullptr);
-        newMarker1.setProperty (IDs::AutomationMarkerProps::Value, 5.0f, nullptr);
-        newMarker1.setProperty (IDs::AutomationMarkerProps::Beat, 4.0f, nullptr);
+        ValueTree newMarker = AutomationMarker<double>::createDefaultState();
+        newMarker.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::linear, nullptr);
+        newMarker.setProperty (IDs::AutomationMarkerProps::Value, 5.0, nullptr);
+        newMarker.setProperty (IDs::AutomationMarkerProps::Beat, 4.0, nullptr);
+        automation.addMarker (newMarker);
 
-        automation.addMarker (newMarker1);
+        expect (automation.getValueAtBeat (2.0) == 5.0);
+        expect (automation.getValueAtBeat (6.0) == 5.0);
 
-        ValueTree newMarker2 = AutomationMarker<double>::createDefaultState();
-        newMarker2.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::step, nullptr);
-        newMarker2.setProperty (IDs::AutomationMarkerProps::Value, 4.0f, nullptr);
-        newMarker2.setProperty (IDs::AutomationMarkerProps::Beat, 2.0f, nullptr);
+        newMarker = AutomationMarker<double>::createDefaultState();
+        newMarker.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::step, nullptr);
+        newMarker.setProperty (IDs::AutomationMarkerProps::Value, 4.0, nullptr);
+        newMarker.setProperty (IDs::AutomationMarkerProps::Beat, 2.0, nullptr);
+        automation.addMarker (newMarker);
 
-        automation.addMarker (newMarker2);
+        expect (automation.getValueAtBeat (1.0) == 4.0);
+        expect (automation.getValueAtBeat (3.0) == 4.0);
+        expect (automation.getValueAtBeat (4.0) == 5.0);
+        expect (automation.getValueAtBeat (5.0) == 5.0);
 
-        //automation.
+        newMarker = AutomationMarker<double>::createDefaultState();
+        newMarker.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::linear, nullptr);
+        newMarker.setProperty (IDs::AutomationMarkerProps::Value, 3.0, nullptr);
+        newMarker.setProperty (IDs::AutomationMarkerProps::Beat, 3.0, nullptr);
+        automation.addMarker (newMarker);
+
+        expect (automation.getValueAtBeat (1.0) == 4.0);
+        expect (automation.getValueAtBeat (2.0) == 4.0);
+        expect (automation.getValueAtBeat (2.5) == 3.5);
+        expect (automation.getValueAtBeat (3.0) == 3.0);
+        expect (automation.getValueAtBeat (3.5) == 3.0);
+        expect (automation.getValueAtBeat (4.0) == 5.0);
+        expect (automation.getValueAtBeat (6.0) == 5.0);
+
+        automation.removeMarker (0);
+
+        expect (automation.getValueAtBeat (2.0) == 3.0);
+        expect (automation.getValueAtBeat (3.0) == 3.0);
+        expect (automation.getValueAtBeat (3.5) == 3.0);
+        expect (automation.getValueAtBeat (4.0) == 5.0);
+        expect (automation.getValueAtBeat (6.0) == 5.0);
+
+        automation.removeMarker (1);
+
+        expect (automation.getValueAtBeat (2.0) == 3.0);
+        expect (automation.getValueAtBeat (3.0) == 3.0);
+        expect (automation.getValueAtBeat (4.0) == 3.0);
+
+        automation.removeMarker (0);
+
+        expect (automation.getValueAtBeat (2.0) == 3.0);
+        expect (automation.getValueAtBeat (3.0) == 3.0);
+        expect (automation.getValueAtBeat (4.0) == 3.0);
     }
 };

@@ -15,16 +15,16 @@
 namespace jdr
 {
 
-struct ValueTreeIterator
+struct ValueTreeForwardIterator
 {
-    static ValueTreeIterator begin (const ValueTree& v) noexcept
+    static ValueTreeForwardIterator begin (const ValueTree& v) noexcept
     {
-        return ValueTreeIterator (v, false);
+        return ValueTreeForwardIterator (v, false);
     }
 
-    static ValueTreeIterator end (const ValueTree& v) noexcept
+    static ValueTreeForwardIterator end (const ValueTree& v) noexcept
     {
-        return ValueTreeIterator (v, true);
+        return ValueTreeForwardIterator (v, true);
     }
 
     typedef ValueTree value_type;
@@ -33,13 +33,13 @@ struct ValueTreeIterator
     typedef ValueTree* pointer;
     typedef std::forward_iterator_tag iterator_category;
 
-    ValueTreeIterator& operator++() noexcept
+    ValueTreeForwardIterator& operator++() noexcept
     {
         ++internal;
         return *this;
     }
 
-    bool operator!= (const ValueTreeIterator& other) const noexcept
+    bool operator!= (const ValueTreeForwardIterator& other) const noexcept
     {
         return internal != other.internal;
     }
@@ -52,7 +52,7 @@ struct ValueTreeIterator
 private:
     ValueTree::Iterator internal;
 
-    ValueTreeIterator (const ValueTree& v, bool isEnd) noexcept
+    ValueTreeForwardIterator (const ValueTree& v, bool isEnd) noexcept
         : internal (isEnd ? v.end() : v.begin())
     {
     }

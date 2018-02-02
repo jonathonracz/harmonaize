@@ -46,44 +46,39 @@ public:
 
         beginNewTransaction ("Add automation marker");
         double beat = v[IDs::AutomationMarkerProps::Beat];
-        ValueTree markerBefore;
-        ValueTree markerAfter;
+        ValueTree markerBefore = markerBeforeBeat (beat);
+        ValueTree markerAfter = markerAfterBeat (beat);
 
+        if (double(markerBefore[IDs::AutomationMarkerProps::Beat]) == std::numeric_limits<double>::min())
         {
-            auto lessThan = [](ValueTree first, double second) -> bool {
-                return double(first[IDs::AutomationMarkerProps::Beat]) < second;
-            };
-            markerBefore = *std::lower_bound (jdr::ValueTreeIterator::begin (getState()), jdr::ValueTreeIterator::end (getState()), beat, lessThan);
+            markerBefore.setProperty (IDs::AutomationMarkerProps::Beat, beat, getUndoManager());
+            markerBefore.setProperty (IDs::AutomationMarkerProps::Value, v[IDs::AutomationMarkerProps::Value], getUndoManager());
         }
-
-        {
-            auto lessThan = [](double first, ValueTree second) -> bool {
-                return first < double(second[IDs::AutomationMarkerProps::Beat]);
-            };
-            markerAfter = *std::upper_bound (jdr::ValueTreeIterator::begin (getState()), jdr::ValueTreeIterator::end (getState()), beat, lessThan);
-        }
-
-        int indexOfBefore = getState().indexOf (markerBefore);
-        int indexOfAfter = getState().indexOf (markerAfter);
-
-        int insertionIndex;
-        if (indexOfBefore < 0)
-            insertionIndex = 0;
         else
-            insertionIndex = indexOfAfter;
-
-
-        if (indexOfBefore < 0)
         {
-            getState().setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<ValueType>::Type::origin, nullptr);
-            if (indexOfAfter >= 0)
+            int indexOfBefore = getState().indexOf (markerBefore);
+            int indexOfAfter = getState().indexOf (markerAfter);
+
+            int insertionIndex;
+            if (indexOfBefore < 0)
+                insertionIndex = 0;
+            else
+                insertionIndex = indexOfAfter;
+
+            if (indexOfBefore < 0)
             {
-                jassert (int (markerAfter[IDs::AutomationMarkerProps::Type]) == AutomationMarker<ValueType>::Type::origin);
-                markerAfter.setProperty(IDs::AutomationMarkerProps::Type, AutomationMarker<ValueType>::Type::origin, nullptr);
+                int originalAutomationType = v[IDs::AutomationMarkerProps::Type];
+                v.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<ValueType>::Type::origin, nullptr);
+                if (indexOfAfter >= 0)
+                {
+                    jassert (int (markerAfter[IDs::AutomationMarkerProps::Type]) == AutomationMarker<ValueType>::Type::origin);
+                    markerAfter.setProperty(IDs::AutomationMarkerProps::Type, originalAutomationType, nullptr);
+                }
             }
+
+            getState().addChild (v, insertionIndex, getUndoManager());
         }
 
-        getState().addChild (v, insertionIndex, getUndoManager());
         validateMarkers();
     }
 
@@ -105,13 +100,60 @@ public:
         markerChangedViaMethods = true;
     #endif
 
-        jassert (index >=0 && index < getState().getNumChildren());
+        ValueTree childToRemove = getState().getChild (index);
+        jassert (childToRemove.isValid());
         beginNewTransaction ("Remove automation marker");
-        getState().removeChild (index, getUndoManager());
-        if (index == 0 && getState().getNumChildren() > 0)
-            getState().getChild (index).setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<ValueType>::Type::origin, getUndoManager());
+        if (getState().getNumChildren() == 1)
+        {
+            childToRemove.setProperty (IDs::AutomationMarkerProps::Beat, std::numeric_limits<double>::min(), getUndoManager());
+        }
+        else
+        {
+            getState().removeChild (index, getUndoManager());
+            if (index == 0)
+                getState().getChild (index).setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<ValueType>::Type::origin, getUndoManager());
+        }
 
         validateMarkers();
+    }
+
+    ValueType getValueAtBeat (double beat)
+    {
+        ValueTree markerBefore = markerBeforeBeat (beat);
+        ValueTree markerAfter = markerAfterBeat (beat);
+
+        jassert (markerBefore.isValid() || markerAfter.isValid());
+
+        if (!markerBefore.isValid())
+        {
+            return markerAfter[IDs::AutomationMarkerProps::Value];
+        }
+        else if (!markerAfter.isValid())
+        {
+            return markerBefore[IDs::AutomationMarkerProps::Value];
+        }
+
+        int afterType = markerAfter[IDs::AutomationMarkerProps::Type];
+        double beforeBeat = markerBefore[IDs::AutomationMarkerProps::Beat];
+        double afterBeat = markerAfter[IDs::AutomationMarkerProps::Beat];
+        ValueType beforeValue = markerBefore[IDs::AutomationMarkerProps::Value];
+        ValueType afterValue = markerAfter[IDs::AutomationMarkerProps::Value];
+        switch (afterType)
+        {
+            case AutomationMarker<ValueType>::Type::linear:
+            {
+                double beatDelta = (beat - beforeBeat) / (afterBeat - beforeBeat);
+                return beforeValue + ((afterValue - beforeValue) * beatDelta);
+            }
+            case AutomationMarker<ValueType>::Type::step:
+            {
+                if (beat < afterBeat)
+                    return beforeValue;
+                else
+                    return afterValue;
+            }
+            default: jassertfalse;
+        }
     }
 
     AutomationMarkerArray<ValueType> markers;
@@ -127,6 +169,37 @@ private:
 #if JUCE_DEBUG
     bool markerChangedViaMethods = false;
 #endif
+
+    ValueTree markerBeforeBeat (double beat)
+    {
+        ValueTree markerAfter = markerAfterBeat (beat);
+        if (!markerAfter.isValid())
+        {
+            int numChildren = getState().getNumChildren();
+            if (numChildren > 0)
+                return getState().getChild (numChildren - 1);
+
+            return ValueTree();
+        }
+
+        int indexOfMarkerAfter = getState().indexOf (markerAfter);
+        jassert (indexOfMarkerAfter >= 0);
+        if (indexOfMarkerAfter == 0)
+            return ValueTree();
+
+        return getState().getChild (indexOfMarkerAfter - 1);
+    }
+
+    ValueTree markerAfterBeat (double beat)
+    {
+        auto lessThan = [](ValueTree first, double second) -> bool {
+            return double(first[IDs::AutomationMarkerProps::Beat]) < second;
+        };
+        jdr::ValueTreeForwardIterator begin = jdr::ValueTreeForwardIterator::begin (getState());
+        jdr::ValueTreeForwardIterator end = jdr::ValueTreeForwardIterator::end (getState());
+        jdr::ValueTreeForwardIterator result = std::lower_bound (begin, end, beat, lessThan);
+        return (result != end) ? *result : ValueTree();
+    }
 
     void valueTreeChildAdded (ValueTree& parent, ValueTree& addedChild) override
     {
@@ -188,11 +261,12 @@ private:
     void validateMarkers()
     {
         double currentBeat = std::numeric_limits<double>::min();
+        jassert (getState().getNumChildren() > 0);
         for (int i = 0; i < getState().getNumChildren(); ++i)
         {
             ValueTree child = getState().getChild (i);
             jassert (child.getType() == IDs::AutomationMarker);
-            jassert (currentBeat < double(child[IDs::AutomationMarkerProps::Beat]));
+            jassert (currentBeat <= double(child[IDs::AutomationMarkerProps::Beat]));
             currentBeat = child [IDs::AutomationMarkerProps::Beat];
             if (i == 0)
                 jassert (int (child[IDs::AutomationMarkerProps::Type]) == AutomationMarker<ValueType>::Type::origin);
