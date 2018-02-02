@@ -15,6 +15,10 @@
       <FILE id="uFs8Cd" name="hmnz_EditView.h" compile="0" resource="0" file="Source/hmnz_EditView.h"/>
     </GROUP>
     <GROUP id="{186A05D2-465A-EAF5-224F-706A2514D5F8}" name="Model">
+      <FILE id="AtR89Z" name="hmnz_ValueTreeIterator.h" compile="0" resource="0"
+            file="Source/hmnz_ValueTreeIterator.h"/>
+      <FILE id="ap8Exc" name="hmnz_AutomationUnitTest.cpp" compile="1" resource="0"
+            file="Source/hmnz_AutomationUnitTest.cpp"/>
       <FILE id="kG4SKm" name="hmnz_AutomationUnitTest.h" compile="0" resource="0"
             file="Source/hmnz_AutomationUnitTest.h"/>
       <FILE id="lvaPMG" name="hmnz_Tempo.h" compile="0" resource="0" file="Source/hmnz_Tempo.h"/>

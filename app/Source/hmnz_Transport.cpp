@@ -49,7 +49,6 @@ Transport::~Transport()
 
 void Transport::setNextReadPosition (int64 newPosition)
 {
-    HMNZ_ASSERT_IS_NOT_ON_MESSAGE_THREAD
     readPosition = newPosition;
 }
 

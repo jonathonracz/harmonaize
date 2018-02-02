@@ -20,7 +20,11 @@ template<typename ValueType>
 class AutomationMarkerArray :   public ValueTreeObjectArray<AutomationMarker<ValueType>>
 {
 public:
-    AutomationMarkerArray (const ValueTree& parentTree, UndoManager* um);
+    AutomationMarkerArray (const ValueTree& parentTree, UndoManager* um)
+        : ValueTreeObjectArray<AutomationMarker<ValueType>> (parentTree, um)
+    {
+        ValueTreeObjectArray<AutomationMarker<ValueType>>::addObjects();
+    }
 
 private:
     AutomationMarker<ValueType>* createNewObject (const ValueTree& v, UndoManager* um) override

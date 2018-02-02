@@ -11,10 +11,15 @@
 #include "hmnz_Edit.h"
 #include "hmnz_Application.h"
 #include "hmnz_Transport.h"
+#include "hmnz_Utility.h"
 
 Edit::Edit (const ValueTree& v)
-    : ValueTreeObject<IDs::Edit> (v, &undoManager), tracks (this)
+    : ValueTreeObject<IDs::Edit> (v, &undoManager),
+      tracks (this),
+      sampleRate (getState(), IDs::EditProps::SampleRate, getUndoManager(), 44100.0)
 {
+    Utility::writeBackDefaultValueIfNotThere (sampleRate);
+
     // TODO: Validate the ValueTree data model, display an error if
     // something unexpected occurs, etc...
 
@@ -39,7 +44,7 @@ ValueTree Edit::createSkeletonEdit()
     ValueTree edit (IDs::Edit);
     edit.setProperty (IDs::EditProps::OriginTime, 0.0f, nullptr);
     edit.setProperty (IDs::EditProps::EndTime, editLength, nullptr);
-    edit.setProperty (IDs::EditProps::SampleRate, 44100.0, nullptr);
+    //edit.setProperty (IDs::EditProps::SampleRate, 44100.0, nullptr);
 
     {
         ValueTree transport (IDs::Transport);

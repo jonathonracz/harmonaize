@@ -43,6 +43,8 @@ private:
     TrackArray tracks;
     jcf::ValueTreeDebugger stateDebugger;
 
+    CachedValue<double> sampleRate;
+
     // ValueTree methods
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
 

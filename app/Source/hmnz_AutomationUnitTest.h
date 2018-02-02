@@ -14,6 +14,7 @@
 
 class AutomationUnitTest    : public UnitTest
 {
+public:
     AutomationUnitTest()
         : UnitTest ("Automation")
     {
@@ -21,24 +22,23 @@ class AutomationUnitTest    : public UnitTest
 
     void runTest() override
     {
-        Automation<double> automation;
+        ValueTree defaultAutomation = Automation<double>::createDefaultState();
+        Automation<double> automation (defaultAutomation, nullptr);
 
         ValueTree newMarker1 = AutomationMarker<double>::createDefaultState();
-        newMarker.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::linear);
-        newMarker.setProperty (IDs::AutomationMarkerProps::Value, 5.0f, nullptr);
-        newMarker.setProperty (IDs::AutomationMarkerProps::Beat, 4.0f, nullptr);
+        newMarker1.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::linear, nullptr);
+        newMarker1.setProperty (IDs::AutomationMarkerProps::Value, 5.0f, nullptr);
+        newMarker1.setProperty (IDs::AutomationMarkerProps::Beat, 4.0f, nullptr);
 
         automation.addMarker (newMarker1);
 
         ValueTree newMarker2 = AutomationMarker<double>::createDefaultState();
-        newMarker.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::exponential);
-        newMarker.setProperty (IDs::AutomationMarkerProps::Value, 4.0f, nullptr);
-        newMarker.setProperty (IDs::AutomationMarkerProps::Beat, 2.0f, nullptr);
+        newMarker2.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::step, nullptr);
+        newMarker2.setProperty (IDs::AutomationMarkerProps::Value, 4.0f, nullptr);
+        newMarker2.setProperty (IDs::AutomationMarkerProps::Beat, 2.0f, nullptr);
 
         automation.addMarker (newMarker2);
 
         //automation.
     }
 };
-
-static AutomationUnitTest automationUnitTest;

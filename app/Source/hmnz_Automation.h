@@ -11,12 +11,13 @@
 #pragma once
 
 #include "hmnz_AutomationMarkerArray.h"
+#include "hmnz_ValueTreeIterator.h"
 
 /**
     Represents an Automation lane containing a collection of beat mapped
     markers.
 */
-template<typename ValueType, class Constrainer = DefaultConstrainer<ValueType>>
+template<typename ValueType>
 class Automation    : public ValueTreeObject<IDs::Automation>
 {
 public:
@@ -37,7 +38,7 @@ public:
         addMarker (marker.getState());
     }
 
-    void addMarker (const ValueTree& v)
+    void addMarker (ValueTree v)
     {
     #if JUCE_DEBUG
         markerChangedViaMethods = true;
@@ -45,14 +46,25 @@ public:
 
         beginNewTransaction ("Add automation marker");
         double beat = v[IDs::AutomationMarkerProps::Beat];
-        auto lessThan = [&](ValueTree first, ValueTree second) -> bool {
-            return double(first[IDs::AutomationMarkerProps::Beat]) < double(second[IDs::AutomationMarkerProps::Beat]);
-        };
-        ValueTree markerBefore = *std::lower_bound (getState().begin(), getState().end(), beat, lessThan);
-        ValueTree markerAfter = *std::upper_bound (getState().begin(), getState().end(), beat, lessThan);
+        ValueTree markerBefore;
+        ValueTree markerAfter;
 
-        int indexOfBefore = getState().getIndexOfChild (markerBefore);
-        int indexOfAfter = getState().getIndexOfChild (markerAfter);
+        {
+            auto lessThan = [](ValueTree first, double second) -> bool {
+                return double(first[IDs::AutomationMarkerProps::Beat]) < second;
+            };
+            markerBefore = *std::lower_bound (jdr::ValueTreeIterator::begin (getState()), jdr::ValueTreeIterator::end (getState()), beat, lessThan);
+        }
+
+        {
+            auto lessThan = [](double first, ValueTree second) -> bool {
+                return first < double(second[IDs::AutomationMarkerProps::Beat]);
+            };
+            markerAfter = *std::upper_bound (jdr::ValueTreeIterator::begin (getState()), jdr::ValueTreeIterator::end (getState()), beat, lessThan);
+        }
+
+        int indexOfBefore = getState().indexOf (markerBefore);
+        int indexOfAfter = getState().indexOf (markerAfter);
 
         int insertionIndex;
         if (indexOfBefore < 0)
@@ -63,10 +75,10 @@ public:
 
         if (indexOfBefore < 0)
         {
-            v.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<ValueType>::Type::origin, nullptr);
+            getState().setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<ValueType>::Type::origin, nullptr);
             if (indexOfAfter >= 0)
             {
-                jassert (markerAfter[IDs::AutomationMarkerProps::Type] == AutomationMarker<ValueType>::Type::origin);
+                jassert (int (markerAfter[IDs::AutomationMarkerProps::Type]) == AutomationMarker<ValueType>::Type::origin);
                 markerAfter.setProperty(IDs::AutomationMarkerProps::Type, AutomationMarker<ValueType>::Type::origin, nullptr);
             }
         }
@@ -169,8 +181,7 @@ private:
         else if (property == IDs::AutomationMarkerProps::Value)
         {
             beginNewTransaction ("Automation marker value change");
-            ValueType constrainedValue = Constrainer::constrain (treeChanged[property]);
-            treeChanged.setProperty (property, constrainedValue, getUndoManager());
+            treeChanged.setProperty (property, treeChanged[property], getUndoManager());
         }
     }
 
