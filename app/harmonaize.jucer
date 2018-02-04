@@ -15,6 +15,14 @@
             file="Source/hmnz_EditWindow.h"/>
     </GROUP>
     <GROUP id="{186A05D2-465A-EAF5-224F-706A2514D5F8}" name="Model">
+      <GROUP id="{113B8590-9FBD-441F-5100-C595C8B99F47}" name="Tempo">
+        <FILE id="lvaPMG" name="hmnz_Tempo.h" compile="0" resource="0" file="Source/hmnz_Tempo.h"/>
+        <FILE id="gcHKse" name="hmnz_TempoFunction.h" compile="0" resource="0"
+              file="Source/hmnz_TempoFunction.h"/>
+        <FILE id="nH42H5" name="hmnz_TempoMap.h" compile="0" resource="0" file="Source/hmnz_TempoMap.h"/>
+        <FILE id="lwOzID" name="hmnz_TempoMapInterval.h" compile="0" resource="0"
+              file="Source/hmnz_TempoMapInterval.h"/>
+      </GROUP>
       <GROUP id="{0AD15C76-B24F-7CDD-B838-AD65C83CF3F8}" name="Automation">
         <FILE id="FEJaCc" name="hmnz_Automation.h" compile="0" resource="0"
               file="Source/hmnz_Automation.h"/>
@@ -60,7 +68,6 @@
             file="Source/hmnz_NoteArray.cpp"/>
       <FILE id="MPSSVC" name="hmnz_NoteArray.h" compile="0" resource="0"
             file="Source/hmnz_NoteArray.h"/>
-      <FILE id="lvaPMG" name="hmnz_Tempo.h" compile="0" resource="0" file="Source/hmnz_Tempo.h"/>
       <FILE id="Xc3fiA" name="hmnz_Track.cpp" compile="1" resource="0" file="Source/hmnz_Track.cpp"/>
       <FILE id="eKmbq8" name="hmnz_Track.h" compile="0" resource="0" file="Source/hmnz_Track.h"/>
       <FILE id="Xh38vG" name="hmnz_TrackArray.cpp" compile="1" resource="0"

@@ -45,6 +45,19 @@ namespace IDs
 
     DECLARE_ID (Tempo)
 
+    DECLARE_ID (TempoMap)
+    namespace TempoMapProps
+    {
+        DECLARE_ID (TotalTime)
+    }
+
+    DECLARE_ID (TempoMapInterval)
+    namespace TempoMapIntervalProps
+    {
+        DECLARE_ID (EndTime)
+        DECLARE_ID (EndPeriod)
+    }
+
     DECLARE_ID (Track)
     namespace TrackProps
     {

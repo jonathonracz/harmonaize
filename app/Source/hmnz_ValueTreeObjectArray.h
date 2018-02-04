@@ -14,7 +14,7 @@
 
 /**
     Generic list of ValueTree-backed objects. Originally based on code by David
-    Rowland (drowaudio)
+    Rowland (drowaudio).
 */
 template<class ObjectType, class CriticalSectionType = DummyCriticalSection>
 class ValueTreeObjectArray   : public ValueTree::Listener

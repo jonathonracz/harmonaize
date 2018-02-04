@@ -138,22 +138,32 @@ public:
         double afterBeat = markerAfter[IDs::AutomationMarkerProps::Beat];
         ValueType beforeValue = markerBefore[IDs::AutomationMarkerProps::Value];
         ValueType afterValue = markerAfter[IDs::AutomationMarkerProps::Value];
+        ValueType retValue;
         switch (afterType)
         {
             case AutomationMarker<ValueType>::Type::linear:
             {
-                double beatDelta = (beat - beforeBeat) / (afterBeat - beforeBeat);
-                return beforeValue + ((afterValue - beforeValue) * beatDelta);
+                if (afterBeat == beforeBeat) // We'd get division by zero
+                {
+                    retValue = afterValue;
+                }
+                else
+                {
+                    double beatDelta = (beat - beforeBeat) / (afterBeat - beforeBeat);
+                    retValue = beforeValue + ((afterValue - beforeValue) * beatDelta);
+                }
             }
             case AutomationMarker<ValueType>::Type::step:
             {
                 if (beat < afterBeat)
-                    return beforeValue;
+                    retValue = beforeValue;
                 else
-                    return afterValue;
+                    retValue = afterValue;
             }
             default: jassertfalse;
         }
+
+        return retValue;
     }
 
     AutomationMarkerArray<ValueType> markers;

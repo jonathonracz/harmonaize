@@ -12,6 +12,7 @@
 
 #include "hmnz_ValueTreeObject.h"
 #include "hmnz_Automation.h"
+#include "hmnz_TempoMap.h"
 
 class Tempo : ValueTreeObject<IDs::Tempo>
 {
