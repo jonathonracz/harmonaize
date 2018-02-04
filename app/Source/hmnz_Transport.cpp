@@ -16,8 +16,8 @@ Transport::Transport (Edit* const _edit)
     : ValueTreeObject (_edit->getState(), _edit->getUndoManager()),
       edit (_edit),
       desiredReadPositionTime (0.0f),
-      originTime (getState(), IDs::EditProps::OriginTime, nullptr),
-      endTime (getState(), IDs::EditProps::EndTime, nullptr),
+      originBeat (getState(), IDs::EditProps::OriginBeat, nullptr),
+      endBeat (getState(), IDs::EditProps::EndBeat, nullptr),
       sampleRate (getState(), IDs::EditProps::SampleRate, nullptr),
       playPositionTime (getState(), IDs::TransportProps::PlayPositionTime, nullptr, 0.0),
       playState (getState(), IDs::TransportProps::PlayState, nullptr, State::stopped)

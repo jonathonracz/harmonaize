@@ -18,20 +18,13 @@ class Tempo : ValueTreeObject<IDs::Tempo>
 {
 public:
     Tempo (const ValueTree& v, UndoManager* um)
-        : ValueTreeObject (v, um), automation (Automation<double>::createDefaultState(), um)
+        : ValueTreeObject (v, um), automation (Automation<double>::createDefaultState(), um),
+          tempoMap (ValueTreeObject<IDs::TempoMap>::createDefaultState(), automation)
     {
         getState().addChild (automation.getState(), -1, nullptr);
+        getState().addChild (tempoMap.getState(), -1, nullptr);
     }
 
     Automation<double> automation;
-
-private:
-    void valueTreeChildAdded (ValueTree& parent, ValueTree& childAdded) override
-    {
-        if (parent == automation.getState())
-        {
-            // Assuming the child was added to the end...
-            
-        }
-    }
+    TempoMap tempoMap;
 };

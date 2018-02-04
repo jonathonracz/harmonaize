@@ -37,13 +37,13 @@ Edit::~Edit()
 
 ValueTree Edit::createSkeletonEdit()
 {
-    float editLength = 60.0f;
-    float bpm = 120.0f;
-    float quarterNoteLength = 1.0f / (bpm / 60.0f);
+    float editLength = 60.0;
+    float bpm = 120.0;
+    float quarterNoteLength = 1.0 / (bpm / 60.0);
 
     ValueTree edit (IDs::Edit);
-    edit.setProperty (IDs::EditProps::OriginTime, 0.0f, nullptr);
-    edit.setProperty (IDs::EditProps::EndTime, editLength, nullptr);
+    edit.setProperty (IDs::EditProps::OriginBeat, 0.0, nullptr);
+    edit.setProperty (IDs::EditProps::EndBeat, editLength, nullptr);
     //edit.setProperty (IDs::EditProps::SampleRate, 44100.0, nullptr);
 
     {

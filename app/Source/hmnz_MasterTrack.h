@@ -33,7 +33,8 @@ public:
 private:
     Edit* const edit;
 
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> beatsPerMinute;
+    Tempo tempo;
+
     CachedValue<SPSCRelaxedLoadAtomicWrapper<int>> timeSigNumerator;
     CachedValue<SPSCRelaxedLoadAtomicWrapper<int>> timeSigDenominator;
 };

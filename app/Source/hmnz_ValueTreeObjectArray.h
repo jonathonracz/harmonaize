@@ -63,20 +63,11 @@ public:
         return index1 - index2;
     }
 
-    const ObjectType** begin() const
-    {
-        return objects.begin();
-    }
-
-    const ObjectType** end() const
-    {
-        return objects.end();
-    }
+    Array<ObjectType*> objects;
 
 protected:
     ValueTree parent;
     UndoManager* undoManager;
-    Array<ObjectType*> objects;
     CriticalSectionType arrayLock;
     typedef typename CriticalSectionType::ScopedLockType ScopedLockType;
 

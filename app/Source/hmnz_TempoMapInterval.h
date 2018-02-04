@@ -16,11 +16,55 @@
 class TempoMapInterval  : public ValueTreeObject<IDs::TempoMapInterval>
 {
 public:
-    TempoMapInterval (const ValueTree& v, UndoManager* um, const ValueTree& m1, const ValueTree& m2) noexcept
-        : ValueTreeObject (v, um), markerBefore (m1), markerAfter (m2)
+    TempoMapInterval (const ValueTree& v, UndoManager* um) noexcept
+        : ValueTreeObject (v, um) {}
+
+    void setMarkers (const ValueTree& _markerBefore, const ValueTree& _markerAfter)
     {
-        jassert (markerBefore.getType() == IDs::AutomationMarker && markerAfter.getType() == IDs::AutomationMarker);
+        jassert (_markerBefore.getType() == IDs::AutomationMarker && _markerAfter.getType() == IDs::AutomationMarker);
+        markerBefore = _markerBefore;
+        markerBefore.addListener (this);
+        markerAfter = _markerAfter;
+        markerAfter.addListener (this);
+        recalculateInterval();
     }
+
+    bool containsBeat (double beat) noexcept
+    {
+        return double(markerBefore[IDs::AutomationMarkerProps::Beat]) < beat && double(markerAfter[IDs::AutomationMarkerProps::Beat]) >= beat;
+    }
+
+    bool containsTime (double time) noexcept
+    {
+        return getPriorIntervalEndTime() < time && double(getState()[IDs::TempoMapIntervalProps::EndTime]) >= time;
+    }
+
+    double beat (double time) noexcept
+    {
+        if (! containsTime (time))
+        {
+            jassertfalse;
+            return std::numeric_limits<double>::min();
+        }
+
+        return tempoFunction->beat (time);
+    }
+
+    double time (double beat) noexcept
+    {
+        if (! containsBeat (beat))
+        {
+            jassertfalse;
+            return std::numeric_limits<double>::min();
+        }
+
+        return tempoFunction->time (beat);
+    }
+
+private:
+    ValueTree markerBefore;
+    ValueTree markerAfter;
+    std::shared_ptr<TempoFunctions::TempoFunction> tempoFunction;
 
     void recalculateInterval() noexcept
     {
@@ -28,20 +72,17 @@ public:
         double b1 = markerAfter[IDs::AutomationMarkerProps::Beat];
         double t0 = markerBefore[IDs::AutomationMarkerProps::Value];
         double t1 = markerAfter[IDs::AutomationMarkerProps::Value];
-
-        std::unique_ptr<TempoFunctions::TempoFunction> tempoFunction;
         int type = markerAfter[IDs::AutomationMarkerProps::Type];
+
         switch (type)
         {
             case AutomationMarker<double>::Type::linear:
             {
-                tempoFunction = std::unique_ptr<TempoFunctions::TempoFunction> (new TempoFunctions::Linear (b0, b1, t0, t1, getPriorIntervalEndTime()));
-                break;
+                tempoFunction = std::make_shared<TempoFunctions::Linear>(b0, b1, t0, t1, getPriorIntervalEndTime());
             }
             case AutomationMarker<double>::Type::step:
             {
-                tempoFunction = std::unique_ptr<TempoFunctions::TempoFunction> (new TempoFunctions::Step (b0, b1, t0, t1, getPriorIntervalEndTime()));
-                break;
+                tempoFunction = std::make_shared<TempoFunctions::Step>(b0, b1, t0, t1, getPriorIntervalEndTime());
             }
             default: jassertfalse;
         }
@@ -52,10 +93,6 @@ public:
         getState().setProperty (IDs::TempoMapIntervalProps::EndTime, endTime, nullptr);
         getState().setProperty (IDs::TempoMapIntervalProps::EndPeriod, endPeriod, nullptr);
     }
-
-private:
-    ValueTree markerBefore;
-    ValueTree markerAfter;
 
     void valueTreePropertyChanged (ValueTree& treeChanged, const Identifier& property) noexcept override
     {

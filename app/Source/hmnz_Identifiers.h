@@ -19,8 +19,8 @@ namespace IDs
     DECLARE_ID (Edit)
     namespace EditProps
     {
-        DECLARE_ID (OriginTime)
-        DECLARE_ID (EndTime)
+        DECLARE_ID (OriginBeat)
+        DECLARE_ID (EndBeat)
         DECLARE_ID (SampleRate)
     }
 

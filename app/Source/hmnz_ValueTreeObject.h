@@ -24,20 +24,25 @@ public:
 
     virtual ~ValueTreeObject() = default;
 
-    ValueTree& getState()
+    ValueTree& getState() noexcept
     {
         return state;
     }
 
-    UndoManager* getUndoManager() const
+    UndoManager* getUndoManager() const noexcept
     {
         return undoManager;
     }
 
-    void beginNewTransaction (const String& actionName = String())
+    void beginNewTransaction (const String& actionName = String()) noexcept
     {
         if (undoManager)
             undoManager->beginNewTransaction (actionName);
+    }
+
+    static ValueTree createDefaultState() noexcept
+    {
+        return ValueTree (identifier);
     }
 
     static constexpr const Identifier& identifier = identifierType;
