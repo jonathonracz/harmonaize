@@ -32,7 +32,6 @@ public:
 
 private:
     Edit* const edit;
-
     Tempo tempo;
 
     CachedValue<SPSCRelaxedLoadAtomicWrapper<int>> timeSigNumerator;

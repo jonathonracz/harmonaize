@@ -19,12 +19,32 @@ class Tempo : ValueTreeObject<IDs::Tempo>
 public:
     Tempo (const ValueTree& v, UndoManager* um)
         : ValueTreeObject (v, um), automation (Automation<double>::createDefaultState(), um),
-          tempoMap (ValueTreeObject<IDs::TempoMap>::createDefaultState(), automation)
+          tempoMap (v.getRoot(), automation)
     {
         getState().addChild (automation.getState(), -1, nullptr);
-        getState().addChild (tempoMap.getState(), -1, nullptr);
     }
 
+    double beat (double time) const noexcept
+    {
+        return tempoMap.beat (time);
+    }
+
+    double time (double beat) const noexcept
+    {
+        return tempoMap.time (beat);
+    }
+
+    double tempoAtTime (double time) const noexcept
+    {
+        return tempoMap.tempoAtTime (time);
+    }
+
+    double tempoAtBeat (double beat) const noexcept
+    {
+        return tempoMap.tempoAtBeat (beat);
+    }
+
+private:
     Automation<double> automation;
     TempoMap tempoMap;
 };

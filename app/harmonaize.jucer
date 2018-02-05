@@ -20,10 +20,6 @@
         <FILE id="gcHKse" name="hmnz_TempoFunction.h" compile="0" resource="0"
               file="Source/hmnz_TempoFunction.h"/>
         <FILE id="nH42H5" name="hmnz_TempoMap.h" compile="0" resource="0" file="Source/hmnz_TempoMap.h"/>
-        <FILE id="lwOzID" name="hmnz_TempoMapInterval.h" compile="0" resource="0"
-              file="Source/hmnz_TempoMapInterval.h"/>
-        <FILE id="priUgl" name="hmnz_TempoMapIntervalArray.h" compile="0" resource="0"
-              file="Source/hmnz_TempoMapIntervalArray.h"/>
       </GROUP>
       <GROUP id="{0AD15C76-B24F-7CDD-B838-AD65C83CF3F8}" name="Automation">
         <FILE id="FEJaCc" name="hmnz_Automation.h" compile="0" resource="0"

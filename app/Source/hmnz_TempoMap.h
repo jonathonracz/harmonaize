@@ -10,57 +10,55 @@
 
 #pragma once
 
-#include "hmnz_TempoMapIntervalArray.h"
+#include "hmnz_TempoFunction.h"
+#include "hmnz_Edit.h"
 
-class TempoMap  : public ValueTreeObject<IDs::TempoMap>
+class TempoMap  : public ValueTree::Listener
 {
 public:
-    TempoMap (const ValueTree& v, UndoManager* um, Automation<double>& automation)
-        : ValueTreeObject (v, um), automationSource (automation), editRoot (getState().getRoot().getType()), intervals (v, um)
+    TempoMap (const ValueTree& editState, Automation<double>& automation)
+        : automationSource (automation), editRoot (editState)
     {
         automationSource.getState().addListener (this);
         jassert (editRoot.getType() == IDs::Edit);
         editRoot.addListener (this);
 
         editStartMarker = Automation<double>::createDefaultState();
+        editStartMarker.setProperty (IDs::AutomationMarkerProps::Beat, editRoot[IDs::EditProps::OriginBeat], nullptr);
+        editStartMarker.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::linear, nullptr);
         editEndMarker = Automation<double>::createDefaultState();
-
-        for (int i = 0; i < automationSource.getState().getNumChildren() + 1; ++i)
-            getState().addChild (TempoMapInterval::createDefaultState(), -1, nullptr);
+        editEndMarker.setProperty (IDs::AutomationMarkerProps::Beat, editRoot[IDs::EditProps::EndBeat], nullptr);
+        editEndMarker.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::linear, nullptr);
 
         recomputeTempoIntervals();
     }
 
     double beat (double time) const noexcept
     {
-        if (intervals.objects.size() == 0)
+        std::shared_ptr<OwnedArray<TempoFunctions::TempoFunction>> currentTempoFunction = tempoFunction;
+        for (int i = 0; i < currentTempoFunction->size(); ++i)
         {
-            jassert (automationSource.getState().getNumChildren() == 1);
-            return time * tempoAtBeat(0.0); // The tempo should be the same everywhere.
+            TempoFunctions::TempoFunction* currFunction = currentTempoFunction->getUnchecked (i);
+            if (time <= currFunction->time (currFunction->b1))
+                return currFunction->beat (time);
         }
 
-        for (TempoMapInterval* interval : intervals.objects)
-            if (interval->containsTime (time))
-                return interval->time (time);
-
         jassertfalse;
-        return std::numeric_limits<double>::min();
+        return currentTempoFunction->getLast()->beat (time);
     }
 
     double time (double beat) const noexcept
     {
-        if (intervals.objects.size() == 0)
+        std::shared_ptr<OwnedArray<TempoFunctions::TempoFunction>> currentTempoFunction = tempoFunction;
+        for (int i = 0; i < currentTempoFunction->size(); ++i)
         {
-            jassert (automationSource.getState().getNumChildren() == 1);
-            return beat / tempoAtBeat (0.0); // The tempo should be the same everywhere.
+            TempoFunctions::TempoFunction* currFunction = currentTempoFunction->getUnchecked (i);
+            if (beat <= currFunction->b1)
+                return currFunction->time (beat);
         }
 
-        for (TempoMapInterval* interval : intervals.objects)
-            if (interval->containsBeat (beat))
-                return interval->beat (beat);
-
         jassertfalse;
-        return std::numeric_limits<double>::min();
+        return currentTempoFunction->getLast()->time (beat);
     }
 
     double tempoAtTime (double time) const noexcept
@@ -78,50 +76,108 @@ private:
     ValueTree editEndMarker;
     Automation<double>& automationSource;
     ValueTree editRoot;
-    TempoMapIntervalArray intervals;
+    std::shared_ptr<OwnedArray<TempoFunctions::TempoFunction>> tempoFunction;
 
     void recomputeTempoIntervals()
     {
-        jassert (getState().getNumChildren() == automationSource.getState().getNumChildren() + 1);
-        for (int i = 0; i < getState().getNumChildren(); ++i)
+        editStartMarker.setProperty (IDs::AutomationMarkerProps::Value, automationSource.getValueAtBeat (editStartMarker[IDs::AutomationMarkerProps::Beat]), nullptr);
+        editEndMarker.setProperty (IDs::AutomationMarkerProps::Value, automationSource.getValueAtBeat (editEndMarker[IDs::AutomationMarkerProps::Beat]), nullptr);
+        OwnedArray<TempoFunctions::TempoFunction> newTempoFunction;
+        for (int i = 0; i < getNumMarkers() - 1; ++i)
         {
-            ValueTree beforeMarker;
-            if (i == 0)
-                beforeMarker = editStartMarker;
-            else
-                beforeMarker = automationSource.getState().getChild (i - 1);
+            ValueTree startMarker = getMarker (i);
+            ValueTree endMarker = getMarker (i + 1);
 
-            ValueTree afterMarker;
-            if (i == automationSource.getState().getNumChildren())
-                afterMarker = editEndMarker;
-            else
-                afterMarker = automationSource.getState().getChild (i);
+            double b0 = startMarker[IDs::AutomationMarkerProps::Beat];
+            double b1 = endMarker[IDs::AutomationMarkerProps::Beat];
+            double t0 = startMarker[IDs::AutomationMarkerProps::Value];
+            double t1 = endMarker[IDs::AutomationMarkerProps::Value];
+            double timeOffset = (i == 0) ? 0.0 : newTempoFunction.getLast()->time (newTempoFunction.getLast()->b0);
+            int functionType = endMarker[IDs::AutomationMarkerProps::Type];
+            TempoFunctions::TempoFunction* newFunction = nullptr;
 
-            intervals.objects[i]->setMarkers (beforeMarker, afterMarker);
+            switch (functionType)
+            {
+                case AutomationMarker<double>::Type::linear:
+                {
+                    newFunction = new TempoFunctions::Linear (b0, b1, t0, t1, timeOffset);
+                    break;
+                }
+                case AutomationMarker<double>::Type::step:
+                {
+                    newFunction = new TempoFunctions::Step (b0, b1, t0, t1, timeOffset);
+                    break;
+                }
+                default: jassertfalse;
+            }
+            newTempoFunction.add (newFunction);
         }
+
+        tempoFunction = std::make_shared<OwnedArray<TempoFunctions::TempoFunction>>(newTempoFunction);
+    }
+
+    std::pair<int, int> getUsableAutomationMarkerBounds() const noexcept
+    {
+        int usableMarkerStart = 0;
+        for (; usableMarkerStart < automationSource.numTimedMarkers(); ++usableMarkerStart)
+        {
+            if (automationSource.markers.objects[usableMarkerStart]->beat.get() > double (editStartMarker[IDs::AutomationMarkerProps::Beat]))
+                break;
+        }
+
+        int usableMarkerEnd = automationSource.numTimedMarkers();
+        for (; usableMarkerEnd > usableMarkerStart; --usableMarkerEnd)
+        {
+            if (automationSource.markers.objects[usableMarkerEnd - 1]->beat.get() <= double (editEndMarker[IDs::AutomationMarkerProps::Beat]))
+                break;
+        }
+
+        return std::make_pair (usableMarkerStart, usableMarkerEnd);
+    }
+
+    int getNumMarkers() const noexcept
+    {
+        std::pair<int, int> markerBounds = getUsableAutomationMarkerBounds();
+        return 2 + markerBounds.second - markerBounds.first;
+    }
+
+    ValueTree getMarker (int index) const noexcept
+    {
+        jassert (index < getNumMarkers());
+        if (index == 0)
+            return editStartMarker;
+        else if (index == getNumMarkers() - 1)
+            return editEndMarker;
+
+        std::pair<int, int> markerBounds = getUsableAutomationMarkerBounds();
+        return automationSource.markers.objects[markerBounds.first + index - 1]->getState();
     }
 
     void valueTreeChildAdded (ValueTree& parent, ValueTree& addedChild) override
     {
         if (parent == automationSource.getState())
-        {
-            getState().addChild (ValueTreeObject<IDs::TempoMapInterval>::createDefaultState(), -1, nullptr);
             recomputeTempoIntervals();
-        }
     }
 
     void valueTreeChildRemoved (ValueTree& parent, ValueTree& removedChild, int indexRemovedFrom) override
     {
         if (parent == automationSource.getState())
-        {
-            getState().removeChild (0, nullptr);
             recomputeTempoIntervals();
-        }
     }
 
     void valueTreePropertyChanged (ValueTree& treeChanged, const Identifier& property) override
     {
-        if (treeChanged == editRoot && (property == IDs::EditProps::OriginBeat || property == IDs::EditProps::EndBeat))
+        if (treeChanged == editRoot)
+        {
+            if (property == IDs::EditProps::OriginBeat)
+                editStartMarker.setProperty (IDs::AutomationMarkerProps::Beat, editRoot[IDs::EditProps::OriginBeat], nullptr);
+            else if (property == IDs::EditProps::EndBeat)
+                editEndMarker.setProperty (IDs::AutomationMarkerProps::Beat, editRoot[IDs::EditProps::EndBeat], nullptr);
+
             recomputeTempoIntervals();
+        }
     }
+
+    void valueTreeChildOrderChanged (ValueTree &parentTreeWhoseChildrenHaveMoved, int oldIndex, int newIndex) override {}
+    void valueTreeParentChanged (ValueTree &treeWhoseParentHasChanged) override {}
 };
