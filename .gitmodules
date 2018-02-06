@@ -7,3 +7,6 @@
 [submodule "app/Source/External/juce_toys"]
 	path = app/Source/External/juce_toys
 	url = https://github.com/jcredland/juce-toys.git
+[submodule "harmonaize/external/mma"]
+	path = harmonaize/external/mma
+	url = https://github.com/infojunkie/mma.git
