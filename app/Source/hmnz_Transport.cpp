@@ -61,7 +61,8 @@ int64 Transport::getNextReadPosition() const
 int64 Transport::getTotalLength() const
 {
     HMNZ_ASSERT_IS_NOT_ON_MESSAGE_THREAD
-    int64 totalLength = edit->masterTrack->tempo->endTime() * sampleRate.get();
+    double endTime = edit->masterTrack->tempo->endTime();
+    int64 totalLength = endTime * sampleRate.get();
     std::atomic_thread_fence (std::memory_order_acquire);
     return totalLength;
 }
@@ -126,10 +127,10 @@ void Transport::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
     edit->getNextAudioBlock (bufferToFill);
 
     double loadedDesiredReadPositionTime = desiredReadPositionTime.load (std::memory_order_acquire);
-    if (loadedDesiredReadPositionTime != std::numeric_limits<double>::min())
+    if (loadedDesiredReadPositionTime != std::numeric_limits<double>::lowest())
     {
         transportSource.setPosition (loadedDesiredReadPositionTime);
-        desiredReadPositionTime.store (std::numeric_limits<double>::min());
+        desiredReadPositionTime.store (std::numeric_limits<double>::lowest());
     }
     else
     {

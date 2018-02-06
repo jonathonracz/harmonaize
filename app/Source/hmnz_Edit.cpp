@@ -16,8 +16,12 @@
 Edit::Edit (const ValueTree& v)
     : ValueTreeObject<IDs::Edit> (v, &undoManager),
       tracks (this),
+      originBeat (getState(), IDs::EditProps::OriginBeat, getUndoManager(), 0.0),
+      endBeat (getState(), IDs::EditProps::EndBeat, getUndoManager(), 60.0),
       sampleRate (getState(), IDs::EditProps::SampleRate, getUndoManager(), 44100.0)
 {
+    Utility::writeBackDefaultValueIfNotThere (originBeat);
+    Utility::writeBackDefaultValueIfNotThere (endBeat);
     Utility::writeBackDefaultValueIfNotThere (sampleRate);
 
     // TODO: Validate the ValueTree data model, display an error if
@@ -42,9 +46,6 @@ ValueTree Edit::createSkeletonEdit()
     float quarterNoteLength = 1.0 / (bpm / 60.0);
 
     ValueTree edit (IDs::Edit);
-    edit.setProperty (IDs::EditProps::OriginBeat, 0.0, nullptr);
-    edit.setProperty (IDs::EditProps::EndBeat, editLength, nullptr);
-    //edit.setProperty (IDs::EditProps::SampleRate, 44100.0, nullptr);
 
     {
         ValueTree transport (IDs::Transport);
@@ -57,7 +58,6 @@ ValueTree Edit::createSkeletonEdit()
 
     {
         ValueTree masterTrack (IDs::MasterTrack);
-        masterTrack.setProperty (IDs::MasterTrackProps::BeatsPerMinute, bpm, nullptr);
         masterTrack.setProperty (IDs::MasterTrackProps::TimeSigNumerator, 4, nullptr);
         masterTrack.setProperty (IDs::MasterTrackProps::TimeSigDenominator, 4, nullptr);
         masterTrack.setProperty (IDs::MasterTrackProps::PulsesPerQuarterNote, 960, nullptr);

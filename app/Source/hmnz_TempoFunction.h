@@ -50,36 +50,42 @@ public:
 
     double tempo (double beat) const noexcept override
     {
-        return t0 + (delta() * (beat - b0));
+        double deltaCalc = delta(b0, b1, t0, t1);
+        return t0 + (deltaCalc * (beat - b0));
     }
 
     double beatPeriod (double beat) const noexcept override
     {
-        return tempo (beat);
+        return 1.0 / tempo (beat);
     }
 
     double time (double beat) const noexcept override
     {
-        return (delta() / 2.0) * square (beat - b0) + (t0 * (beat - b0)) + timeOffset;
+        double bP0 = beatPeriod (b0);
+        double bP1 = beatPeriod (b1);
+        double deltaCalc = delta(b0, b1, t0, t1);
+        return (delta() / 2.0) * square (beat - b0) + (bP0 * (beat - b0)) + timeOffset;
     }
 
     double beat (double time) const noexcept override
     {
-        double k1 = square (t0) - (2.0 * delta() * (timeOffset - time));
-        double delta2 = 2.0 * delta();
-        double sol1 = (-t0 + k1) / delta2;
+        double bP0 = beatPeriod (b0);
+        double bP1 = beatPeriod (b1);
+        double delta2Calc = 2.0 * delta(b0, b1, bP0, bP1);
+        double k1 = square (bP0) - (delta2Calc * (timeOffset - time));
 
+        double sol1 = (-bP0 + k1) / delta2Calc;
         if (sol1 > 0)
             return sol1 + b0;
 
-        double sol2 = (-t0 - k1) / delta2;
+        double sol2 = (-bP0 - k1) / delta2Calc;
         return sol2 + b0;
     }
 
 private:
-    double delta() const noexcept
+    double delta(double x0, double x1, double y0, double y1) const noexcept
     {
-        return (b0 == b1) ? b1 : (t1 - t0) / (b1 - b0);
+        return (x0 == x1) ? y1 : (y1 - y0) / (x1 - x0);
     }
 };
 
@@ -95,17 +101,21 @@ public:
 
     double beatPeriod (double beat) const noexcept override
     {
-        return tempo (beat);
+        return 1.0 / tempo (beat);
     }
 
     double time (double beat) const noexcept override
     {
-        return (beat < b1) ? ((t0 * beat) + timeOffset) : ((t1 * beat) + timeOffset);
+        double bP0 = beatPeriod (b0);
+        double bP1 = beatPeriod (b1);
+        return (beat < b1) ? ((bP0 * beat) + timeOffset) : ((bP1 * beat) + timeOffset);
     }
 
     double beat (double time) const noexcept override
     {
-        return (time < t1) ? ((time - timeOffset) / t0) : ((time - timeOffset) / t1);
+        double bP0 = beatPeriod (b0);
+        double bP1 = beatPeriod (b1);
+        return (time < bP1) ? ((time - timeOffset) / bP0) : ((time - timeOffset) / bP1);
     }
 };
 

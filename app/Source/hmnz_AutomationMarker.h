@@ -43,7 +43,7 @@ public:
     static ValueTree createDefaultState()
     {
         ValueTree ret (identifier);
-        ret.setProperty (IDs::AutomationMarkerProps::Beat, std::numeric_limits<double>::min(), nullptr);
+        ret.setProperty (IDs::AutomationMarkerProps::Beat, std::numeric_limits<double>::lowest(), nullptr);
         ret.setProperty (IDs::AutomationMarkerProps::Value, ValueType(), nullptr);
         ret.setProperty (IDs::AutomationMarkerProps::Type, Type::origin, nullptr);
         return ret;

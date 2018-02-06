@@ -22,11 +22,12 @@ public:
         jassert (editRoot.getType() == IDs::Edit);
         editRoot.addListener (this);
 
-        editStartMarker = Automation<double>::createDefaultState();
-        editStartMarker.setProperty (IDs::AutomationMarkerProps::Beat, editRoot[IDs::EditProps::OriginBeat], nullptr);
+        editStartMarker = AutomationMarker<double>::createDefaultState();
+        double originRoot = editRoot[IDs::EditProps::OriginBeat];
+        editStartMarker.setProperty (IDs::AutomationMarkerProps::Beat, originRoot, nullptr);
         editStartMarker.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::linear, nullptr);
-        editEndMarker = Automation<double>::createDefaultState();
-        editEndMarker.setProperty (IDs::AutomationMarkerProps::Beat, editRoot[IDs::EditProps::EndBeat], nullptr);
+        editEndMarker = AutomationMarker<double>::createDefaultState();
+        editEndMarker.setProperty (IDs::AutomationMarkerProps::Beat, double (editRoot[IDs::EditProps::EndBeat]), nullptr);
         editEndMarker.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::linear, nullptr);
 
         recomputeTempoIntervals();
@@ -72,7 +73,7 @@ public:
 
     double endTime() const noexcept
     {
-        return time (editEndMarker[IDs::EditProps::EndBeat]);
+        return time (editEndMarker[IDs::AutomationMarkerProps::Beat]);
     }
 
 private:
@@ -173,12 +174,20 @@ private:
     {
         if (treeChanged == editRoot)
         {
+            bool needsRecompute = false;
             if (property == IDs::EditProps::OriginBeat)
+            {
                 editStartMarker.setProperty (IDs::AutomationMarkerProps::Beat, editRoot[IDs::EditProps::OriginBeat], nullptr);
+                needsRecompute = true;
+            }
             else if (property == IDs::EditProps::EndBeat)
+            {
                 editEndMarker.setProperty (IDs::AutomationMarkerProps::Beat, editRoot[IDs::EditProps::EndBeat], nullptr);
+                needsRecompute = true;
+            }
 
-            recomputeTempoIntervals();
+            if (needsRecompute)
+                recomputeTempoIntervals();
         }
     }
 
