@@ -29,7 +29,7 @@ class TempoFunction
 public:
     TempoFunction (double _b0, double _b1, double _t0, double _t1, double _timeOffset)
         : b0 (_b0), b1 (_b1), t0 (_t0), t1 (_t1), timeOffset (_timeOffset) {}
-    virtual ~TempoFunction() = 0;
+    virtual ~TempoFunction() {}
 
     virtual double tempo (double beat) const noexcept = 0;
     virtual double beatPeriod (double beat) const noexcept = 0;

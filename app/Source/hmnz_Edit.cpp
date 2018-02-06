@@ -23,7 +23,7 @@ Edit::Edit (const ValueTree& v)
     // TODO: Validate the ValueTree data model, display an error if
     // something unexpected occurs, etc...
 
-    masterTrack = std::unique_ptr<MasterTrack> (new MasterTrack (this));
+    masterTrack = std::unique_ptr<MasterTrack> (new MasterTrack (getState().getOrCreateChildWithName (Tempo::identifier, nullptr), getUndoManager(), this));
     transport = std::unique_ptr<Transport> (new Transport (this));
 
     getState().addListener (this);

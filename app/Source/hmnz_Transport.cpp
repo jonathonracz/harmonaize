@@ -61,7 +61,7 @@ int64 Transport::getNextReadPosition() const
 int64 Transport::getTotalLength() const
 {
     HMNZ_ASSERT_IS_NOT_ON_MESSAGE_THREAD
-    int64 totalLength = (endTime.get() - originTime.get()) * sampleRate.get();
+    int64 totalLength = edit->masterTrack->tempo->endTime() * sampleRate.get();
     std::atomic_thread_fence (std::memory_order_acquire);
     return totalLength;
 }

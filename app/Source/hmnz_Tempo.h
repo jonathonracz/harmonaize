@@ -14,7 +14,7 @@
 #include "hmnz_Automation.h"
 #include "hmnz_TempoMap.h"
 
-class Tempo : ValueTreeObject<IDs::Tempo>
+class Tempo : public ValueTreeObject<IDs::Tempo>
 {
 public:
     Tempo (const ValueTree& v, UndoManager* um)
@@ -44,7 +44,13 @@ public:
         return tempoMap.tempoAtBeat (beat);
     }
 
-private:
+    double endTime() const noexcept
+    {
+        return tempoMap.endTime();
+    }
+
     Automation<double> automation;
+
+private:
     TempoMap tempoMap;
 };

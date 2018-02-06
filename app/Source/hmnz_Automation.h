@@ -168,7 +168,7 @@ public:
 
     int numTimedMarkers() const noexcept
     {
-        if (markers.objects.size() == 1 && markers.objects[0]->beat == std::numeric_limits<double>::min)
+        if (markers.objects.size() == 1 && double (markers.objects[0]->beat.get()) == std::numeric_limits<double>::min())
             return 0;
 
         return markers.objects.size();

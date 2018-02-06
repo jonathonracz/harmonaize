@@ -11,7 +11,6 @@
 #pragma once
 
 #include "hmnz_TempoFunction.h"
-#include "hmnz_Edit.h"
 
 class TempoMap  : public ValueTree::Listener
 {
@@ -71,6 +70,11 @@ public:
         return automationSource.getValueAtBeat (beat);
     }
 
+    double endTime() const noexcept
+    {
+        return time (editEndMarker[IDs::EditProps::EndBeat]);
+    }
+
 private:
     ValueTree editStartMarker;
     ValueTree editEndMarker;
@@ -82,7 +86,7 @@ private:
     {
         editStartMarker.setProperty (IDs::AutomationMarkerProps::Value, automationSource.getValueAtBeat (editStartMarker[IDs::AutomationMarkerProps::Beat]), nullptr);
         editEndMarker.setProperty (IDs::AutomationMarkerProps::Value, automationSource.getValueAtBeat (editEndMarker[IDs::AutomationMarkerProps::Beat]), nullptr);
-        OwnedArray<TempoFunctions::TempoFunction> newTempoFunction;
+        std::shared_ptr<OwnedArray<TempoFunctions::TempoFunction>> newTempoFunction = std::make_shared<OwnedArray<TempoFunctions::TempoFunction>>();
         for (int i = 0; i < getNumMarkers() - 1; ++i)
         {
             ValueTree startMarker = getMarker (i);
@@ -92,7 +96,7 @@ private:
             double b1 = endMarker[IDs::AutomationMarkerProps::Beat];
             double t0 = startMarker[IDs::AutomationMarkerProps::Value];
             double t1 = endMarker[IDs::AutomationMarkerProps::Value];
-            double timeOffset = (i == 0) ? 0.0 : newTempoFunction.getLast()->time (newTempoFunction.getLast()->b0);
+            double timeOffset = (i == 0) ? 0.0 : newTempoFunction->getLast()->time (newTempoFunction->getLast()->b0);
             int functionType = endMarker[IDs::AutomationMarkerProps::Type];
             TempoFunctions::TempoFunction* newFunction = nullptr;
 
@@ -110,10 +114,10 @@ private:
                 }
                 default: jassertfalse;
             }
-            newTempoFunction.add (newFunction);
+            newTempoFunction->add (newFunction);
         }
 
-        tempoFunction = std::make_shared<OwnedArray<TempoFunctions::TempoFunction>>(newTempoFunction);
+        tempoFunction = newTempoFunction;
     }
 
     std::pair<int, int> getUsableAutomationMarkerBounds() const noexcept
