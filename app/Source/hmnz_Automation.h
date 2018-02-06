@@ -152,6 +152,7 @@ public:
                     double beatDelta = (beat - beforeBeat) / (afterBeat - beforeBeat);
                     retValue = beforeValue + ((afterValue - beforeValue) * beatDelta);
                 }
+                break;
             }
             case AutomationMarker<ValueType>::Type::step:
             {
@@ -159,6 +160,7 @@ public:
                     retValue = beforeValue;
                 else
                     retValue = afterValue;
+                break;
             }
             default: jassertfalse;
         }
