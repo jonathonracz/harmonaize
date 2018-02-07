@@ -27,7 +27,7 @@ public:
     /** Returns the beat for a given time in seconds. */
     double beat (double time) const noexcept
     {
-        return tempoMap.beat (time * 60.0);
+        return tempoMap.beat (time / 60.0);
     }
 
     /** Returns the time in seconds for a given beat. */
@@ -39,7 +39,7 @@ public:
     /** Returns the tempo (in BPM) at a given time in seconds. */
     double tempoAtTime (double time) const noexcept
     {
-        return tempoMap.tempoAtTime (time * 60.0);
+        return tempoMap.tempoAtTime (time / 60.0);
     }
 
     /** Returns the tempo (in BPM) at a given beat. */

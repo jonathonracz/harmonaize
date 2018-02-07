@@ -25,6 +25,7 @@ namespace IDs
     namespace TransportProps
     {
         DECLARE_ID (PlayPositionTime)
+        DECLARE_ID (PlayPositionBeat)
         DECLARE_ID (LoopStartTime)
         DECLARE_ID (LoopEndTime)
         DECLARE_ID (IsLooping)

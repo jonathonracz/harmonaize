@@ -54,6 +54,7 @@ private:
     int64 readPosition;
     std::atomic<double> desiredReadPositionTime;
     std::atomic<double> readPositionTime;
+    std::atomic<double> readPositionBeat;
 
     // MIDI bits
     MidiMessageCollector midiMessageCollector;
@@ -77,5 +78,6 @@ private:
     CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> sampleRate;
 
     CachedValue<double> playPositionTime;
+    CachedValue<double> playPositionBeat;
     CachedValue<int> playState;
 };

@@ -15,17 +15,18 @@
 Transport::Transport (const ValueTree& v, UndoManager* um, Edit* const _edit)
     : ValueTreeObject (v, um),
       edit (_edit),
-      desiredReadPositionTime (0.0f),
+      desiredReadPositionTime (std::numeric_limits<double>::lowest()),
       sampleRate (getState(), IDs::TransportProps::SampleRate, nullptr, 44100.0),
       playPositionTime (getState(), IDs::TransportProps::PlayPositionTime, nullptr, 0.0),
+      playPositionBeat (getState(), IDs::TransportProps::PlayPositionBeat, nullptr, 0.0),
       playState (getState(), IDs::TransportProps::PlayState, nullptr, State::stopped)
 {
     Utility::writeBackDefaultValueIfNotThere (sampleRate);
     Utility::writeBackDefaultValueIfNotThere (playPositionTime);
+    Utility::writeBackDefaultValueIfNotThere (playPositionBeat);
     Utility::writeBackDefaultValueIfNotThere (playState);
 
     transportSource.setSource (this, 0, nullptr, sampleRate.get());
-    std::atomic_thread_fence (std::memory_order_acquire);
     output.setSource (&transportSource);
     HarmonaizeApplication::getDeviceManager().addAudioCallback (&output);
 
@@ -34,8 +35,9 @@ Transport::Transport (const ValueTree& v, UndoManager* um, Edit* const _edit)
     if (firstMidiInput.isNotEmpty())
         HarmonaizeApplication::getDeviceManager().addMidiInputCallback (firstMidiInput, &midiMessageCollector);
 
-    transportSource.addChangeListener (this);
     getState().addListener (this);
+    transportSource.addChangeListener (this);
+    transportSource.setPosition (playPositionTime);
     transportSource.start();
 }
 
@@ -135,6 +137,7 @@ void Transport::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
     }
 
     readPositionTime.store (transportSource.getCurrentPosition(), std::memory_order_release);
+    readPositionBeat.store (edit->masterTrack->tempo->beat (transportSource.getCurrentPosition()), std::memory_order_release);
     triggerAsyncUpdate();
 }
 
@@ -178,4 +181,5 @@ void Transport::valueTreePropertyChanged (ValueTree& tree, const Identifier& ide
 void Transport::handleAsyncUpdate()
 {
     getState().setPropertyExcludingListener (this, playPositionTime.getPropertyID(), readPositionTime.load (std::memory_order_acquire), nullptr);
+    getState().setPropertyExcludingListener (this, playPositionBeat.getPropertyID(), readPositionBeat.load (std::memory_order_acquire), nullptr);
 }
