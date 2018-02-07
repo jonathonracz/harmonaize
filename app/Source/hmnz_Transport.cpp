@@ -177,5 +177,5 @@ void Transport::valueTreePropertyChanged (ValueTree& tree, const Identifier& ide
 
 void Transport::handleAsyncUpdate()
 {
-    getState().setPropertyExcludingListener (this, playPositionTime.getPropertyID(), readPositionTime.load (std::memory_order_acquire), getUndoManager());
+    getState().setPropertyExcludingListener (this, playPositionTime.getPropertyID(), readPositionTime.load (std::memory_order_acquire), nullptr);
 }
