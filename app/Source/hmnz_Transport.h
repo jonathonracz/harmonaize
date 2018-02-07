@@ -28,7 +28,7 @@ public:
         playing
     };
 
-    Transport (Edit* const edit);
+    Transport (const ValueTree& v, UndoManager* um, Edit* const edit);
     ~Transport();
 
     bool canControlTransport() override { return true; }
@@ -74,14 +74,7 @@ private:
     AudioPlayHead::CurrentPositionInfo currentPositionInfo;
 
     CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> pulsesPerQuarterNote;
-
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> originBeat;
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> endBeat;
     CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> sampleRate;
-
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> beatsPerMinute;
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<int>> timeSigNumerator;
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<int>> timeSigDenominator;
 
     CachedValue<double> playPositionTime;
     CachedValue<int> playState;

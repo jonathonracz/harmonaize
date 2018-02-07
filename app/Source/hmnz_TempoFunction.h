@@ -10,7 +10,7 @@
 
 #pragma once
 
-/*
+/**
     Used for calculating tempo mappings based on an interval defined by a
     beginning beat, end beat, tempo at the beginning beat, tempo at the end
     beat, and time offset (in seconds) of the first beat.
@@ -50,7 +50,7 @@ public:
 
     double tempo (double beat) const noexcept override
     {
-        double deltaCalc = delta(b0, b1, t0, t1);
+        double deltaCalc = delta (b0, b1, t0, t1);
         return t0 + (deltaCalc * (beat - b0));
     }
 
@@ -62,7 +62,7 @@ public:
     double time (double beat) const noexcept override
     {
         double bP0 = beatPeriod (b0);
-        double deltaCalc = delta(b0, b1, t0, t1);
+        double deltaCalc = delta (b0, b1, t0, t1);
         return (deltaCalc / 2.0) * square (beat - b0) + (bP0 * (beat - b0)) + timeOffset;
     }
 

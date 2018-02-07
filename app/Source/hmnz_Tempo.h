@@ -19,7 +19,7 @@ class Tempo : public ValueTreeObject<IDs::Tempo>
 public:
     Tempo (const ValueTree& v, UndoManager* um)
         : ValueTreeObject (v, um), automation (Automation<double>::createDefaultState(), um, 120.0),
-          tempoMap (v.getRoot(), automation)
+          tempoMap (automation)
     {
         getState().addChild (automation.getState(), -1, nullptr);
     }
@@ -46,12 +46,6 @@ public:
     double tempoAtBeat (double beat) const noexcept
     {
         return tempoMap.tempoAtBeat (beat);
-    }
-
-    /** Returns the end time of the edit (total time), in seconds. */
-    double endTime() const noexcept
-    {
-        return tempoMap.endTime() * 60.0;
     }
 
     Automation<double> automation;

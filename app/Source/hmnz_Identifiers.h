@@ -19,9 +19,6 @@ namespace IDs
     DECLARE_ID (Edit)
     namespace EditProps
     {
-        DECLARE_ID (OriginBeat)
-        DECLARE_ID (EndBeat)
-        DECLARE_ID (SampleRate)
     }
 
     DECLARE_ID (Transport)
@@ -32,6 +29,7 @@ namespace IDs
         DECLARE_ID (LoopEndTime)
         DECLARE_ID (IsLooping)
         DECLARE_ID (PlayState)
+        DECLARE_ID (SampleRate)
     }
 
     DECLARE_ID (MasterTrack)
@@ -44,19 +42,6 @@ namespace IDs
     }
 
     DECLARE_ID (Tempo)
-
-    DECLARE_ID (TempoMap)
-    namespace TempoMapProps
-    {
-        DECLARE_ID (TotalTime)
-    }
-
-    DECLARE_ID (TempoMapInterval)
-    namespace TempoMapIntervalProps
-    {
-        DECLARE_ID (EndTime)
-        DECLARE_ID (EndPeriod)
-    }
 
     DECLARE_ID (Track)
     namespace TrackProps

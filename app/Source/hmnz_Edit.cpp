@@ -15,20 +15,13 @@
 
 Edit::Edit (const ValueTree& v)
     : ValueTreeObject<IDs::Edit> (v, &undoManager),
-      tracks (this),
-      originBeat (getState(), IDs::EditProps::OriginBeat, getUndoManager(), 0.0),
-      endBeat (getState(), IDs::EditProps::EndBeat, getUndoManager(), 60.0),
-      sampleRate (getState(), IDs::EditProps::SampleRate, getUndoManager(), 44100.0)
+      tracks (this)
 {
-    Utility::writeBackDefaultValueIfNotThere (originBeat);
-    Utility::writeBackDefaultValueIfNotThere (endBeat);
-    Utility::writeBackDefaultValueIfNotThere (sampleRate);
-
     // TODO: Validate the ValueTree data model, display an error if
     // something unexpected occurs, etc...
 
-    masterTrack = std::unique_ptr<MasterTrack> (new MasterTrack (getState().getOrCreateChildWithName (Tempo::identifier, nullptr), getUndoManager(), this));
-    transport = std::unique_ptr<Transport> (new Transport (this));
+    masterTrack = std::unique_ptr<MasterTrack> (new MasterTrack (getState().getOrCreateChildWithName (MasterTrack::identifier, nullptr), getUndoManager(), this));
+    transport = std::unique_ptr<Transport> (new Transport (getState().getOrCreateChildWithName (Transport::identifier, nullptr), getUndoManager(), this));
 
     getState().addListener (this);
 

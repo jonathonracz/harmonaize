@@ -15,21 +15,10 @@
 class TempoMap  : public ValueTree::Listener
 {
 public:
-    TempoMap (const ValueTree& editState, Automation<double>& automation)
-        : automationSource (automation), editRoot (editState)
+    TempoMap (Automation<double>& automation)
+        : automationSource (automation)
     {
         automationSource.getState().addListener (this);
-        jassert (editRoot.getType() == IDs::Edit);
-        editRoot.addListener (this);
-
-        editStartMarker = AutomationMarker<double>::createDefaultState();
-        double originRoot = editRoot[IDs::EditProps::OriginBeat];
-        editStartMarker.setProperty (IDs::AutomationMarkerProps::Beat, originRoot, nullptr);
-        editStartMarker.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::linear, nullptr);
-        editEndMarker = AutomationMarker<double>::createDefaultState();
-        editEndMarker.setProperty (IDs::AutomationMarkerProps::Beat, double (editRoot[IDs::EditProps::EndBeat]), nullptr);
-        editEndMarker.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::linear, nullptr);
-
         recomputeTempoIntervals();
     }
 
@@ -71,22 +60,12 @@ public:
         return automationSource.getValueAtBeat (beat);
     }
 
-    double endTime() const noexcept
-    {
-        return time (editEndMarker[IDs::AutomationMarkerProps::Beat]);
-    }
-
 private:
-    ValueTree editStartMarker;
-    ValueTree editEndMarker;
     Automation<double>& automationSource;
-    ValueTree editRoot;
     std::shared_ptr<OwnedArray<TempoFunctions::TempoFunction>> tempoFunction;
 
     void recomputeTempoIntervals()
     {
-        editStartMarker.setProperty (IDs::AutomationMarkerProps::Value, automationSource.getValueAtBeat (editStartMarker[IDs::AutomationMarkerProps::Beat]), nullptr);
-        editEndMarker.setProperty (IDs::AutomationMarkerProps::Value, automationSource.getValueAtBeat (editEndMarker[IDs::AutomationMarkerProps::Beat]), nullptr);
         std::shared_ptr<OwnedArray<TempoFunctions::TempoFunction>> newTempoFunction = std::make_shared<OwnedArray<TempoFunctions::TempoFunction>>();
         for (int i = 0; i < getNumMarkers() - 1; ++i)
         {
@@ -121,76 +100,43 @@ private:
         tempoFunction = newTempoFunction;
     }
 
-    std::pair<int, int> getUsableAutomationMarkerBounds() const noexcept
-    {
-        int usableMarkerStart = 0;
-        for (; usableMarkerStart < automationSource.numTimedMarkers(); ++usableMarkerStart)
-        {
-            if (automationSource.markers.objects[usableMarkerStart]->beat.get() > double (editStartMarker[IDs::AutomationMarkerProps::Beat]))
-                break;
-        }
-
-        int usableMarkerEnd = automationSource.numTimedMarkers();
-        for (; usableMarkerEnd > usableMarkerStart; --usableMarkerEnd)
-        {
-            if (automationSource.markers.objects[usableMarkerEnd - 1]->beat.get() <= double (editEndMarker[IDs::AutomationMarkerProps::Beat]))
-                break;
-        }
-
-        return std::make_pair (usableMarkerStart, usableMarkerEnd);
-    }
-
     int getNumMarkers() const noexcept
     {
-        std::pair<int, int> markerBounds = getUsableAutomationMarkerBounds();
-        return 2 + markerBounds.second - markerBounds.first;
+        int numActiveAutomationMarkers = (double (automationSource.markers.objects.getFirst()->beat.get()) == std::numeric_limits<double>::lowest()) ? 0 : automationSource.markers.objects.size();
+        return 2 + numActiveAutomationMarkers;
     }
 
     ValueTree getMarker (int index) const noexcept
     {
         jassert (index < getNumMarkers());
-        if (index == 0)
-            return editStartMarker;
-        else if (index == getNumMarkers() - 1)
-            return editEndMarker;
+        if (index == 0 || index == getNumMarkers() - 1)
+        {
+            ValueTree edgeMarker (IDs::AutomationMarker);
+            edgeMarker.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::step, nullptr);
 
-        std::pair<int, int> markerBounds = getUsableAutomationMarkerBounds();
-        return automationSource.markers.objects[markerBounds.first + index - 1]->getState();
+            double beat = (index == 0) ? 0.0 : std::numeric_limits<double>::max();
+            edgeMarker.setProperty (IDs::AutomationMarkerProps::Beat, beat, nullptr);
+
+            double value = (index == 0) ? automationSource.markers.objects.getFirst()->value.get() : automationSource.markers.objects.getLast()->value.get();
+            edgeMarker.setProperty (IDs::AutomationMarkerProps::Value, value, nullptr);
+
+            return edgeMarker;
+        }
+
+        return automationSource.markers.objects[index - 1]->getState();
     }
 
     void valueTreeChildAdded (ValueTree& parent, ValueTree& addedChild) override
     {
-        if (parent == automationSource.getState())
-            recomputeTempoIntervals();
+        recomputeTempoIntervals();
     }
 
     void valueTreeChildRemoved (ValueTree& parent, ValueTree& removedChild, int indexRemovedFrom) override
     {
-        if (parent == automationSource.getState())
-            recomputeTempoIntervals();
+        recomputeTempoIntervals();
     }
 
-    void valueTreePropertyChanged (ValueTree& treeChanged, const Identifier& property) override
-    {
-        if (treeChanged == editRoot)
-        {
-            bool needsRecompute = false;
-            if (property == IDs::EditProps::OriginBeat)
-            {
-                editStartMarker.setProperty (IDs::AutomationMarkerProps::Beat, editRoot[IDs::EditProps::OriginBeat], nullptr);
-                needsRecompute = true;
-            }
-            else if (property == IDs::EditProps::EndBeat)
-            {
-                editEndMarker.setProperty (IDs::AutomationMarkerProps::Beat, editRoot[IDs::EditProps::EndBeat], nullptr);
-                needsRecompute = true;
-            }
-
-            if (needsRecompute)
-                recomputeTempoIntervals();
-        }
-    }
-
+    void valueTreePropertyChanged (ValueTree& treeChanged, const Identifier& property) override {}
     void valueTreeChildOrderChanged (ValueTree &parentTreeWhoseChildrenHaveMoved, int oldIndex, int newIndex) override {}
     void valueTreeParentChanged (ValueTree &treeWhoseParentHasChanged) override {}
 };

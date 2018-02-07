@@ -12,18 +12,17 @@
 #include "hmnz_Edit.h"
 #include "hmnz_Application.h"
 
-Transport::Transport (Edit* const _edit)
-    : ValueTreeObject (_edit->getState(), _edit->getUndoManager()),
+Transport::Transport (const ValueTree& v, UndoManager* um, Edit* const _edit)
+    : ValueTreeObject (v, um),
       edit (_edit),
       desiredReadPositionTime (0.0f),
-      originBeat (getState(), IDs::EditProps::OriginBeat, nullptr),
-      endBeat (getState(), IDs::EditProps::EndBeat, nullptr),
-      sampleRate (getState(), IDs::EditProps::SampleRate, nullptr),
+      sampleRate (getState(), IDs::TransportProps::SampleRate, nullptr, 44100.0),
       playPositionTime (getState(), IDs::TransportProps::PlayPositionTime, nullptr, 0.0),
       playState (getState(), IDs::TransportProps::PlayState, nullptr, State::stopped)
 {
-    playPositionTime.get();
-    playState.get();
+    Utility::writeBackDefaultValueIfNotThere (sampleRate);
+    Utility::writeBackDefaultValueIfNotThere (playPositionTime);
+    Utility::writeBackDefaultValueIfNotThere (playState);
 
     transportSource.setSource (this, 0, nullptr, sampleRate.get());
     std::atomic_thread_fence (std::memory_order_acquire);
@@ -61,10 +60,8 @@ int64 Transport::getNextReadPosition() const
 int64 Transport::getTotalLength() const
 {
     HMNZ_ASSERT_IS_NOT_ON_MESSAGE_THREAD
-    double endTime = edit->masterTrack->tempo->endTime();
-    int64 totalLength = endTime * sampleRate.get();
-    std::atomic_thread_fence (std::memory_order_acquire);
-    return totalLength;
+    // -1 is needed for unknown reason (probably overflow related)
+    return std::numeric_limits<int64>::max() - 1;
 }
 
 double Transport::getCurrentPosition() const
