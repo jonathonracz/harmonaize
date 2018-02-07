@@ -62,9 +62,8 @@ public:
     double time (double beat) const noexcept override
     {
         double bP0 = beatPeriod (b0);
-        double bP1 = beatPeriod (b1);
         double deltaCalc = delta(b0, b1, t0, t1);
-        return (delta() / 2.0) * square (beat - b0) + (bP0 * (beat - b0)) + timeOffset;
+        return (deltaCalc / 2.0) * square (beat - b0) + (bP0 * (beat - b0)) + timeOffset;
     }
 
     double beat (double time) const noexcept override
