@@ -12,6 +12,7 @@
 
 #include "hmnz_ValueTreeObject.h"
 #include "hmnz_Tempo.h"
+#include "hmnz_TimeSignature.h"
 
 class Edit;
 
@@ -27,6 +28,7 @@ public:
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override {}
 
     std::unique_ptr<Tempo> tempo;
+    std::unique_ptr<TimeSignature> timeSignature;
 
 private:
     Edit* const edit;

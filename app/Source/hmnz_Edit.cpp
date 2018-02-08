@@ -40,23 +40,7 @@ ValueTree Edit::createSkeletonEdit()
 
     ValueTree edit (IDs::Edit);
 
-    {
-        ValueTree transport (IDs::Transport);
-        transport.setProperty (IDs::TransportProps::PlayPositionTime, 0.0f, nullptr);
-        transport.setProperty (IDs::TransportProps::LoopStartTime, 0.0f, nullptr);
-        transport.setProperty (IDs::TransportProps::LoopEndTime, editLength / 4.0f, nullptr);
-        transport.setProperty (IDs::TransportProps::IsLooping, false, nullptr);
-        edit.addChild (transport, -1, nullptr);
-    }
-
-    {
-        ValueTree masterTrack (IDs::MasterTrack);
-        masterTrack.setProperty (IDs::MasterTrackProps::TimeSigNumerator, 4, nullptr);
-        masterTrack.setProperty (IDs::MasterTrackProps::TimeSigDenominator, 4, nullptr);
-        masterTrack.setProperty (IDs::MasterTrackProps::PulsesPerQuarterNote, 960, nullptr);
-        edit.addChild (masterTrack, -1, nullptr);
-    }
-
+    /*
     for (int i = 0; i < 3; ++i)
     {
         auto getColor = [&](int i) -> Colour
@@ -76,13 +60,11 @@ ValueTree Edit::createSkeletonEdit()
         ValueTree newTrack (IDs::Track);
         newTrack.setProperty (IDs::TrackProps::Name, "Track " + String (i), nullptr);
         newTrack.setProperty (IDs::TrackProps::Color, static_cast<int64>(getColor (i).getARGB()), nullptr);
-        newTrack.setProperty (IDs::TrackProps::Type, IDs::TrackProps::Types::MidiSequence.toString(), nullptr);
 
         ValueTree newClip (IDs::Clip);
         newClip.setProperty (IDs::ClipProps::Start, 0.0f, nullptr);
         newClip.setProperty (IDs::ClipProps::Length, editLength - (editLength * i), nullptr);
         newClip.setProperty (IDs::ClipProps::Color, static_cast<int64>(getColor (i + 1).getARGB()), nullptr);
-        newClip.setProperty (IDs::ClipProps::Name, "Clip for track " + String (i), nullptr);
         newClip.setProperty (IDs::ClipProps::Type, IDs::ClipProps::Types::Midi.toString(), nullptr);
 
         int numNotes = 4;
@@ -99,7 +81,7 @@ ValueTree Edit::createSkeletonEdit()
 
         newTrack.addChild (newClip, -1, nullptr);
         edit.addChild (newTrack, -1, nullptr);
-    }
+    } */
 
     return edit;
 }

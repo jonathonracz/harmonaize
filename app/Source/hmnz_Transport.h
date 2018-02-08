@@ -76,6 +76,10 @@ private:
 
     CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> pulsesPerQuarterNote;
     CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> sampleRate;
+    CachedValue<SPSCRelaxedLoadAtomicWrapper<bool>> recordEnabled;
+    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> loopStartBeat;
+    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> loopEndBeat;
+    CachedValue<SPSCRelaxedLoadAtomicWrapper<bool>> loopEnabled;
 
     CachedValue<double> playPositionTime;
     CachedValue<double> playPositionBeat;

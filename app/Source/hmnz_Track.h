@@ -12,6 +12,7 @@
 
 #include "hmnz_ValueTreeObject.h"
 #include "hmnz_ClipArray.h"
+#include "hmnz_VariantConverters.h"
 
 class Edit;
 
@@ -20,15 +21,18 @@ class Track : public ValueTreeObject<IDs::Track>,
 {
 public:
     Track (const ValueTree& v, UndoManager* um, Edit* const edit);
-    virtual ~Track() = default;
-
-    Edit* const edit;
-
-private:
-    ClipArray clips;
 
     // AudioSource methods
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
+
+    CachedValue<String> name;
+    CachedValue<Colour> color;
+    CachedValue<Identifier> type;
+
+    Edit* const edit;
+
+private:
+    ClipArray clips;
 };

@@ -137,8 +137,8 @@ public:
         int afterType = markerAfter[IDs::AutomationMarkerProps::Type];
         double beforeBeat = markerBefore[IDs::AutomationMarkerProps::Beat];
         double afterBeat = markerAfter[IDs::AutomationMarkerProps::Beat];
-        ValueType beforeValue = markerBefore[IDs::AutomationMarkerProps::Value];
-        ValueType afterValue = markerAfter[IDs::AutomationMarkerProps::Value];
+        double beforeValue = markerBefore[IDs::AutomationMarkerProps::Value];
+        double afterValue = markerAfter[IDs::AutomationMarkerProps::Value];
         ValueType retValue;
         switch (afterType)
         {
@@ -151,7 +151,11 @@ public:
                 else
                 {
                     double beatDelta = (beat - beforeBeat) / (afterBeat - beforeBeat);
-                    retValue = beforeValue + ((afterValue - beforeValue) * beatDelta);
+                    double retValueDouble = beforeValue + ((afterValue - beforeValue) * beatDelta);
+                    if (std::is_integral<ValueType>::value)
+                        retValueDouble = std::round (retValueDouble);
+
+                    retValue = static_cast<ValueType>(retValueDouble);
                 }
                 break;
             }

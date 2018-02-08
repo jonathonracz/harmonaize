@@ -41,11 +41,13 @@
         <FILE id="Ay8orM" name="hmnz_Edit.cpp" compile="1" resource="0" file="Source/hmnz_Edit.cpp"/>
         <FILE id="YdnPis" name="hmnz_Edit.h" compile="0" resource="0" file="Source/hmnz_Edit.h"/>
       </GROUP>
-      <GROUP id="{113B8590-9FBD-441F-5100-C595C8B99F47}" name="Tempo">
+      <GROUP id="{113B8590-9FBD-441F-5100-C595C8B99F47}" name="Time">
         <FILE id="lvaPMG" name="hmnz_Tempo.h" compile="0" resource="0" file="Source/hmnz_Tempo.h"/>
         <FILE id="gcHKse" name="hmnz_TempoFunction.h" compile="0" resource="0"
               file="Source/hmnz_TempoFunction.h"/>
         <FILE id="nH42H5" name="hmnz_TempoMap.h" compile="0" resource="0" file="Source/hmnz_TempoMap.h"/>
+        <FILE id="gSpiKt" name="hmnz_TimeSignature.h" compile="0" resource="0"
+              file="Source/hmnz_TimeSignature.h"/>
       </GROUP>
       <GROUP id="{0AD15C76-B24F-7CDD-B838-AD65C83CF3F8}" name="Automation">
         <FILE id="FEJaCc" name="hmnz_Automation.h" compile="0" resource="0"

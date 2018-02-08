@@ -16,12 +16,18 @@ Transport::Transport (const ValueTree& v, UndoManager* um, Edit* const _edit)
     : ValueTreeObject (v, um),
       edit (_edit),
       desiredReadPositionTime (std::numeric_limits<double>::lowest()),
+      pulsesPerQuarterNote(getState(), IDs::TransportProps::PulsesPerQuarterNote, nullptr, 960.0),
       sampleRate (getState(), IDs::TransportProps::SampleRate, nullptr, 44100.0),
+      recordEnabled (getState(), IDs::TransportProps::RecordEnabled, nullptr, false),
+      loopStartBeat (getState(), IDs::TransportProps::LoopStartBeat, nullptr, 0.0),
+      loopEndBeat (getState(), IDs::TransportProps::LoopEndBeat, nullptr, 16.0),
+      loopEnabled (getState(), IDs::TransportProps::LoopEnabled, nullptr, false),
       playPositionTime (getState(), IDs::TransportProps::PlayPositionTime, nullptr, 0.0),
       playPositionBeat (getState(), IDs::TransportProps::PlayPositionBeat, nullptr, 0.0),
       playState (getState(), IDs::TransportProps::PlayState, nullptr, State::stopped)
 {
     Utility::writeBackDefaultValueIfNotThere (sampleRate);
+    Utility::writeBackDefaultValueIfNotThere (recordEnabled);
     Utility::writeBackDefaultValueIfNotThere (playPositionTime);
     Utility::writeBackDefaultValueIfNotThere (playPositionBeat);
     Utility::writeBackDefaultValueIfNotThere (playState);
@@ -92,15 +98,13 @@ bool Transport::getCurrentPosition (AudioPlayHead::CurrentPositionInfo& result)
 void Transport::transportPlay (bool shouldStartPlaying)
 {
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
-    if (shouldStartPlaying)
-        transportSource.start();
-    else
-        transportSource.stop();
+    playState = (shouldStartPlaying) ? Transport::State::playing : Transport::State::stopped;
 }
 
 void Transport::transportRecord (bool shouldStartRecording)
 {
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
+    recordEnabled = shouldStartRecording;
 }
 
 void Transport::transportRewind()
@@ -121,7 +125,26 @@ void Transport::releaseResources()
 
 void Transport::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
-    //currentPositionInfo.bpm = edit->masterTrack->getBeatsPerMinuteAtTime (getCurrentPositionInSeconds());
+    double ppq = pulsesPerQuarterNote.get();
+    int timeSigNumerator = edit->masterTrack->timeSignature->numerator.get();
+    int timeSigDenominator = edit->masterTrack->timeSignature->denominator.get();
+    double quarterNotesPerBeat = edit->masterTrack->timeSignature->quarterNotesPerBeat();
+    double beat = edit->masterTrack->tempo->beat (transportSource.getCurrentPosition());
+
+    currentPositionInfo.bpm = edit->masterTrack->tempo->tempoAtTime (transportSource.getCurrentPosition());
+    currentPositionInfo.timeSigNumerator = timeSigNumerator;
+    currentPositionInfo.timeSigDenominator = timeSigDenominator;
+    currentPositionInfo.timeInSamples = transportSource.getNextReadPosition();
+    currentPositionInfo.timeInSeconds = transportSource.getCurrentPosition();
+    currentPositionInfo.editOriginTime = 0.0;
+    currentPositionInfo.ppqPosition = beat * ppq * quarterNotesPerBeat;
+    currentPositionInfo.ppqPositionOfLastBarStart = edit->masterTrack->timeSignature->barInTermsOfBeat (beat) * ppq * quarterNotesPerBeat;
+    currentPositionInfo.frameRate = AudioPlayHead::FrameRateType::fpsUnknown;
+    currentPositionInfo.isPlaying = transportSource.isPlaying();
+    currentPositionInfo.isRecording = recordEnabled.get();
+    currentPositionInfo.ppqLoopStart = loopStartBeat.get() * ppq * quarterNotesPerBeat;
+    currentPositionInfo.ppqLoopEnd = loopEndBeat.get() * ppq * quarterNotesPerBeat;
+    currentPositionInfo.isLooping = loopEnabled.get();
 
     edit->getNextAudioBlock (bufferToFill);
 

@@ -26,23 +26,23 @@ namespace IDs
     {
         DECLARE_ID (PlayPositionTime)
         DECLARE_ID (PlayPositionBeat)
-        DECLARE_ID (LoopStartTime)
-        DECLARE_ID (LoopEndTime)
-        DECLARE_ID (IsLooping)
+        DECLARE_ID (LoopStartBeat)
+        DECLARE_ID (LoopEndBeat)
+        DECLARE_ID (LoopEnabled)
+        DECLARE_ID (RecordEnabled)
         DECLARE_ID (PlayState)
         DECLARE_ID (SampleRate)
-    }
-
-    DECLARE_ID (MasterTrack)
-    namespace MasterTrackProps
-    {
-        DECLARE_ID (BeatsPerMinute)
-        DECLARE_ID (TimeSigNumerator)
-        DECLARE_ID (TimeSigDenominator)
         DECLARE_ID (PulsesPerQuarterNote)
     }
 
+    DECLARE_ID (MasterTrack)
+
     DECLARE_ID (Tempo)
+
+    DECLARE_ID (TimeSignature)
+
+    DECLARE_ID (TimeSigNumerator)
+    DECLARE_ID (TimeSigDenominator)
 
     DECLARE_ID (Track)
     namespace TrackProps
@@ -52,7 +52,7 @@ namespace IDs
         DECLARE_ID (Type)
         namespace Types
         {
-            DECLARE_ID (MidiSequence)
+            DECLARE_ID (Midi)
         }
     }
 
@@ -62,7 +62,6 @@ namespace IDs
         DECLARE_ID (Start)
         DECLARE_ID (Length)
         DECLARE_ID (Color)
-        DECLARE_ID (Name)
         DECLARE_ID (Type)
         namespace Types
         {
