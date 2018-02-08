@@ -34,9 +34,11 @@ Edit::~Edit()
 
 ValueTree Edit::createSkeletonEdit()
 {
+    /*
     float editLength = 60.0;
     float bpm = 120.0;
     float quarterNoteLength = 1.0 / (bpm / 60.0);
+     */
 
     ValueTree edit (IDs::Edit);
 
@@ -93,14 +95,26 @@ void Edit::valueTreePropertyChanged (ValueTree& tree, const Identifier& id)
 void Edit::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
     masterTrack->prepareToPlay (samplesPerBlockExpected, sampleRate);
+    for (Track* track : tracks.objects)
+    {
+        track->prepareToPlay (samplesPerBlockExpected, sampleRate);
+    }
 }
 
 void Edit::releaseResources()
 {
     masterTrack->releaseResources();
+    for (Track* track : tracks.objects)
+    {
+        track->releaseResources();
+    }
 }
 
 void Edit::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
     masterTrack->getNextAudioBlock (bufferToFill);
+    for (Track* track : tracks.objects)
+    {
+        track->getNextAudioBlock (bufferToFill);
+    }
 }

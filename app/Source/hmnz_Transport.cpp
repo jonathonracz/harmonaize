@@ -26,11 +26,11 @@ Transport::Transport (const ValueTree& v, UndoManager* um, Edit* const _edit)
       playPositionBeat (getState(), IDs::TransportProps::PlayPositionBeat, nullptr, 0.0),
       playState (getState(), IDs::TransportProps::PlayState, nullptr, State::stopped)
 {
-    Utility::writeBackDefaultValueIfNotThere (sampleRate);
-    Utility::writeBackDefaultValueIfNotThere (recordEnabled);
-    Utility::writeBackDefaultValueIfNotThere (playPositionTime);
-    Utility::writeBackDefaultValueIfNotThere (playPositionBeat);
-    Utility::writeBackDefaultValueIfNotThere (playState);
+    Utility::writeBackDefault (sampleRate);
+    Utility::writeBackDefault (recordEnabled);
+    Utility::writeBackDefault (playPositionTime);
+    Utility::writeBackDefault (playPositionBeat);
+    Utility::writeBackDefault (playState);
 
     transportSource.setSource (this, 0, nullptr, sampleRate.get());
     output.setSource (&transportSource);

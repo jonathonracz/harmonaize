@@ -74,12 +74,12 @@ private:
 
     AudioPlayHead::CurrentPositionInfo currentPositionInfo;
 
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> pulsesPerQuarterNote;
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> sampleRate;
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<bool>> recordEnabled;
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> loopStartBeat;
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> loopEndBeat;
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<bool>> loopEnabled;
+    CachedValue<SPSCAtomicWrapper<double>> pulsesPerQuarterNote;
+    CachedValue<SPSCAtomicWrapper<double>> sampleRate;
+    CachedValue<SPSCAtomicWrapper<bool>> recordEnabled;
+    CachedValue<SPSCAtomicWrapper<double>> loopStartBeat;
+    CachedValue<SPSCAtomicWrapper<double>> loopEndBeat;
+    CachedValue<SPSCAtomicWrapper<bool>> loopEnabled;
 
     CachedValue<double> playPositionTime;
     CachedValue<double> playPositionBeat;
