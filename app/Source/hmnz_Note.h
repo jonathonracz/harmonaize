@@ -19,6 +19,13 @@ class Note  : public ValueTreeObject<IDs::Note>
 public:
     Note (const ValueTree& v, UndoManager* um, const Clip* owner);
 
+    
+
+    CachedValue<double> start;
+    CachedValue<double> length;
+    CachedValue<int> velocity;
+    CachedValue<int> value;
+
 private:
     const Clip* owner;
 };

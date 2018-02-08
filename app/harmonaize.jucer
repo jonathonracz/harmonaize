@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="OexI64" name="harmonaize" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.harmonaize.harmonaize" includeBinaryInAppConfig="1"
-              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.0"
+              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.1"
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark">
   <MAINGROUP id="TpvEFM" name="harmonaize">
     <GROUP id="{4C57DD66-0DB0-A254-59EF-09BAA05140B1}" name="GUI">

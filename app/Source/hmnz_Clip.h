@@ -21,8 +21,12 @@ public:
     Clip (const ValueTree& v, UndoManager* um, const Track* owner);
     ~Clip() = default;
 
+    CachedValue<double> start;
+    CachedValue<double> length;
+    CachedValue<Colour> color;
+    CachedValue<Identifier> type;
+
 private:
     const Track* owner;
-
     NoteArray notes;
 };

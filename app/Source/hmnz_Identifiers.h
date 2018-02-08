@@ -63,10 +63,6 @@ namespace IDs
         DECLARE_ID (Length)
         DECLARE_ID (Color)
         DECLARE_ID (Type)
-        namespace Types
-        {
-            DECLARE_ID (Midi)
-        }
     }
 
     DECLARE_ID (Note)

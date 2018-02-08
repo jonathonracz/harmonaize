@@ -34,5 +34,6 @@ public:
     Edit* const edit;
 
 private:
+    AudioBuffer<float> buffer;
     ClipArray clips;
 };
