@@ -11,8 +11,8 @@
 #pragma once
 
 #include "hmnz_ValueTreeObject.h"
-#include "hmnz_ClipArray.h"
 #include "hmnz_VariantConverters.h"
+#include "hmnz_ClipList.h"
 
 class Edit;
 
@@ -30,10 +30,14 @@ public:
     CachedValue<String> name;
     CachedValue<Colour> color;
     CachedValue<Identifier> type;
+    CachedValue<int> MidiTrack;
 
     Edit* const edit;
 
 private:
-    AudioBuffer<float> buffer;
-    ClipArray clips;
+    AudioBuffer<float> audioBuffer;
+    MidiBuffer midiBuffer;
+    ClipList clipList;
+
+    
 };

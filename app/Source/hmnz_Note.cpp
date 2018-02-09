@@ -13,6 +13,11 @@
 #include "hmnz_ValueTreeObject.h"
 
 Note::Note (const ValueTree& v, UndoManager* um, const Clip* _owner)
-    : ValueTreeObject (v, um), owner (_owner)
+    : ValueTreeObject (v, um),
+      start (getState(), IDs::NoteProps::Start, getUndoManager()),
+      length (getState(), IDs::NoteProps::Length, getUndoManager()),
+      velocity (getState(), IDs::NoteProps::Velocity, getUndoManager()),
+      value (getState(), IDs::NoteProps::Value, getUndoManager()),
+      owner (_owner)
 {
 }
