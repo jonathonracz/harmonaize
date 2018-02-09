@@ -19,7 +19,16 @@ class Note  : public ValueTreeObject<IDs::Note>
 public:
     Note (const ValueTree& v, UndoManager* um, const Clip* owner);
 
-    
+    MidiMessage getNoteOn() const noexcept
+    {
+        //return MidiMessage::noteOn (<#int channel#>, <#int noteNumber#>, <#float velocity#>)
+        return MidiMessage();
+    }
+
+    MidiMessage getNoteOff() const noexcept
+    {
+        return MidiMessage();
+    }
 
     CachedValue<double> start;
     CachedValue<double> length;

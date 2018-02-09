@@ -50,11 +50,14 @@ namespace IDs
         DECLARE_ID (Name)
         DECLARE_ID (Color)
         DECLARE_ID (Type)
+        DECLARE_ID (MidiTrack)
         namespace Types
         {
             DECLARE_ID (Midi)
         }
     }
+
+    DECLARE_ID (ClipList)
 
     DECLARE_ID (Clip)
     namespace ClipProps
