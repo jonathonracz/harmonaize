@@ -11,15 +11,13 @@
 #include "hmnz_NoteArray.h"
 #include "hmnz_Clip.h"
 
-NoteArray::NoteArray (Clip* const _owner)
-    : ValueTreeObjectArray (_owner->getState(), _owner->getUndoManager()),
-      owner (_owner)
+NoteArray::NoteArray (const ValueTree& v, UndoManager* um)
+    : ValueTreeObjectArray (v, um)
 {
     addObjects();
 }
 
 Note* NoteArray::createNewObject (const ValueTree& v, UndoManager* um)
 {
-    jassert (um == owner->getUndoManager());
-    return new Note (v, um, owner);
+    return new Note (v, um);
 }

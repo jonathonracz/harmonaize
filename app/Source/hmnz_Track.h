@@ -38,6 +38,4 @@ private:
     AudioBuffer<float> audioBuffer;
     MidiBuffer midiBuffer;
     ClipList clipList;
-
-    
 };

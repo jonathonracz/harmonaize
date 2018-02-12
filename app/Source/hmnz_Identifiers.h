@@ -68,6 +68,8 @@ namespace IDs
         DECLARE_ID (Type)
     }
 
+    DECLARE_ID (NoteList)
+
     DECLARE_ID (Note)
     namespace NoteProps
     {

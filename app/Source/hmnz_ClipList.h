@@ -25,7 +25,7 @@ public:
     Array<Clip*> getClipsForInterval(double start, double end) const noexcept
     {
         Array<Clip*> ret;
-        for (Clip* clip : clips)
+        for (Clip* clip : clips.objects)
             if (clip->start >= start && clip->start + clip->length < end)
                 ret.add (clip);
 
@@ -40,7 +40,7 @@ private:
     {
         if (treeChanged.getParent() == getState() && (property == IDs::ClipProps::Start || property == IDs::ClipProps::Length))
         {
-            fixClipOverlaps();
+            fixClipOverlaps (treeChanged);
             sortClips();
         }
     }
@@ -49,7 +49,7 @@ private:
     {
         if (parent == getState())
         {
-            fixClipOverlaps();
+            fixClipOverlaps (child);
             sortClips();
         }
     }
@@ -63,7 +63,7 @@ private:
             jassert (first != second);
             return (firstStart < secondStart) ? -1 : 1;
         }
-    }
+    };
 
     void sortClips() noexcept
     {
@@ -71,10 +71,10 @@ private:
         getState().sort (comparator, nullptr, false);
     }
 
-    void fixClipOverlaps() noexcept
+    void fixClipOverlaps (const ValueTree& dominantClip) noexcept
     {
         Array<int> childrenToDelete;
-        Child* changedChild = clips[getState().indexOf (treeChanged)];
+        Clip* changedChild = clips.objects[getState().indexOf (dominantClip)];
         for (int i = 0; i < clips.objects.size(); ++i)
         {
             Clip* child = clips.objects[i];

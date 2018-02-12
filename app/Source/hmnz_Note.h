@@ -12,29 +12,35 @@
 
 #include "hmnz_ValueTreeObject.h"
 
-class Clip;
-
 class Note  : public ValueTreeObject<IDs::Note>
 {
 public:
-    Note (const ValueTree& v, UndoManager* um, const Clip* owner);
+    Note (const ValueTree& v, UndoManager* um)
+        : ValueTreeObject (v, um),
+          start (getState(), IDs::NoteProps::Start, getUndoManager()),
+          length (getState(), IDs::NoteProps::Length, getUndoManager()),
+          velocity (getState(), IDs::NoteProps::Velocity, getUndoManager()),
+          value (getState(), IDs::NoteProps::Value, getUndoManager())
+    {
+    }
 
     MidiMessage getNoteOn() const noexcept
     {
-        //return MidiMessage::noteOn (<#int channel#>, <#int noteNumber#>, <#float velocity#>)
-        return MidiMessage();
+        return MidiMessage::noteOn (0, value, static_cast<uint8>(velocity));
     }
 
     MidiMessage getNoteOff() const noexcept
     {
-        return MidiMessage();
+        return MidiMessage::noteOff (0, value, static_cast<uint8>(velocity));
+    }
+
+    double getEnd() const noexcept
+    {
+        return start + length;
     }
 
     CachedValue<double> start;
     CachedValue<double> length;
     CachedValue<int> velocity;
     CachedValue<int> value;
-
-private:
-    const Clip* owner;
 };
