@@ -12,6 +12,7 @@
 
 #include "hmnz_ValueTreeObject.h"
 #include "hmnz_NoteArray.h"
+#include "hmnz_NoteList.h"
 
 class Track;
 
@@ -19,7 +20,6 @@ class Clip  : public ValueTreeObject<IDs::Clip>
 {
 public:
     Clip (const ValueTree& v, UndoManager* um, const Track* owner);
-    ~Clip() = default;
 
     CachedValue<double> start;
     CachedValue<double> length;
@@ -28,5 +28,5 @@ public:
 
 private:
     const Track* owner;
-    NoteArray notes;
+    NoteList notes;
 };

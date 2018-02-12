@@ -18,6 +18,6 @@ Clip::Clip (const ValueTree& v, UndoManager* um, const Track* _owner)
       length (getState(), IDs::ClipProps::Length, getUndoManager(), 4.0),
       color (getState(), IDs::ClipProps::Color, getUndoManager(), _owner->color),
       type (getState(), IDs::TrackProps::Type, getUndoManager(), _owner->type),
-      notes (this)
+      notes (getState().getOrCreateChildWithName (IDs::NoteList, nullptr), getUndoManager())
 {
 }

@@ -48,4 +48,6 @@ void Track::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 
     jassert (bufferToFill.numSamples - bufferToFill.startSample <= audioBuffer.getNumSamples());
     jassert (bufferToFill.buffer->getNumChannels() <= audioBuffer.getNumChannels());
+
+    //clipList.getClipsForInterval (, <#double end#>)
 }
