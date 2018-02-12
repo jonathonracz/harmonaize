@@ -12,25 +12,40 @@
 
 EditView::EditView()
 {
+    addAndMakeVisible (transportView);
 }
 
 EditView::~EditView()
 {
 }
 
-void EditView::setEdit (Edit* edit)
+void EditView::setEdit (Edit* _edit)
 {
-    currentEdit = edit;
+    if (edit)
+        edit->getState().removeListener (this);
+
+    edit = _edit;
+
+    if (edit)
+    {
+        transportView.setTransport (edit->transport.get());
+        edit->getState().addListener (this);
+    }
 }
 
 void EditView::resized()
 {
+    FlexBox mainBox;
+    mainBox.flexDirection = FlexBox::Direction::row;
 
+    mainBox.items.add (FlexItem (transportView).withFlex (1.0f));
+
+    mainBox.performLayout (getLocalBounds());
 }
 
 void EditView::paint (Graphics& g)
 {
-    if (currentEdit)
+    if (edit)
         g.fillAll (Colours::red);
     else
         g.fillAll (Colours::blue);

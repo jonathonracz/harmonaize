@@ -45,14 +45,17 @@ public:
     void transportRecord (bool shouldStartRecording) override;
     void transportRewind() override;
 
+    CachedValue<double> playPositionTime;
+    CachedValue<double> playPositionBeat;
+    CachedValue<int> playState;
+
 private:
     Edit* const edit;
 
     // Audio bits
     AudioSourcePlayer output;
     AudioTransportSource transportSource;
-    int64 readPosition;
-    std::atomic<double> desiredReadPositionTime;
+    std::atomic<int64> readPosition;
     std::atomic<double> readPositionTime;
     std::atomic<double> readPositionBeat;
 
@@ -81,7 +84,6 @@ private:
     CachedValue<SPSCAtomicWrapper<double>> loopEndBeat;
     CachedValue<SPSCAtomicWrapper<bool>> loopEnabled;
 
-    CachedValue<double> playPositionTime;
-    CachedValue<double> playPositionBeat;
-    CachedValue<int> playState;
+    JUCE_DECLARE_WEAK_REFERENCEABLE (Transport)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Transport)
 };

@@ -28,8 +28,6 @@ public:
     Edit (const ValueTree& v);
     ~Edit();
 
-    static ValueTree createSkeletonEdit();
-
     // AudioSource methods
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
@@ -37,10 +35,10 @@ public:
 
     std::unique_ptr<MasterTrack> masterTrack;
     std::unique_ptr<Transport> transport;
+    TrackArray tracks;
 
 private:
     UndoManager undoManager;
-    TrackArray tracks;
     jcf::ValueTreeDebugger stateDebugger;
 
     // ValueTree methods
