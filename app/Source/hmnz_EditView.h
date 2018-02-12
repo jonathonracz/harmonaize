@@ -10,9 +10,8 @@
 
 #pragma once
 
-#include "hmnz_Identifiers.h"
-#include "hmnz_ValueTreeObject.h"
 #include "hmnz_Edit.h"
+#include "hmnz_TransportView.h"
 
 class EditView  : public Component,
                   public ValueTree::Listener
@@ -24,7 +23,9 @@ public:
     void setEdit (Edit* edit);
 
 private:
-    WeakReference<Edit> currentEdit;
+    WeakReference<Edit> edit;
+
+    TransportView transportView;
 
     void resized() override;
     void paint (Graphics&) override;

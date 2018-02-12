@@ -13,6 +13,10 @@
             file="Source/hmnz_EditWindow.cpp"/>
       <FILE id="DtfSsB" name="hmnz_EditWindow.h" compile="0" resource="0"
             file="Source/hmnz_EditWindow.h"/>
+      <FILE id="BqfivX" name="hmnz_TransportView.cpp" compile="1" resource="0"
+            file="Source/hmnz_TransportView.cpp"/>
+      <FILE id="KG4fSG" name="hmnz_TransportView.h" compile="0" resource="0"
+            file="Source/hmnz_TransportView.h"/>
     </GROUP>
     <GROUP id="{186A05D2-465A-EAF5-224F-706A2514D5F8}" name="Model">
       <GROUP id="{F1611D00-5B76-00F5-E54F-78CD868347B4}" name="Arrangement">
@@ -49,6 +53,10 @@
         <FILE id="nH42H5" name="hmnz_TempoMap.h" compile="0" resource="0" file="Source/hmnz_TempoMap.h"/>
         <FILE id="gSpiKt" name="hmnz_TimeSignature.h" compile="0" resource="0"
               file="Source/hmnz_TimeSignature.h"/>
+        <FILE id="pKfzEv" name="hmnz_Transport.cpp" compile="1" resource="0"
+              file="Source/hmnz_Transport.cpp"/>
+        <FILE id="AMG9hy" name="hmnz_Transport.h" compile="0" resource="0"
+              file="Source/hmnz_Transport.h"/>
       </GROUP>
       <GROUP id="{0AD15C76-B24F-7CDD-B838-AD65C83CF3F8}" name="Automation">
         <FILE id="FEJaCc" name="hmnz_Automation.h" compile="0" resource="0"
@@ -77,10 +85,6 @@
       </GROUP>
       <FILE id="InvRfR" name="hmnz_Identifiers.h" compile="0" resource="0"
             file="Source/hmnz_Identifiers.h"/>
-      <FILE id="pKfzEv" name="hmnz_Transport.cpp" compile="1" resource="0"
-            file="Source/hmnz_Transport.cpp"/>
-      <FILE id="AMG9hy" name="hmnz_Transport.h" compile="0" resource="0"
-            file="Source/hmnz_Transport.h"/>
     </GROUP>
     <FILE id="IdMZgo" name="hmnz_Application.cpp" compile="1" resource="0"
           file="Source/hmnz_Application.cpp"/>

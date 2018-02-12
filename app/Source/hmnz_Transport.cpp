@@ -14,17 +14,16 @@
 
 Transport::Transport (const ValueTree& v, UndoManager* um, Edit* const _edit)
     : ValueTreeObject (v, um),
+      playPositionTime (getState(), IDs::TransportProps::PlayPositionTime, nullptr, 0.0),
+      playPositionBeat (getState(), IDs::TransportProps::PlayPositionBeat, nullptr, 0.0),
+      playState (getState(), IDs::TransportProps::PlayState, nullptr, State::stopped),
       edit (_edit),
-      desiredReadPositionTime (std::numeric_limits<double>::lowest()),
       pulsesPerQuarterNote(getState(), IDs::TransportProps::PulsesPerQuarterNote, nullptr, 960.0),
       sampleRate (getState(), IDs::TransportProps::SampleRate, nullptr, 44100.0),
       recordEnabled (getState(), IDs::TransportProps::RecordEnabled, nullptr, false),
       loopStartBeat (getState(), IDs::TransportProps::LoopStartBeat, nullptr, 0.0),
       loopEndBeat (getState(), IDs::TransportProps::LoopEndBeat, nullptr, 16.0),
-      loopEnabled (getState(), IDs::TransportProps::LoopEnabled, nullptr, false),
-      playPositionTime (getState(), IDs::TransportProps::PlayPositionTime, nullptr, 0.0),
-      playPositionBeat (getState(), IDs::TransportProps::PlayPositionBeat, nullptr, 0.0),
-      playState (getState(), IDs::TransportProps::PlayState, nullptr, State::stopped)
+      loopEnabled (getState(), IDs::TransportProps::LoopEnabled, nullptr, false)
 {
     Utility::writeBackDefault (sampleRate);
     Utility::writeBackDefault (recordEnabled);
@@ -44,7 +43,6 @@ Transport::Transport (const ValueTree& v, UndoManager* um, Edit* const _edit)
     getState().addListener (this);
     transportSource.addChangeListener (this);
     transportSource.setPosition (playPositionTime);
-    transportSource.start();
 }
 
 Transport::~Transport()
@@ -56,13 +54,12 @@ Transport::~Transport()
 
 void Transport::setNextReadPosition (int64 newPosition)
 {
-    readPosition = newPosition;
+    readPosition.store(newPosition, std::memory_order_release);
 }
 
 int64 Transport::getNextReadPosition() const
 {
-    HMNZ_ASSERT_IS_NOT_ON_MESSAGE_THREAD
-    return readPosition;
+    return readPosition.load(std::memory_order_acquire);
 }
 
 int64 Transport::getTotalLength() const
@@ -94,11 +91,10 @@ bool Transport::getCurrentPosition (AudioPlayHead::CurrentPositionInfo& result)
     return true;
 }
 
-
 void Transport::transportPlay (bool shouldStartPlaying)
 {
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
-    playState = (shouldStartPlaying) ? Transport::State::playing : Transport::State::stopped;
+    shouldStartPlaying ? transportSource.start() : transportSource.stop();
 }
 
 void Transport::transportRecord (bool shouldStartRecording)
@@ -148,16 +144,7 @@ void Transport::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 
     edit->getNextAudioBlock (bufferToFill);
 
-    double loadedDesiredReadPositionTime = desiredReadPositionTime.load (std::memory_order_acquire);
-    if (loadedDesiredReadPositionTime != std::numeric_limits<double>::lowest())
-    {
-        transportSource.setPosition (loadedDesiredReadPositionTime);
-        desiredReadPositionTime.store (std::numeric_limits<double>::lowest());
-    }
-    else
-    {
-        setNextReadPosition (getNextReadPosition() + bufferToFill.numSamples);
-    }
+    setNextReadPosition (getNextReadPosition() + bufferToFill.numSamples);
 
     readPositionTime.store (transportSource.getCurrentPosition(), std::memory_order_release);
     readPositionBeat.store (edit->masterTrack->tempo->beat (transportSource.getCurrentPosition()), std::memory_order_release);
@@ -178,7 +165,17 @@ void Transport::valueTreePropertyChanged (ValueTree& tree, const Identifier& ide
     {
         if (identifier == playPositionTime.getPropertyID())
         {
-            desiredReadPositionTime.store (playPositionTime, std::memory_order_release);
+            double time = std::max(0.0, playPositionTime.get());
+            tree.setPropertyExcludingListener (this, playPositionTime.getPropertyID(), time, nullptr);
+            tree.setPropertyExcludingListener (this, playPositionBeat.getPropertyID(), edit->masterTrack->tempo->beat (time), nullptr);
+            transportSource.setPosition (time);
+        }
+        else if (identifier == playPositionBeat.getPropertyID())
+        {
+            double time = std::max (0.0, edit->masterTrack->tempo->time (playPositionBeat));
+            tree.setPropertyExcludingListener (this, playPositionTime.getPropertyID(), time, nullptr);
+            tree.setPropertyExcludingListener (this, playPositionBeat.getPropertyID(), edit->masterTrack->tempo->beat (time), nullptr);
+            transportSource.setPosition (time);
         }
         else if (identifier == playState.getPropertyID())
         {
