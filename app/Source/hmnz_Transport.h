@@ -28,7 +28,7 @@ public:
         playing
     };
 
-    Transport (Edit* const edit);
+    Transport (const ValueTree& v, UndoManager* um, Edit* const edit);
     ~Transport();
 
     bool canControlTransport() override { return true; }
@@ -45,15 +45,30 @@ public:
     void transportRecord (bool shouldStartRecording) override;
     void transportRewind() override;
 
-private:
+    CachedValue<double> playHeadTime;
+    CachedValue<double> playHeadBeat;
+    CachedValue<double> playHeadTempo;
+    CachedValue<int> playHeadTimeSigNumerator;
+    CachedValue<int> playHeadTimeSigDenominator;
+    CachedValue<int> playHeadKeySigNumSharpsOrFlats;
+    CachedValue<bool> playHeadKeySigIsMinor;
+
+    CachedValue<int> playState;
+
     Edit* const edit;
 
+private:
     // Audio bits
     AudioSourcePlayer output;
     AudioTransportSource transportSource;
-    int64 readPosition;
-    std::atomic<double> desiredReadPositionTime;
+    std::atomic<int64> readPosition;
     std::atomic<double> readPositionTime;
+    std::atomic<double> readPositionBeat;
+    std::atomic<double> readPositionTempo;
+    std::atomic<int> readPositionTimeSigNumerator;
+    std::atomic<int> readPositionTimeSigDenominator;
+    std::atomic<int> readPositionKeySigNumSharpsOrFlats;
+    std::atomic<bool> readPositionKeySigIsMinor;
 
     // MIDI bits
     MidiMessageCollector midiMessageCollector;
@@ -73,16 +88,13 @@ private:
 
     AudioPlayHead::CurrentPositionInfo currentPositionInfo;
 
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> pulsesPerQuarterNote;
+    CachedValue<SPSCAtomicWrapper<double>> pulsesPerQuarterNote;
+    CachedValue<SPSCAtomicWrapper<double>> sampleRate;
+    CachedValue<SPSCAtomicWrapper<bool>> recordEnabled;
+    CachedValue<SPSCAtomicWrapper<double>> loopStartBeat;
+    CachedValue<SPSCAtomicWrapper<double>> loopEndBeat;
+    CachedValue<SPSCAtomicWrapper<bool>> loopEnabled;
 
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> originBeat;
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> endBeat;
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> sampleRate;
-
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<double>> beatsPerMinute;
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<int>> timeSigNumerator;
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<int>> timeSigDenominator;
-
-    CachedValue<double> playPositionTime;
-    CachedValue<int> playState;
+    JUCE_DECLARE_WEAK_REFERENCEABLE (Transport)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Transport)
 };

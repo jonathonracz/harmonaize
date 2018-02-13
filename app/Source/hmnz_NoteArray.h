@@ -16,10 +16,8 @@
 class NoteArray : public ValueTreeObjectArray<Note>
 {
 public:
-    NoteArray (Clip* const owner);
+    NoteArray (const ValueTree& v, UndoManager* um);
 
 private:
-    Clip* const owner;
-
     Note* createNewObject (const ValueTree& v, UndoManager* um) override;
 };

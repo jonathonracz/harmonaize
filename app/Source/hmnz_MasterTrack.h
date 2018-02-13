@@ -11,8 +11,9 @@
 #pragma once
 
 #include "hmnz_ValueTreeObject.h"
-#include "hmnz_CacheValueWrappers.h"
 #include "hmnz_Tempo.h"
+#include "hmnz_TimeSignature.h"
+#include "hmnz_KeySignature.h"
 
 class Edit;
 
@@ -20,20 +21,17 @@ class MasterTrack   : public ValueTreeObject<IDs::MasterTrack>,
                       public AudioSource
 {
 public:
-    MasterTrack (Edit* const edit);
+    MasterTrack (const ValueTree& v, UndoManager* um, Edit* const edit);
+    ~MasterTrack() = default;
 
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override {}
     void releaseResources() override {}
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override {}
 
-    double getBeatsPerMinuteAtTime (double time);
-    double getSecondsPerBeatAtTime (double time);
-    double getBeatsAtTime (double time);
+    std::unique_ptr<Tempo> tempo;
+    std::unique_ptr<TimeSignature> timeSignature;
+    std::unique_ptr<KeySignature> keySignature;
 
 private:
     Edit* const edit;
-    Tempo tempo;
-
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<int>> timeSigNumerator;
-    CachedValue<SPSCRelaxedLoadAtomicWrapper<int>> timeSigDenominator;
 };
