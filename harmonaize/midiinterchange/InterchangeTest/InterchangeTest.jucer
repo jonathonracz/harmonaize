@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="bK3BJy" name="InterchangeTest" displaySplashScreen="0" reportAppUsage="0"
+              splashScreenColour="Dark" projectType="consoleapp" version="1.0.0"
+              bundleIdentifier="com.yourcompany.InterchangeTest" includeBinaryInAppConfig="1"
+              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.1"
+              headerPath="/usr/local/Cellar/python3/3.6.4_2/Frameworks/Python.framework/Versions/3.6/include/python3.6m/"
+              defines="">
+  <MAINGROUP id="C5JZny" name="InterchangeTest">
+    <GROUP id="{2AF54551-73BA-3D5F-3A6C-CCC2ACFB5E15}" name="Source">
+      <FILE id="lPcYyQ" name="clocks.mid" compile="0" resource="1" file="Source/clocks.mid"/>
+      <FILE id="ONGkdN" name="calc.py" compile="0" resource="1" file="Source/calc.py"/>
+      <FILE id="VEHAHg" name="Main.cpp" compile="1" resource="0" file="../../../../../../../../.Trash/Main.cpp"/>
+    </GROUP>
+    <FILE id="YXOliU" name="hmnz_MidiInterchange.cpp" compile="1" resource="0"
+          file="../hmnz_MidiInterchange.cpp"/>
+    <FILE id="XOMV6Z" name="hmnz_MidiInterchange.h" compile="0" resource="0"
+          file="../hmnz_MidiInterchange.h"/>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-Wno-range-loop-analysis"
+               extraLinkerFlags="-L/usr/local/opt/python3/Frameworks/Python.framework/Versions/3.6/lib/python3.6/config-3.6m-darwin -lpython3.6m -ldl -framework CoreFoundation"
+               externalLibraries="" extraDefs="" enableGNUExtensions="1" customXcodeResourceFolders="~/Documents/School/Semester8/EECS 498/harmonaize/harmonaize/midiinterchange/InterchangeTest/Source">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" enablePluginBinaryCopyStep="1" isDebug="1" optimisation="1"
+                       linkTimeOptimisation="0" targetName="InterchangeTest"/>
+        <CONFIGURATION name="Release" enablePluginBinaryCopyStep="1" isDebug="0" optimisation="3"
+                       linkTimeOptimisation="1" targetName="InterchangeTest"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../../external/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../external/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../external/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../external/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../external/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../external/JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../external/JUCE/modules"/>
+        <MODULEPATH id="juce_video" path="../../external/JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../external/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../external/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../external/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../external/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../external/JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <JUCEOPTIONS/>
+</JUCERPROJECT>
