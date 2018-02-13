@@ -35,6 +35,13 @@ private:
     Label beatLabel;
     Label tempoLabel;
     Label timeSignatureLabel;
+    Label keySignatureLabel;
+
+    DrawableText timeText;
+    DrawableText beatText;
+    DrawableText tempoText;
+    DrawableText timeSignatureText;
+    DrawableText keySignatureText;
 
     void resized() override;
     void paint (Graphics&) override;
