@@ -29,6 +29,8 @@
         <FILE id="Vv50Er" name="hmnz_ClipList.h" compile="0" resource="0" file="Source/hmnz_ClipList.h"/>
         <FILE id="Ay8orM" name="hmnz_Edit.cpp" compile="1" resource="0" file="Source/hmnz_Edit.cpp"/>
         <FILE id="YdnPis" name="hmnz_Edit.h" compile="0" resource="0" file="Source/hmnz_Edit.h"/>
+        <FILE id="o2j8YY" name="hmnz_KeySignature.h" compile="0" resource="0"
+              file="Source/hmnz_KeySignature.h"/>
         <FILE id="P5Kohq" name="hmnz_MasterTrack.cpp" compile="1" resource="0"
               file="Source/hmnz_MasterTrack.cpp"/>
         <FILE id="qVsK1W" name="hmnz_MasterTrack.h" compile="0" resource="0"

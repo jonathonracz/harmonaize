@@ -17,4 +17,5 @@ MasterTrack::MasterTrack (const ValueTree& v, UndoManager* um, Edit* const _edit
 {
     tempo = std::unique_ptr<Tempo> (new Tempo (getState().getOrCreateChildWithName (Tempo::identifier, nullptr), getUndoManager()));
     timeSignature = std::unique_ptr<TimeSignature> (new TimeSignature (getState().getOrCreateChildWithName (TimeSignature::identifier, nullptr), getUndoManager()));
+    keySignature = std::unique_ptr<KeySignature> (new KeySignature (getState().getOrCreateChildWithName (KeySignature::identifier, nullptr), getUndoManager()));
 }

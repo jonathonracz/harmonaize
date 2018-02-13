@@ -45,19 +45,30 @@ public:
     void transportRecord (bool shouldStartRecording) override;
     void transportRewind() override;
 
-    CachedValue<double> playPositionTime;
-    CachedValue<double> playPositionBeat;
+    CachedValue<double> playHeadTime;
+    CachedValue<double> playHeadBeat;
+    CachedValue<double> playHeadTempo;
+    CachedValue<int> playHeadTimeSigNumerator;
+    CachedValue<int> playHeadTimeSigDenominator;
+    CachedValue<int> playHeadKeySigNumSharpsOrFlats;
+    CachedValue<bool> playHeadKeySigIsMinor;
+
     CachedValue<int> playState;
 
-private:
     Edit* const edit;
 
+private:
     // Audio bits
     AudioSourcePlayer output;
     AudioTransportSource transportSource;
     std::atomic<int64> readPosition;
     std::atomic<double> readPositionTime;
     std::atomic<double> readPositionBeat;
+    std::atomic<double> readPositionTempo;
+    std::atomic<int> readPositionTimeSigNumerator;
+    std::atomic<int> readPositionTimeSigDenominator;
+    std::atomic<int> readPositionKeySigNumSharpsOrFlats;
+    std::atomic<bool> readPositionKeySigIsMinor;
 
     // MIDI bits
     MidiMessageCollector midiMessageCollector;

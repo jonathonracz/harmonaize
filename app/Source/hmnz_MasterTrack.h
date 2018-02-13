@@ -13,6 +13,7 @@
 #include "hmnz_ValueTreeObject.h"
 #include "hmnz_Tempo.h"
 #include "hmnz_TimeSignature.h"
+#include "hmnz_KeySignature.h"
 
 class Edit;
 
@@ -29,6 +30,7 @@ public:
 
     std::unique_ptr<Tempo> tempo;
     std::unique_ptr<TimeSignature> timeSignature;
+    std::unique_ptr<KeySignature> keySignature;
 
 private:
     Edit* const edit;

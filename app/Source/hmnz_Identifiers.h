@@ -24,8 +24,14 @@ namespace IDs
     DECLARE_ID (Transport)
     namespace TransportProps
     {
-        DECLARE_ID (PlayPositionTime)
-        DECLARE_ID (PlayPositionBeat)
+        DECLARE_ID (PlayHeadTime)
+        DECLARE_ID (PlayHeadBeat)
+        DECLARE_ID (PlayHeadTempo)
+        DECLARE_ID (PlayHeadTimeSigNumerator)
+        DECLARE_ID (PlayHeadTimeSigDenominator)
+        DECLARE_ID (PlayHeadKeySigNumSharpsOrFlats)
+        DECLARE_ID (PlayHeadKeySigIsMinor)
+
         DECLARE_ID (LoopStartBeat)
         DECLARE_ID (LoopEndBeat)
         DECLARE_ID (LoopEnabled)
@@ -43,6 +49,11 @@ namespace IDs
 
     DECLARE_ID (TimeSigNumerator)
     DECLARE_ID (TimeSigDenominator)
+
+    DECLARE_ID (KeySignature)
+
+    DECLARE_ID (KeySigNumberOfSharpsOrFlats)
+    DECLARE_ID (KeySigIsMinor)
 
     DECLARE_ID (Track)
     namespace TrackProps
