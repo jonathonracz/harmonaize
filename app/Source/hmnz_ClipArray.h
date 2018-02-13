@@ -13,13 +13,14 @@
 #include "hmnz_Clip.h"
 #include "hmnz_ValueTreeObjectArray.h"
 
+class Track;
+
 class ClipArray : public ValueTreeObjectArray<Clip>
 {
 public:
-    ClipArray (Track* const owner);
+    ClipArray (const ValueTree& v, UndoManager* um, Track* const track);
 
 private:
-    Track* const owner;
-
+    Track* const track;
     Clip* createNewObject (const ValueTree& v, UndoManager* um) override;
 };

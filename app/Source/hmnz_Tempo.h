@@ -14,37 +14,42 @@
 #include "hmnz_Automation.h"
 #include "hmnz_TempoMap.h"
 
-class Tempo : ValueTreeObject<IDs::Tempo>
+class Tempo : public ValueTreeObject<IDs::Tempo>
 {
 public:
     Tempo (const ValueTree& v, UndoManager* um)
-        : ValueTreeObject (v, um), automation (Automation<double>::createDefaultState(), um),
-          tempoMap (v.getRoot(), automation)
+        : ValueTreeObject (v, um), automation (Automation<double>::createDefaultState(), um, 120.0),
+          tempoMap (automation)
     {
         getState().addChild (automation.getState(), -1, nullptr);
     }
 
+    /** Returns the beat for a given time in seconds. */
     double beat (double time) const noexcept
     {
-        return tempoMap.beat (time);
+        return tempoMap.beat (time / 60.0);
     }
 
+    /** Returns the time in seconds for a given beat. */
     double time (double beat) const noexcept
     {
-        return tempoMap.time (beat);
+        return tempoMap.time (beat) * 60.0;
     }
 
+    /** Returns the tempo (in BPM) at a given time in seconds. */
     double tempoAtTime (double time) const noexcept
     {
-        return tempoMap.tempoAtTime (time);
+        return tempoMap.tempoAtTime (time / 60.0);
     }
 
+    /** Returns the tempo (in BPM) at a given beat. */
     double tempoAtBeat (double beat) const noexcept
     {
         return tempoMap.tempoAtBeat (beat);
     }
 
-private:
     Automation<double> automation;
+
+private:
     TempoMap tempoMap;
 };

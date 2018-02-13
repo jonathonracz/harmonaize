@@ -25,3 +25,17 @@ struct VariantConverter<Colour>
         return c.toString();
     }
 };
+
+template<>
+struct VariantConverter<Identifier>
+{
+    static Identifier fromVar (const var& v)
+    {
+        return Identifier (v);
+    }
+
+    static var toVar (const Identifier& c)
+    {
+        return c.toString();
+    }
+};

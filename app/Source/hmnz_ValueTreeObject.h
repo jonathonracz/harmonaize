@@ -45,6 +45,11 @@ public:
         return ValueTree (identifier);
     }
 
+    operator ValueTree() noexcept
+    {
+        return getState();
+    }
+
     static constexpr const Identifier& identifier = identifierType;
 
 protected:

@@ -28,6 +28,7 @@ public:
         {
             // Create a default origin marker.
             getState().addChild (AutomationMarker<ValueType>::createDefaultState(), -1, nullptr);
+            getState().getChild (0).setProperty (IDs::AutomationMarkerProps::Value, originValue, nullptr);
         }
 
         validateMarkers();
@@ -49,7 +50,7 @@ public:
         ValueTree markerBefore = markerBeforeBeat (beat);
         ValueTree markerAfter = markerAfterBeat (beat);
 
-        if (double(markerBefore[IDs::AutomationMarkerProps::Beat]) == std::numeric_limits<double>::min())
+        if (double(markerBefore[IDs::AutomationMarkerProps::Beat]) == std::numeric_limits<double>::lowest())
         {
             markerBefore.setProperty (IDs::AutomationMarkerProps::Beat, beat, getUndoManager());
             markerBefore.setProperty (IDs::AutomationMarkerProps::Value, v[IDs::AutomationMarkerProps::Value], getUndoManager());
@@ -105,7 +106,7 @@ public:
         beginNewTransaction ("Remove automation marker");
         if (getState().getNumChildren() == 1)
         {
-            childToRemove.setProperty (IDs::AutomationMarkerProps::Beat, std::numeric_limits<double>::min(), getUndoManager());
+            childToRemove.setProperty (IDs::AutomationMarkerProps::Beat, std::numeric_limits<double>::lowest(), getUndoManager());
         }
         else
         {
@@ -136,8 +137,8 @@ public:
         int afterType = markerAfter[IDs::AutomationMarkerProps::Type];
         double beforeBeat = markerBefore[IDs::AutomationMarkerProps::Beat];
         double afterBeat = markerAfter[IDs::AutomationMarkerProps::Beat];
-        ValueType beforeValue = markerBefore[IDs::AutomationMarkerProps::Value];
-        ValueType afterValue = markerAfter[IDs::AutomationMarkerProps::Value];
+        double beforeValue = markerBefore[IDs::AutomationMarkerProps::Value];
+        double afterValue = markerAfter[IDs::AutomationMarkerProps::Value];
         ValueType retValue;
         switch (afterType)
         {
@@ -150,8 +151,13 @@ public:
                 else
                 {
                     double beatDelta = (beat - beforeBeat) / (afterBeat - beforeBeat);
-                    retValue = beforeValue + ((afterValue - beforeValue) * beatDelta);
+                    double retValueDouble = beforeValue + ((afterValue - beforeValue) * beatDelta);
+                    if (std::is_integral<ValueType>::value)
+                        retValueDouble = std::round (retValueDouble);
+
+                    retValue = static_cast<ValueType>(retValueDouble);
                 }
+                break;
             }
             case AutomationMarker<ValueType>::Type::step:
             {
@@ -159,6 +165,7 @@ public:
                     retValue = beforeValue;
                 else
                     retValue = afterValue;
+                break;
             }
             default: jassertfalse;
         }
@@ -168,7 +175,7 @@ public:
 
     int numTimedMarkers() const noexcept
     {
-        if (markers.objects.size() == 1 && markers.objects[0]->beat == std::numeric_limits<double>::min)
+        if (markers.objects.size() == 1 && double (markers.objects[0]->beat.get()) == std::numeric_limits<double>::lowest())
             return 0;
 
         return markers.objects.size();
@@ -278,7 +285,7 @@ private:
 
     void validateMarkers()
     {
-        double currentBeat = std::numeric_limits<double>::min();
+        double currentBeat = std::numeric_limits<double>::lowest();
         jassert (getState().getNumChildren() > 0);
         for (int i = 0; i < getState().getNumChildren(); ++i)
         {

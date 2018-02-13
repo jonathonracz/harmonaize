@@ -19,44 +19,41 @@ namespace IDs
     DECLARE_ID (Edit)
     namespace EditProps
     {
-        DECLARE_ID (OriginBeat)
-        DECLARE_ID (EndBeat)
-        DECLARE_ID (SampleRate)
     }
 
     DECLARE_ID (Transport)
     namespace TransportProps
     {
-        DECLARE_ID (PlayPositionTime)
-        DECLARE_ID (LoopStartTime)
-        DECLARE_ID (LoopEndTime)
-        DECLARE_ID (IsLooping)
-        DECLARE_ID (PlayState)
-    }
+        DECLARE_ID (PlayHeadTime)
+        DECLARE_ID (PlayHeadBeat)
+        DECLARE_ID (PlayHeadTempo)
+        DECLARE_ID (PlayHeadTimeSigNumerator)
+        DECLARE_ID (PlayHeadTimeSigDenominator)
+        DECLARE_ID (PlayHeadKeySigNumSharpsOrFlats)
+        DECLARE_ID (PlayHeadKeySigIsMinor)
 
-    DECLARE_ID (MasterTrack)
-    namespace MasterTrackProps
-    {
-        DECLARE_ID (BeatsPerMinute)
-        DECLARE_ID (TimeSigNumerator)
-        DECLARE_ID (TimeSigDenominator)
+        DECLARE_ID (LoopStartBeat)
+        DECLARE_ID (LoopEndBeat)
+        DECLARE_ID (LoopEnabled)
+        DECLARE_ID (RecordEnabled)
+        DECLARE_ID (PlayState)
+        DECLARE_ID (SampleRate)
         DECLARE_ID (PulsesPerQuarterNote)
     }
 
+    DECLARE_ID (MasterTrack)
+
     DECLARE_ID (Tempo)
 
-    DECLARE_ID (TempoMap)
-    namespace TempoMapProps
-    {
-        DECLARE_ID (TotalTime)
-    }
+    DECLARE_ID (TimeSignature)
 
-    DECLARE_ID (TempoMapInterval)
-    namespace TempoMapIntervalProps
-    {
-        DECLARE_ID (EndTime)
-        DECLARE_ID (EndPeriod)
-    }
+    DECLARE_ID (TimeSigNumerator)
+    DECLARE_ID (TimeSigDenominator)
+
+    DECLARE_ID (KeySignature)
+
+    DECLARE_ID (KeySigNumberOfSharpsOrFlats)
+    DECLARE_ID (KeySigIsMinor)
 
     DECLARE_ID (Track)
     namespace TrackProps
@@ -64,11 +61,14 @@ namespace IDs
         DECLARE_ID (Name)
         DECLARE_ID (Color)
         DECLARE_ID (Type)
+        DECLARE_ID (MidiTrack)
         namespace Types
         {
-            DECLARE_ID (MidiSequence)
+            DECLARE_ID (Midi)
         }
     }
+
+    DECLARE_ID (ClipList)
 
     DECLARE_ID (Clip)
     namespace ClipProps
@@ -76,13 +76,10 @@ namespace IDs
         DECLARE_ID (Start)
         DECLARE_ID (Length)
         DECLARE_ID (Color)
-        DECLARE_ID (Name)
         DECLARE_ID (Type)
-        namespace Types
-        {
-            DECLARE_ID (Midi)
-        }
     }
+
+    DECLARE_ID (NoteList)
 
     DECLARE_ID (Note)
     namespace NoteProps

@@ -11,6 +11,7 @@
 #pragma once
 
 #include "JuceHeader.h"
+#include "hmnz_VariantConverters.h"
 
 #define HMNZ_IS_ON_MESSAGE_THREAD \
     MessageManager::getInstance()->currentThreadHasLockedMessageManager()
@@ -25,10 +26,10 @@ namespace Utility
 {
 
 template<typename Type>
-void writeBackDefaultValueIfNotThere (CachedValue<Type>& value, UndoManager* um = nullptr)
+void writeBackDefault (CachedValue<Type>& value)
 {
     if (value.isUsingDefault())
-        value.getValueTree().setProperty (value.getPropertyID(), value.getDefault(), um);
+        value = value.getDefault();
 }
 
 }

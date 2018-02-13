@@ -11,15 +11,13 @@
 #include "hmnz_ClipArray.h"
 #include "hmnz_Track.h"
 
-ClipArray::ClipArray (Track* const _owner)
-    : ValueTreeObjectArray (_owner->getState(), _owner->getUndoManager()),
-      owner (_owner)
+ClipArray::ClipArray (const ValueTree& v, UndoManager* um, Track* const _track)
+    : ValueTreeObjectArray (v, um), track (_track)
 {
     addObjects();
 }
 
 Clip* ClipArray::createNewObject (const ValueTree& v, UndoManager* um)
 {
-    jassert (um == owner->getUndoManager());
-    return new Clip (v, um, owner);
+    return new Clip (v, um, track);
 }
