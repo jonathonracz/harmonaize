@@ -1,6 +1,6 @@
 from mido import MidiFile
 
-def midi_test(path_to_midi):
+def midiTest(path_to_midi):
 	mid = MidiFile(path_to_midi)
 
 
