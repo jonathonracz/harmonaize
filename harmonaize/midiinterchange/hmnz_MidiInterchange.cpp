@@ -18,12 +18,26 @@ MidiFile interchange::getValue(void* value) {
     return *file;
 }
 
-MidiFile interchange::callPython(std::string file) {
+MidiFile interchange::callPython(MidiFile song) {
+    std::string file = convert(song);
     py::scoped_interpreter guard{};
     py::bytes bytes(file);
     py::module python = py::module::import("python");
     py::object result = python.attr("openFile")(bytes);
     std::string n = result.cast<std::string>();
-    std::cout << n << std::endl;
-    //    MidiFile f = getValue(nullptr);
+    MemoryBlock block(&n, n.size());
+    MidiFile newSong = MidiFile();
+    MemoryInputStream inputStream(block.getData(), block.getSize(), false);
+    newSong.readFrom(inputStream);
+    return newSong;
+}
+
+std::string interchange::convert(MidiFile song) {
+    MemoryBlock file = MemoryBlock();
+    MemoryOutputStream stream(file, false);
+    song.writeTo(stream);
+    std::string s;
+    s.resize(file.getSize());
+    memcpy(&s[0], file.getData(), file.getSize());
+    return s;
 }

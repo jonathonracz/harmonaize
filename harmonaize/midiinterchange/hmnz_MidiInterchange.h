@@ -22,8 +22,8 @@ using namespace py::literals;
 
 class interchange {
 public:
-    MidiFile callPython(std::string file);
+    MidiFile callPython(MidiFile file);
 private:
-    std::string convert(std::string file);
+    std::string convert(MidiFile file);
     MidiFile getValue(void* value);
 };
