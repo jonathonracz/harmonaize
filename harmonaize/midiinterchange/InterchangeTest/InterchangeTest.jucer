@@ -8,9 +8,9 @@
               defines="">
   <MAINGROUP id="C5JZny" name="InterchangeTest">
     <GROUP id="{2AF54551-73BA-3D5F-3A6C-CCC2ACFB5E15}" name="Source">
-      <FILE id="lPcYyQ" name="clocks.mid" compile="0" resource="1" file="Source/clocks.mid"/>
-      <FILE id="ONGkdN" name="calc.py" compile="0" resource="1" file="Source/calc.py"/>
       <FILE id="VEHAHg" name="Main.cpp" compile="1" resource="0" file="../../../../../../../../.Trash/Main.cpp"/>
+      <FILE id="DspTUt" name="clocks.mid" compile="0" resource="1" file="Source/clocks.mid"/>
+      <FILE id="wSdpX1" name="python.py" compile="0" resource="1" file="Source/python.py"/>
     </GROUP>
     <FILE id="YXOliU" name="hmnz_MidiInterchange.cpp" compile="1" resource="0"
           file="../hmnz_MidiInterchange.cpp"/>
