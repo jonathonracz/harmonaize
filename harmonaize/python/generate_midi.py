@@ -3,13 +3,18 @@
 import os
 import sys
 from parse_midi import parse_midi
+from chord_prog import ChordProg
 from grooves import GROOVES
 
-def genMidi(midi_file=None):
+def genAccompaniment(midi_file=None):
 	FileAttributes = parse_midi(midi_file)
+	generator = ChordProg(FileAttributes.key, "test/test.mma", FileAttributes.tempo, FileAttributes.groove)
+	generator.generateMMAFormat()
 
-def main(path_to_fakebook):
-	os.system('python3 ../mma.py ' + path_to_fakebook)
+	genMidi("test/test.mma")
+
+def genMidi(path_to_fakebook):
+	os.system('python3 ../external/mma/mma.py ' + path_to_fakebook)
 
 if __name__ == '__main__':
-    main(*sys.argv[1:])
+    genFakebook(*sys.argv[1:])
