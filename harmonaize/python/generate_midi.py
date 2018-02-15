@@ -6,12 +6,14 @@ from parse_midi import parse_midi
 from chord_prog import ChordProg
 from grooves import GROOVES
 
-def genAccompaniment(midi_file=None):
-	FileAttributes = parse_midi(midi_file)
+def genAccompaniment(midi=None):
+	FileAttributes = parse_midi(midi)
 	generator = ChordProg(FileAttributes.key, "test/test.mma", FileAttributes.tempo, FileAttributes.groove)
 	generator.generateMMAFormat()
 
 	genMidi("test/test.mma")
+
+	return mido.MidiFile("test/test.mid")
 
 def genMidi(path_to_fakebook):
 	os.system('python3 ../external/mma/mma.py ' + path_to_fakebook)

@@ -1,8 +1,7 @@
 import mido
 
-def parseMidi(path_to_midi_file='../../app/Design/test.mid'):
-	mid = mido.MidiFile(path_to_midi_file)
-	messages = mid.tracks[0]
+def parseMidi(midi=mido.MidiFile('../../app/Design/test.mid')):
+	messages = midi.tracks[0]
 
 	FileAttributes = {
 		'tempo': 0,
