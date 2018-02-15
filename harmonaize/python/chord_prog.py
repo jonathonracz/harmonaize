@@ -55,5 +55,5 @@ class ChordProg():
 		
 
 if __name__ == "__main__":
-	generator = ChordProg("C", "test/test.mma", 120, "Rhumba")
+	generator = ChordProg("C", "generated_files/accomp.mma", 120, "Rhumba")
 	generator.generateMMAFormat()
