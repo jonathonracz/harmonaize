@@ -1,6 +1,7 @@
 import mido
+from grooves import GROOVES
 
-def parseMidi(midi=mido.MidiFile('../../app/Design/test.mid')):
+def parseMidi(midi):
 	messages = midi.tracks[0]
 
 	FileAttributes = {
@@ -14,7 +15,7 @@ def parseMidi(midi=mido.MidiFile('../../app/Design/test.mid')):
 	FileAttributes['time_signature'] = (time_sig_msg.numerator, time_sig_msg.denominator)
 	FileAttributes['tempo'] = mido.tempo2bpm(getMessageWithType(messages, 'set_tempo').tempo)
 	FileAttributes['key'] = getMessageWithType(messages, 'key_signature').key
-	FileAttributes['groove'] = chooseBestGroove(FileAttributes.tempo, FileAttributes.time_signature)
+	FileAttributes['groove'] = chooseBestGroove(FileAttributes['tempo'], FileAttributes['time_signature'])
 
 	return FileAttributes
 	
