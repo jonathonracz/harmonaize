@@ -1,14 +1,6 @@
 # This file associates existing grooves with their time signature
 
-GROOVES = {
-	'slow': [
-
-			],
-	'fast': [
-
-			],
-
-
+GROOVES = [
 	'50srock',
 	'60srock',
 	'68march',
@@ -120,4 +112,4 @@ GROOVES = {
 	'waltz',
 	'westernswing',
 	'zydeco',
-}
+]
