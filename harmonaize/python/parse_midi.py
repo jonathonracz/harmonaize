@@ -10,10 +10,10 @@ def parseMidi(midi=mido.MidiFile('../../app/Design/test.mid')):
 		'groove': '60srock',
 	}
 
-	time_sig_msg = get_message_with_type(messages, 'time_signature')
+	time_sig_msg = getMessageWithType(messages, 'time_signature')
 	FileAttributes['time_signature'] = (time_sig_msg.numerator, time_sig_msg.denominator)
-	FileAttributes['tempo'] = mido.tempo2bpm(get_message_with_type(messages, 'set_tempo').tempo)
-	FileAttributes['key'] = get_message_with_type(messages, 'key_signature').key
+	FileAttributes['tempo'] = mido.tempo2bpm(getMessageWithType(messages, 'set_tempo').tempo)
+	FileAttributes['key'] = getMessageWithType(messages, 'key_signature').key
 	FileAttributes['groove'] = chooseBestGroove(FileAttributes.tempo, FileAttributes.time_signature)
 
 	return FileAttributes

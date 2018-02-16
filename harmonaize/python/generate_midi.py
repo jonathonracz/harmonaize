@@ -7,7 +7,7 @@ from chord_prog import ChordProg
 from grooves import GROOVES
 
 def genAccompaniment(midi=None):
-	FileAttributes = parse_midi(midi)
+	FileAttributes = parseMidi(midi)
 	generator = ChordProg(FileAttributes.key, "generated_files/accomp.mma", FileAttributes.tempo, FileAttributes.groove)
 	generator.generateMMAFormat()
 
