@@ -13,24 +13,28 @@
 #include "hmnz_ValueTreeObject.h"
 #include "hmnz_VariantConverters.h"
 #include "hmnz_ClipList.h"
+#include "hmnz_PositionedAudioMidiSource.h"
+#include "hmnz_CacheValueWrappers.h"
 
 class Edit;
 
 class Track : public ValueTreeObject<IDs::Track>,
-              public AudioSource
+              public PositionedAudioMidiSource
 {
 public:
     Track (const ValueTree& v, UndoManager* um, Edit* const edit);
 
-    // AudioSource methods
-    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
-    void releaseResources() override;
-    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
+    void prepareToPlay (int samplesPerBlockExpected, double sampleRate);
+    void releaseResources();
+    void getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
+        const MidiBuffer& incomingMidiBuffer,
+        const AudioPlayHead::CurrentPositionInfo& positionInfo);
 
     CachedValue<String> name;
     CachedValue<Colour> color;
     CachedValue<Identifier> type;
-    CachedValue<int> MidiTrack;
+    CachedValue<int> midiTrack;
+    CachedValue<SPSCAtomicWrapper<bool>> recordArmed;
 
     Edit* const edit;
 
@@ -38,4 +42,6 @@ private:
     AudioBuffer<float> audioBuffer;
     MidiBuffer midiBuffer;
     ClipList clipList;
+
+    Clip* currentRecordTarget = nullptr;
 };

@@ -22,9 +22,9 @@ Transport::Transport (const ValueTree& v, UndoManager* um, Edit* const _edit)
       playHeadKeySigNumSharpsOrFlats (getState(), IDs::TransportProps::PlayHeadKeySigNumSharpsOrFlats, nullptr, 0),
       playHeadKeySigIsMinor (getState(), IDs::TransportProps::PlayHeadKeySigIsMinor, nullptr, false),
       playState (getState(), IDs::TransportProps::PlayState, nullptr, State::stopped),
+      sampleRate (getState(), IDs::TransportProps::SampleRate, nullptr, 44100.0),
       edit (_edit),
       pulsesPerQuarterNote(getState(), IDs::TransportProps::PulsesPerQuarterNote, nullptr, 960.0),
-      sampleRate (getState(), IDs::TransportProps::SampleRate, nullptr, 44100.0),
       recordEnabled (getState(), IDs::TransportProps::RecordEnabled, nullptr, false),
       loopStartBeat (getState(), IDs::TransportProps::LoopStartBeat, nullptr, 0.0),
       loopEndBeat (getState(), IDs::TransportProps::LoopEndBeat, nullptr, 16.0),
@@ -109,7 +109,6 @@ void Transport::transportRewind()
 
 void Transport::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
-    std::atomic_thread_fence (std::memory_order_acquire);
     edit->prepareToPlay (samplesPerBlockExpected, sampleRate);
 }
 
@@ -120,6 +119,7 @@ void Transport::releaseResources()
 
 void Transport::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
+    const std::lock_guard<std::mutex> lock (getCallbackLock());
     double ppq = pulsesPerQuarterNote.get();
     int timeSigNumerator = edit->masterTrack->timeSignature->numerator.get();
     int timeSigDenominator = edit->masterTrack->timeSignature->denominator.get();
@@ -141,7 +141,12 @@ void Transport::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
     currentPositionInfo.ppqLoopEnd = loopEndBeat.get() * ppq * quarterNotesPerBeat;
     currentPositionInfo.isLooping = loopEnabled.get();
 
-    edit->getNextAudioBlock (bufferToFill);
+    MidiBuffer incomingMidi;
+    midiMessageCollector.removeNextBlockOfMessages (incomingMidi, bufferToFill.numSamples);
+    keyboardState.processNextMidiBuffer (incomingMidi, 0, bufferToFill.numSamples, true);
+
+    AudioBuffer<float> usableBufferSubset (bufferToFill.buffer->getArrayOfWritePointers(), bufferToFill.buffer->getNumChannels(), bufferToFill.startSample, bufferToFill.numSamples);
+    edit->getNextAudioBlockWithInputs (usableBufferSubset, incomingMidi, currentPositionInfo);
 
     setNextReadPosition (getNextReadPosition() + bufferToFill.numSamples);
 

@@ -54,6 +54,9 @@ public:
     CachedValue<bool> playHeadKeySigIsMinor;
 
     CachedValue<int> playState;
+    CachedValue<SPSCAtomicWrapper<double>> sampleRate;
+
+    std::mutex& getCallbackLock() { return callbackLock; }
 
     Edit* const edit;
 
@@ -69,6 +72,8 @@ private:
     std::atomic<int> readPositionTimeSigDenominator;
     std::atomic<int> readPositionKeySigNumSharpsOrFlats;
     std::atomic<bool> readPositionKeySigIsMinor;
+    int currentSamplesPerBlockExpected = -1;
+    std::mutex callbackLock;
 
     // MIDI bits
     MidiMessageCollector midiMessageCollector;
@@ -89,7 +94,6 @@ private:
     AudioPlayHead::CurrentPositionInfo currentPositionInfo;
 
     CachedValue<SPSCAtomicWrapper<double>> pulsesPerQuarterNote;
-    CachedValue<SPSCAtomicWrapper<double>> sampleRate;
     CachedValue<SPSCAtomicWrapper<bool>> recordEnabled;
     CachedValue<SPSCAtomicWrapper<double>> loopStartBeat;
     CachedValue<SPSCAtomicWrapper<double>> loopEndBeat;

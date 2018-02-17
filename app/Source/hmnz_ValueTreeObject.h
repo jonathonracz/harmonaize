@@ -20,7 +20,10 @@ class ValueTreeObject : protected ValueTree::Listener
 {
 public:
     ValueTreeObject (const ValueTree& v, UndoManager* um)
-        : state (v), undoManager (um) {}
+        : state (v), undoManager (um)
+    {
+        jassert (v.getType() == identifier);
+    }
 
     virtual ~ValueTreeObject() = default;
 

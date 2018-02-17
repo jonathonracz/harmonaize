@@ -11,15 +11,15 @@
 #include "hmnz_TrackArray.h"
 #include "hmnz_Edit.h"
 
-TrackArray::TrackArray (Edit* const _owner)
-    : ValueTreeObjectArray (_owner->getState(), _owner->getUndoManager()),
-      owner (_owner)
+TrackArray::TrackArray (Edit* const _edit)
+    : ValueTreeObjectArray (_edit->getState(), _edit->getUndoManager()),
+      edit (_edit)
 {
     addObjects();
 }
 
 Track* TrackArray::createNewObject (const ValueTree& v, UndoManager* um)
 {
-    jassert (um == owner->getUndoManager());
-    return new Track (v, um, owner);
+    jassert (um == edit->getUndoManager());
+    return new Track (v, um, edit);
 }

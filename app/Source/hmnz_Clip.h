@@ -11,8 +11,8 @@
 #pragma once
 
 #include "hmnz_ValueTreeObject.h"
-#include "hmnz_NoteArray.h"
-#include "hmnz_NoteList.h"
+#include "hmnz_MidiMessageModel.h"
+#include "hmnz_MidiMessageSequenceModel.h"
 
 class Track;
 
@@ -28,5 +28,7 @@ public:
 
 private:
     const Track* owner;
-    NoteList notes;
+
+    void valueTreePropertyChanged (ValueTree &treeWhosePropertyHasChanged, const Identifier &property) override;
+    void valueTreeChildAdded (ValueTree &parentTree, ValueTree &childWhichHasBeenAdded) override;
 };

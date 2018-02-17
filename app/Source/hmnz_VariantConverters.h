@@ -34,8 +34,22 @@ struct VariantConverter<Identifier>
         return Identifier (v);
     }
 
-    static var toVar (const Identifier& c)
+    static var toVar (const Identifier& i)
     {
-        return c.toString();
+        return i.toString();
+    }
+};
+
+template<>
+struct VariantConverter<MemoryBlock>
+{
+    static MemoryBlock fromVar (const var& v)
+    {
+        return *v.getBinaryData();
+    }
+
+    static var toVar (const MemoryBlock& m)
+    {
+        return var (m);
     }
 };

@@ -54,11 +54,12 @@ void Edit::releaseResources()
     }
 }
 
-void Edit::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
+void Edit::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
+        const MidiBuffer& incomingMidiBuffer,
+        const AudioPlayHead::CurrentPositionInfo& positionInfo)
 {
-    masterTrack->getNextAudioBlock (bufferToFill);
     for (Track* track : tracks.objects)
     {
-        track->getNextAudioBlock (bufferToFill);
+        track->getNextAudioBlockWithInputs (audioBuffer, incomingMidiBuffer, positionInfo);
     }
 }

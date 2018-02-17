@@ -13,13 +13,13 @@
 #include "hmnz_Track.h"
 #include "hmnz_ValueTreeObjectArray.h"
 
-class TrackArray    : public ValueTreeObjectArray<Track>
+class TrackArray    : public ValueTreeObjectArray<Track, CriticalSection>
 {
 public:
-    TrackArray (Edit* const owner);
+    TrackArray (Edit* const edit);
 
 private:
-    Edit* const owner;
+    Edit* const edit;
 
     Track* createNewObject (const ValueTree& v, UndoManager* um) override;
 };

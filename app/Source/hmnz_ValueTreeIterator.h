@@ -27,11 +27,11 @@ struct ValueTreeForwardIterator
         return ValueTreeForwardIterator (v, true);
     }
 
-    typedef ValueTree value_type;
-    typedef int difference_type;
-    typedef ValueTree& reference;
-    typedef ValueTree* pointer;
-    typedef std::forward_iterator_tag iterator_category;
+    using value_type = ValueTree;
+    using difference_type = std::ptrdiff_t;
+    using reference = ValueTree&;
+    using pointer = ValueTree*;
+    using iterator_category = std::forward_iterator_tag;
 
     ValueTreeForwardIterator& operator++() noexcept
     {
