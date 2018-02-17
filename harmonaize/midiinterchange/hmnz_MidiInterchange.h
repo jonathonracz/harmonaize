@@ -25,5 +25,4 @@ public:
     MidiFile callPython(MidiFile file);
 private:
     std::string convert(MidiFile file);
-    MidiFile getValue(void* value);
 };
