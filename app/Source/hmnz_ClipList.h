@@ -16,13 +16,13 @@
 class ClipList  : public ValueTreeObject<IDs::ClipList>
 {
 public:
-    ClipList (const ValueTree& v, UndoManager* um, Track* const _owner)
-        : ValueTreeObject (v, um), owner (_owner), clips (v, um, owner)
+    ClipList (const ValueTree& v, UndoManager* um, Track* const _track)
+        : ValueTreeObject (v, um), clips (v, um, _track), track (_track)
     {
         getState().addListener (this);
     }
 
-    Array<Clip*> getClipsForInterval(double start, double end) const noexcept
+    Array<Clip*> getClipsForInterval (double start, double end) const noexcept
     {
         Array<Clip*> ret;
         for (Clip* clip : clips.objects)
@@ -32,9 +32,19 @@ public:
         return ret;
     }
 
-private:
-    Track* const owner;
+    Clip* clipAtTime (double time) const noexcept
+    {
+        for (Clip* clip : clips.objects)
+            if (clip->start >= time && clip->start + clip->length < time)
+                return clip;
+
+        return nullptr;
+    }
+
     ClipArray clips;
+
+private:
+    Track* const track;
 
     void valueTreePropertyChanged (ValueTree& treeChanged, const Identifier& property) override
     {

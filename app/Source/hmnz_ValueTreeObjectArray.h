@@ -30,12 +30,8 @@ public:
     {
         const ScopedLockType sl (arrayLock);
         while (objects.size() > 0)
-        deleteObject (objects.removeAndReturn (objects.size() - 1));
+            deleteObject (objects.removeAndReturn (objects.size() - 1));
     }
-
-    ObjectType* getObject(int index) const { return objects.objectAtIndex(index); }
-
-    int getNumObjects() const { return objects.size(); }
 
     bool isChildTree (ValueTree& v) const
     {
@@ -51,9 +47,15 @@ public:
         return -1;
     }
 
-    void sortArray()
+    ObjectType* objectWithState (const ValueTree& state) const
     {
-        objects.sort (*this);
+        for (ObjectType* object : objects)
+        {
+            if (object->getState() == state)
+                return object;
+        }
+
+        return nullptr;
     }
 
     int compareElements (ObjectType* first, ObjectType* second) const
@@ -80,8 +82,6 @@ protected:
                     objects.add (newObject);
     }
 
-    //==============================================================================
-    virtual bool isSuitableType (const ValueTree& v) const { return ObjectType::identifier == v.getType(); }
     virtual ObjectType* createNewObject (const ValueTree& v, UndoManager* um) = 0;
     virtual void deleteObject (ObjectType* object) { delete object; }
 
@@ -90,7 +90,16 @@ protected:
     virtual void objectOrderChanged() {}
 
 private:
-    //==============================================================================
+    bool isSuitableType (const ValueTree& v) const
+    {
+        return ObjectType::identifier == v.getType();
+    }
+
+    void sortArray()
+    {
+        objects.sort (*this);
+    }
+
     void valueTreeChildAdded (ValueTree&, ValueTree& tree) override
     {
         if (isChildTree (tree))
@@ -155,6 +164,5 @@ private:
     void valueTreeParentChanged (ValueTree&) override {}
     void valueTreeRedirected (ValueTree&) override { jassertfalse; } // may need to add handling if this is hit
 
-private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ValueTreeObjectArray)
 };

@@ -35,12 +35,10 @@
               file="Source/hmnz_MasterTrack.cpp"/>
         <FILE id="qVsK1W" name="hmnz_MasterTrack.h" compile="0" resource="0"
               file="Source/hmnz_MasterTrack.h"/>
-        <FILE id="Bytcg2" name="hmnz_Note.h" compile="0" resource="0" file="Source/hmnz_Note.h"/>
-        <FILE id="cDrf3H" name="hmnz_NoteArray.cpp" compile="1" resource="0"
-              file="Source/hmnz_NoteArray.cpp"/>
-        <FILE id="MPSSVC" name="hmnz_NoteArray.h" compile="0" resource="0"
-              file="Source/hmnz_NoteArray.h"/>
-        <FILE id="Z4k2ti" name="hmnz_NoteList.h" compile="0" resource="0" file="Source/hmnz_NoteList.h"/>
+        <FILE id="iVdwTm" name="hmnz_MidiMessageModel.h" compile="0" resource="0"
+              file="Source/hmnz_MidiMessageModel.h"/>
+        <FILE id="h8HDfB" name="hmnz_MidiMessageSequenceModel.h" compile="0"
+              resource="0" file="Source/hmnz_MidiMessageSequenceModel.h"/>
         <FILE id="Xc3fiA" name="hmnz_Track.cpp" compile="1" resource="0" file="Source/hmnz_Track.cpp"/>
         <FILE id="eKmbq8" name="hmnz_Track.h" compile="0" resource="0" file="Source/hmnz_Track.h"/>
         <FILE id="Xh38vG" name="hmnz_TrackArray.cpp" compile="1" resource="0"
@@ -73,8 +71,14 @@
               file="Source/hmnz_AutomationUnitTest.h"/>
       </GROUP>
       <GROUP id="{CB34FF74-B8E8-4910-98F6-F9FC3C3EB8FB}" name="Utility">
+        <FILE id="Yw865x" name="hmnz_ArrayIterator.h" compile="0" resource="0"
+              file="Source/hmnz_ArrayIterator.h"/>
         <FILE id="j8omJZ" name="hmnz_CacheValueWrappers.h" compile="0" resource="0"
               file="Source/hmnz_CacheValueWrappers.h"/>
+        <FILE id="fwuAvT" name="hmnz_GenericValueTreeObjectArray.h" compile="0"
+              resource="0" file="Source/hmnz_GenericValueTreeObjectArray.h"/>
+        <FILE id="nxytED" name="hmnz_PositionedAudioMidiSource.h" compile="0"
+              resource="0" file="Source/hmnz_PositionedAudioMidiSource.h"/>
         <FILE id="xkySKO" name="hmnz_Utility.h" compile="0" resource="0" file="Source/hmnz_Utility.h"/>
         <FILE id="AtR89Z" name="hmnz_ValueTreeIterator.h" compile="0" resource="0"
               file="Source/hmnz_ValueTreeIterator.h"/>

@@ -17,12 +17,13 @@
 #include "hmnz_Track.h"
 #include "hmnz_CacheValueWrappers.h"
 #include "hmnz_AutomationMarker.h"
+#include "hmnz_PositionedAudioMidiSource.h"
 
 /**
     Represents an active edit (also known as a project).
 */
 class Edit  : public ValueTreeObject<IDs::Edit>,
-              public AudioSource
+              public PositionedAudioMidiSource
 {
 public:
     Edit (const ValueTree& v);
@@ -31,7 +32,9 @@ public:
     // AudioSource methods
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
-    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
+    void getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
+        const MidiBuffer& incomingMidiBuffer,
+        const AudioPlayHead::CurrentPositionInfo& positionInfo) override;
 
     std::unique_ptr<MasterTrack> masterTrack;
     std::unique_ptr<Transport> transport;

@@ -19,6 +19,7 @@ namespace IDs
     DECLARE_ID (Edit)
     namespace EditProps
     {
+        DECLARE_ID (SelectedTrack)
     }
 
     DECLARE_ID (Transport)
@@ -66,6 +67,7 @@ namespace IDs
         {
             DECLARE_ID (Midi)
         }
+        DECLARE_ID (RecordArmed)
     }
 
     DECLARE_ID (ClipList)
@@ -77,6 +79,19 @@ namespace IDs
         DECLARE_ID (Length)
         DECLARE_ID (Color)
         DECLARE_ID (Type)
+    }
+
+    DECLARE_ID (MidiMessageModel)
+    namespace MidiMessageModelProps
+    {
+        DECLARE_ID (Bytes)
+        DECLARE_ID (Timestamp)
+    }
+
+    DECLARE_ID (MidiMessageSequenceModel)
+    namespace MidiMessageSequenceModelProps
+    {
+        
     }
 
     DECLARE_ID (NoteList)
