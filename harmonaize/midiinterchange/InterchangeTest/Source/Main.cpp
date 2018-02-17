@@ -13,6 +13,7 @@
 #include <iostream>
 #include "../../hmnz_MidiInterchange.h"
 #include <string>
+#include <fstream>
 
 
 //==============================================================================
@@ -29,5 +30,8 @@ int main (int argc, char* argv[])
 //    std::cout << s.size() << std::endl;
     interchange ic = interchange();
     MidiFile result = ic.callPython(clocks);
+    File file("./example.mid");
+    FileOutputStream fileStream(file);
+    result.writeTo(fileStream);
     return 0;
 }

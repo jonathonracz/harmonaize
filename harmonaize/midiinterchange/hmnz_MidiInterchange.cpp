@@ -13,11 +13,6 @@
 namespace py = pybind11;
 using namespace py::literals;
 
-MidiFile interchange::getValue(void* value) {
-    MidiFile* file = (MidiFile*)value;
-    return *file;
-}
-
 MidiFile interchange::callPython(MidiFile song) {
     std::string file = convert(song);
     py::scoped_interpreter guard{};
