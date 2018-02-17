@@ -25,7 +25,7 @@ MidiFile interchange::callPython(MidiFile song) {
     py::module python = py::module::import("python");
     py::object result = python.attr("openFile")(bytes);
     std::string n = result.cast<std::string>();
-    MemoryBlock block(&n, n.size());
+    MemoryBlock block(n.data(), n.size());
     MidiFile newSong = MidiFile();
     MemoryInputStream inputStream(block.getData(), block.getSize(), false);
     newSong.readFrom(inputStream);
