@@ -17,7 +17,7 @@ def genAccompaniment(midi=None):
 	return mido.MidiFile("generated_files/accomp.mid")
 
 def genMidi(path_to_fakebook):
-	os.system('../external/mma/mma.py -g && python3 ../external/mma/mma.py ' + path_to_fakebook)
+	os.system('../external/mma/mma.py -g && python ../external/mma/mma.py ' + path_to_fakebook)
 
 if __name__ == '__main__':
 	midi_file = mido.MidiFile('../../app/Design/test.mid')

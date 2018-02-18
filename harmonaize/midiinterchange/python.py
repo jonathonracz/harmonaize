@@ -1,4 +1,6 @@
 """python code that gets called"""
+import sys
+sys.path.append('../python')
 from io import BytesIO
 from mido import MidiFile
 from generate_midi import genAccompaniment
