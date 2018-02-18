@@ -3,7 +3,7 @@
 <JUCERPROJECT id="bK3BJy" name="InterchangeTest" displaySplashScreen="0" reportAppUsage="0"
               splashScreenColour="Dark" projectType="consoleapp" version="1.0.0"
               bundleIdentifier="com.yourcompany.InterchangeTest" includeBinaryInAppConfig="1"
-              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.1"
+              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.0"
               headerPath="/usr/local/Cellar/python3/3.6.4_2/Frameworks/Python.framework/Versions/3.6/include/python3.6m/"
               defines="">
   <MAINGROUP id="C5JZny" name="InterchangeTest">

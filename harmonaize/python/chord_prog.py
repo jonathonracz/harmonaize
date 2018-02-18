@@ -42,6 +42,7 @@ class ChordProg():
 		file.write("Groove " + self.groove + "\n")
 
 	def generateMMAFormat(self):
+		print(self.filename)
 		file = open(self.filename, 'w')
 		self.writeMMAHeader(file)
 
