@@ -43,6 +43,15 @@ AudioFormatManager& HarmonaizeApplication::getFormatManager()
 void HarmonaizeApplication::initialise (const String& commandLine)
 {
     editWindow = std::unique_ptr<EditWindow> (new EditWindow());
+    preferencesView = std::unique_ptr<PreferencesView> (new PreferencesView());
+    preferencesView->centreWithSize (800, 600);
+    preferencesView->setVisible (true);
+    preferencesView->addToDesktop (
+        ComponentPeer::StyleFlags::windowAppearsOnTaskbar |
+        ComponentPeer::StyleFlags::windowHasTitleBar |
+        ComponentPeer::StyleFlags::windowHasMinimiseButton |
+        ComponentPeer::StyleFlags::windowHasCloseButton |
+        ComponentPeer::StyleFlags::windowHasDropShadow);
 }
 
 void HarmonaizeApplication::shutdown()

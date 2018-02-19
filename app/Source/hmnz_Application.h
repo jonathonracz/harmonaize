@@ -12,6 +12,7 @@
 
 #include "JuceHeader.h"
 #include "hmnz_EditWindow.h"
+#include "hmnz_PreferencesView.h"
 
 class EditWindow;
 
@@ -34,6 +35,7 @@ public:
     void systemRequestedQuit() override;
 
     std::unique_ptr<EditWindow> editWindow;
+    std::unique_ptr<PreferencesView> preferencesView;
 
 private:
     UnitTestRunner unitTestRunner;

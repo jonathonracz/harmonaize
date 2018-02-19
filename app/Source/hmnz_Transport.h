@@ -18,7 +18,8 @@ class Edit;
 class Transport : public ValueTreeObject<IDs::Transport>,
                   public AudioSource,
                   public AudioPlayHead,
-                  public AsyncUpdater
+                  public AsyncUpdater,
+                  public ChangeListener
 {
 public:
     enum State : int
@@ -88,6 +89,8 @@ private:
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
     void handleAsyncUpdate() override;
+
+    void changeListenerCallback (ChangeBroadcaster*) override;
 
     AudioPlayHead::CurrentPositionInfo currentPositionInfo;
 
