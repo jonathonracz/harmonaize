@@ -16,8 +16,7 @@
 class Edit;
 
 class Transport : public ValueTreeObject<IDs::Transport>,
-                  public ChangeListener,
-                  public PositionableAudioSource,
+                  public AudioSource,
                   public AudioPlayHead,
                   public AsyncUpdater
 {
@@ -34,16 +33,21 @@ public:
     bool canControlTransport() override { return true; }
 
     // Note that these should ONLY be called on the audio thread.
-    int64 getNextReadPosition() const override;
-    int64 getTotalLength() const override;
-    double getCurrentPosition() const;
-    double getLengthInSeconds() const;
     bool getCurrentPosition (AudioPlayHead::CurrentPositionInfo& result) override;
 
     // These should ONLY be called on the message thread.
     void transportPlay (bool shouldStartPlaying) override;
     void transportRecord (bool shouldStartRecording) override;
     void transportRewind() override;
+
+    void setPositionSample (int64 sample) noexcept;
+    void setPositionSecond (double second) noexcept;
+
+    std::mutex& getCallbackLock() { return callbackLock; }
+    MidiKeyboardState& getMidiKeyboardState() { return keyboardState; }
+
+    int getActiveSamplesPerBlockExpected() const noexcept { return activeSamplesPerBlockExpected; }
+    double getActiveSampleRate() const noexcept { return activeSampleRate; }
 
     CachedValue<double> playHeadTime;
     CachedValue<double> playHeadBeat;
@@ -53,17 +57,13 @@ public:
     CachedValue<int> playHeadKeySigNumSharpsOrFlats;
     CachedValue<bool> playHeadKeySigIsMinor;
 
-    CachedValue<int> playState;
-    CachedValue<SPSCAtomicWrapper<double>> sampleRate;
-
-    std::mutex& getCallbackLock() { return callbackLock; }
+    CachedValue<SPSCAtomicWrapper<int>> playState;
 
     Edit* const edit;
 
 private:
     // Audio bits
     AudioSourcePlayer output;
-    AudioTransportSource transportSource;
     std::atomic<int64> readPosition;
     std::atomic<double> readPositionTime;
     std::atomic<double> readPositionBeat;
@@ -72,22 +72,20 @@ private:
     std::atomic<int> readPositionTimeSigDenominator;
     std::atomic<int> readPositionKeySigNumSharpsOrFlats;
     std::atomic<bool> readPositionKeySigIsMinor;
-    int currentSamplesPerBlockExpected = -1;
     std::mutex callbackLock;
+
+    int activeSamplesPerBlockExpected = -1;
+    double activeSampleRate = 0.0;
 
     // MIDI bits
     MidiMessageCollector midiMessageCollector;
     MidiKeyboardState keyboardState;
 
     // PositionableAudioSource overrides
-    void setNextReadPosition (int64 newPosition) override;
-    bool isLooping() const override { return false; }
-    void setLooping (bool shouldLoop) override {}
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
 
-    void changeListenerCallback (ChangeBroadcaster* source) override;
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
     void handleAsyncUpdate() override;
 

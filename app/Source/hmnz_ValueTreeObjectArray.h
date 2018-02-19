@@ -38,13 +38,18 @@ public:
         return isSuitableType (v) && v.getParent() == parent;
     }
 
-    int indexOf (const ValueTree& v) const noexcept
+    int indexOfStateInObjects (const ValueTree& v) const noexcept
     {
         for (int i = 0; i < objects.size(); ++i)
-        if (objects.getUnchecked (i)->getState() == v)
-        return i;
+            if (objects.getUnchecked (i)->getState() == v)
+                return i;
 
         return -1;
+    }
+
+    int indexOfObjectInState (ObjectType* object) const noexcept
+    {
+        return parent.indexOf (object->getState());
     }
 
     ObjectType* objectWithState (const ValueTree& state) const
@@ -58,6 +63,24 @@ public:
         return nullptr;
     }
 
+    void insertStateAtIndex (const ValueTree& v, int index) noexcept
+    {
+        parent.addChild (v, index, undoManager);
+    }
+
+    void insertStateAtObjectIndex (const ValueTree& v, int index) noexcept
+    {
+        jassert (index <= objects.size());
+        if (index < 0 || index >= objects.size())
+        {
+            insertStateAtIndex (v, -1);
+            return;
+        }
+
+        int stateIndex = indexOfObjectInState (objects[index]);
+        insertStateAtIndex (v, stateIndex);
+    }
+
     int compareElements (ObjectType* first, ObjectType* second) const
     {
         int index1 = parent.indexOf (first->getState());
@@ -65,13 +88,19 @@ public:
         return index1 - index2;
     }
 
+    const CriticalSectionType& getLock() const noexcept
+    {
+        return arrayLock;
+    }
+
     Array<ObjectType*> objects;
+
+    using ScopedLockType = typename CriticalSectionType::ScopedLockType;
 
 protected:
     ValueTree parent;
     UndoManager* undoManager;
     CriticalSectionType arrayLock;
-    typedef typename CriticalSectionType::ScopedLockType ScopedLockType;
 
     // Call this in your derived constructor.
     void addObjects()
@@ -122,7 +151,9 @@ private:
                 newObjectAdded (newObject);
             }
             else
+            {
                 jassertfalse;
+            }
         }
     }
 
@@ -130,7 +161,7 @@ private:
     {
         if (parent == exParent && isSuitableType (tree))
         {
-            const int oldIndex = indexOf (tree);
+            const int oldIndex = indexOfStateInObjects (tree);
 
             if (oldIndex >= 0)
             {

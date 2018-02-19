@@ -22,23 +22,34 @@ EditView::~EditView()
 void EditView::setEdit (Edit* _edit)
 {
     if (edit)
+    {
         edit->getState().removeListener (this);
+    }
 
     edit = _edit;
 
     if (edit)
     {
-        transportView.setTransport (edit->transport.get());
+        transportView.setTransport (&edit->transport);
         edit->getState().addListener (this);
+        keyboard = std::unique_ptr<MidiKeyboardComponent> (new MidiKeyboardComponent (
+                edit->transport.getMidiKeyboardState(), MidiKeyboardComponent::Orientation::horizontalKeyboard));
+        addAndMakeVisible (*keyboard);
+        resized(); // Re-layout everything.
     }
 }
 
 void EditView::resized()
 {
     FlexBox mainBox;
-    mainBox.flexDirection = FlexBox::Direction::row;
+    mainBox.flexDirection = FlexBox::Direction::column;
 
     mainBox.items.add (FlexItem (transportView).withFlex (1.0f));
+
+    if (edit)
+    {
+        mainBox.items.add (FlexItem (*keyboard).withFlex (1.0f));
+    }
 
     mainBox.performLayout (getLocalBounds());
 }

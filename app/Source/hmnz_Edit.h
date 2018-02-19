@@ -36,8 +36,8 @@ public:
         const MidiBuffer& incomingMidiBuffer,
         const AudioPlayHead::CurrentPositionInfo& positionInfo) override;
 
-    std::unique_ptr<MasterTrack> masterTrack;
-    std::unique_ptr<Transport> transport;
+    MasterTrack masterTrack;
+    Transport transport;
     TrackArray tracks;
 
 private:

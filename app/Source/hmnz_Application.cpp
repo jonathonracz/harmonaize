@@ -16,6 +16,7 @@ HarmonaizeApplication::HarmonaizeApplication()
 
     // TODO: Hardcoded yuckiness here
     audioDeviceManager.initialiseWithDefaultDevices (0, 2);
+    audioFormatManager.registerBasicFormats();
 }
 
 HarmonaizeApplication::~HarmonaizeApplication()
@@ -25,13 +26,18 @@ HarmonaizeApplication::~HarmonaizeApplication()
 
 HarmonaizeApplication& HarmonaizeApplication::getApp()
 {
-    HarmonaizeApplication* const app = static_cast<HarmonaizeApplication*> (HarmonaizeApplication::getInstance());
+    HarmonaizeApplication* const app = static_cast<HarmonaizeApplication*> (JUCEApplication::getInstance());
     return *app;
 }
 
 AudioDeviceManager& HarmonaizeApplication::getDeviceManager()
 {
     return HarmonaizeApplication::getApp().audioDeviceManager;
+}
+
+AudioFormatManager& HarmonaizeApplication::getFormatManager()
+{
+    return HarmonaizeApplication::getApp().audioFormatManager;
 }
 
 void HarmonaizeApplication::initialise (const String& commandLine)

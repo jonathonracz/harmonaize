@@ -22,7 +22,6 @@ Transport::Transport (const ValueTree& v, UndoManager* um, Edit* const _edit)
       playHeadKeySigNumSharpsOrFlats (getState(), IDs::TransportProps::PlayHeadKeySigNumSharpsOrFlats, nullptr, 0),
       playHeadKeySigIsMinor (getState(), IDs::TransportProps::PlayHeadKeySigIsMinor, nullptr, false),
       playState (getState(), IDs::TransportProps::PlayState, nullptr, State::stopped),
-      sampleRate (getState(), IDs::TransportProps::SampleRate, nullptr, 44100.0),
       edit (_edit),
       pulsesPerQuarterNote(getState(), IDs::TransportProps::PulsesPerQuarterNote, nullptr, 960.0),
       recordEnabled (getState(), IDs::TransportProps::RecordEnabled, nullptr, false),
@@ -30,8 +29,7 @@ Transport::Transport (const ValueTree& v, UndoManager* um, Edit* const _edit)
       loopEndBeat (getState(), IDs::TransportProps::LoopEndBeat, nullptr, 16.0),
       loopEnabled (getState(), IDs::TransportProps::LoopEnabled, nullptr, false)
 {
-    transportSource.setSource (this, 0, nullptr, sampleRate.get());
-    output.setSource (&transportSource);
+    output.setSource (this);
     HarmonaizeApplication::getDeviceManager().addAudioCallback (&output);
 
     keyboardState.addListener (&midiMessageCollector);
@@ -40,44 +38,12 @@ Transport::Transport (const ValueTree& v, UndoManager* um, Edit* const _edit)
         HarmonaizeApplication::getDeviceManager().addMidiInputCallback (firstMidiInput, &midiMessageCollector);
 
     getState().addListener (this);
-    transportSource.addChangeListener (this);
-    transportSource.setPosition (playHeadTime);
 }
 
 Transport::~Transport()
 {
     HarmonaizeApplication::getDeviceManager().removeAudioCallback (&output);
     output.setSource (nullptr);
-    transportSource.setSource (nullptr);
-}
-
-void Transport::setNextReadPosition (int64 newPosition)
-{
-    readPosition.store(newPosition, std::memory_order_release);
-}
-
-int64 Transport::getNextReadPosition() const
-{
-    return readPosition.load(std::memory_order_acquire);
-}
-
-int64 Transport::getTotalLength() const
-{
-    HMNZ_ASSERT_IS_NOT_ON_MESSAGE_THREAD
-    // -1 is needed for unknown reason (probably overflow related)
-    return std::numeric_limits<int64>::max() - 1;
-}
-
-double Transport::getCurrentPosition() const
-{
-    HMNZ_ASSERT_IS_NOT_ON_MESSAGE_THREAD
-    return transportSource.getCurrentPosition();
-}
-
-double Transport::getLengthInSeconds() const
-{
-    HMNZ_ASSERT_IS_NOT_ON_MESSAGE_THREAD
-    return transportSource.getLengthInSeconds();
 }
 
 bool Transport::getCurrentPosition (AudioPlayHead::CurrentPositionInfo& result)
@@ -93,7 +59,7 @@ bool Transport::getCurrentPosition (AudioPlayHead::CurrentPositionInfo& result)
 void Transport::transportPlay (bool shouldStartPlaying)
 {
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
-    shouldStartPlaying ? transportSource.start() : transportSource.stop();
+    shouldStartPlaying ? playState.setValue (State::playing, nullptr) : playState.setValue (State::stopped, nullptr);
 }
 
 void Transport::transportRecord (bool shouldStartRecording)
@@ -107,35 +73,54 @@ void Transport::transportRewind()
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
 }
 
+void Transport::setPositionSample (int64 sample) noexcept
+{
+    readPosition.store (sample, std::memory_order_release);
+}
+
+void Transport::setPositionSecond (double second) noexcept
+{
+    readPosition.store (static_cast<int64> (second * getActiveSampleRate()), std::memory_order_release);
+}
+
 void Transport::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
+    HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
+    activeSamplesPerBlockExpected = samplesPerBlockExpected;
+    activeSampleRate = sampleRate;
+    setPositionSecond (playHeadTime);
     edit->prepareToPlay (samplesPerBlockExpected, sampleRate);
+    midiMessageCollector.reset (sampleRate);
+    keyboardState.reset();
 }
 
 void Transport::releaseResources()
 {
+    keyboardState.reset();
     edit->releaseResources();
 }
 
 void Transport::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
     const std::lock_guard<std::mutex> lock (getCallbackLock());
+    int64 samplePosition = readPosition.load (std::memory_order_acquire);
+    double timePosition = samplePosition / getActiveSampleRate();
     double ppq = pulsesPerQuarterNote.get();
-    int timeSigNumerator = edit->masterTrack->timeSignature->numerator.get();
-    int timeSigDenominator = edit->masterTrack->timeSignature->denominator.get();
-    double quarterNotesPerBeat = edit->masterTrack->timeSignature->quarterNotesPerBeat();
-    double beat = edit->masterTrack->tempo->beat (transportSource.getCurrentPosition());
+    int timeSigNumerator = edit->masterTrack.timeSignature->numerator.get();
+    int timeSigDenominator = edit->masterTrack.timeSignature->denominator.get();
+    double quarterNotesPerBeat = edit->masterTrack.timeSignature->quarterNotesPerBeat();
+    double beat = edit->masterTrack.tempo->beat (timePosition);
 
-    currentPositionInfo.bpm = edit->masterTrack->tempo->tempoAtTime (transportSource.getCurrentPosition());
+    currentPositionInfo.bpm = edit->masterTrack.tempo->tempoAtTime (timePosition);
     currentPositionInfo.timeSigNumerator = timeSigNumerator;
     currentPositionInfo.timeSigDenominator = timeSigDenominator;
-    currentPositionInfo.timeInSamples = transportSource.getNextReadPosition();
-    currentPositionInfo.timeInSeconds = transportSource.getCurrentPosition();
+    currentPositionInfo.timeInSamples = samplePosition;
+    currentPositionInfo.timeInSeconds = timePosition;
     currentPositionInfo.editOriginTime = 0.0;
     currentPositionInfo.ppqPosition = beat * ppq * quarterNotesPerBeat;
-    currentPositionInfo.ppqPositionOfLastBarStart = edit->masterTrack->timeSignature->barInTermsOfBeat (beat) * ppq * quarterNotesPerBeat;
+    currentPositionInfo.ppqPositionOfLastBarStart = edit->masterTrack.timeSignature->barInTermsOfBeat (beat) * ppq * quarterNotesPerBeat;
     currentPositionInfo.frameRate = AudioPlayHead::FrameRateType::fpsUnknown;
-    currentPositionInfo.isPlaying = transportSource.isPlaying();
+    currentPositionInfo.isPlaying = (static_cast<int> (playState.get()) == static_cast<int> (State::playing));
     currentPositionInfo.isRecording = recordEnabled.get();
     currentPositionInfo.ppqLoopStart = loopStartBeat.get() * ppq * quarterNotesPerBeat;
     currentPositionInfo.ppqLoopEnd = loopEndBeat.get() * ppq * quarterNotesPerBeat;
@@ -148,7 +133,8 @@ void Transport::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
     AudioBuffer<float> usableBufferSubset (bufferToFill.buffer->getArrayOfWritePointers(), bufferToFill.buffer->getNumChannels(), bufferToFill.startSample, bufferToFill.numSamples);
     edit->getNextAudioBlockWithInputs (usableBufferSubset, incomingMidi, currentPositionInfo);
 
-    setNextReadPosition (getNextReadPosition() + bufferToFill.numSamples);
+    if (currentPositionInfo.isPlaying)
+        readPosition.fetch_add (bufferToFill.numSamples, std::memory_order_acq_rel);
 
     std::atomic_thread_fence (std::memory_order_release);
     readPositionTime.store (currentPositionInfo.timeInSeconds, std::memory_order_relaxed);
@@ -156,17 +142,9 @@ void Transport::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
     readPositionTempo.store (currentPositionInfo.bpm, std::memory_order_relaxed);
     readPositionTimeSigNumerator.store (timeSigDenominator, std::memory_order_relaxed);
     readPositionTimeSigDenominator.store (timeSigDenominator, std::memory_order_relaxed);
-    readPositionKeySigNumSharpsOrFlats.store (edit->masterTrack->keySignature->numSharpsOrFlats.get(), std::memory_order_relaxed);
-    readPositionKeySigIsMinor.store (edit->masterTrack->keySignature->isMinor.get(), std::memory_order_relaxed);
+    readPositionKeySigNumSharpsOrFlats.store (edit->masterTrack.keySignature->numSharpsOrFlats.get(), std::memory_order_relaxed);
+    readPositionKeySigIsMinor.store (edit->masterTrack.keySignature->isMinor.get(), std::memory_order_relaxed);
     triggerAsyncUpdate();
-}
-
-void Transport::changeListenerCallback (ChangeBroadcaster* source)
-{
-    if (transportSource.isPlaying())
-        playState = State::playing;
-    else
-        playState = State::stopped;
 }
 
 void Transport::valueTreePropertyChanged (ValueTree& tree, const Identifier& identifier)
@@ -175,35 +153,26 @@ void Transport::valueTreePropertyChanged (ValueTree& tree, const Identifier& ide
     {
         if (identifier == playHeadTime.getPropertyID())
         {
-            double time = std::max(0.0, playHeadTime.get());
+            double time = std::max (0.0, playHeadTime.get());
             tree.setPropertyExcludingListener (this, playHeadTime.getPropertyID(), time, nullptr);
-            tree.setPropertyExcludingListener (this, playHeadBeat.getPropertyID(), edit->masterTrack->tempo->beat (time), nullptr);
-            transportSource.setPosition (time);
+            tree.setPropertyExcludingListener (this, playHeadBeat.getPropertyID(), edit->masterTrack.tempo->beat (time), nullptr);
+            setPositionSecond (time);
         }
         else if (identifier == playHeadBeat.getPropertyID())
         {
-            double time = std::max (0.0, edit->masterTrack->tempo->time (playHeadBeat));
+            double time = std::max (0.0, edit->masterTrack.tempo->time (playHeadBeat));
             tree.setPropertyExcludingListener (this, playHeadTime.getPropertyID(), time, nullptr);
-            tree.setPropertyExcludingListener (this, playHeadBeat.getPropertyID(), edit->masterTrack->tempo->beat (time), nullptr);
-            transportSource.setPosition (time);
+            tree.setPropertyExcludingListener (this, playHeadBeat.getPropertyID(), edit->masterTrack.tempo->beat (time), nullptr);
+            setPositionSecond (time);
         }
         else if (identifier == playState.getPropertyID())
         {
-            switch (playState)
+            switch (playState.get())
             {
                 case playing: transportPlay (true); break;
                 case stopped: transportPlay (false); break;
                 default: jassertfalse;
             }
-        }
-        else if (identifier == sampleRate.getPropertyID())
-        {
-            bool wasPlaying = (playState == State::playing);
-            transportPlay (false);
-            transportSource.setSource (this, 0, nullptr, sampleRate.get());
-            std::atomic_thread_fence (std::memory_order_acquire);
-            if (wasPlaying)
-                transportPlay (true);
         }
     }
 }

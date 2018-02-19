@@ -14,7 +14,7 @@
 #include "hmnz_GenericValueTreeObjectArray.h"
 #include "hmnz_ArrayIterator.h"
 
-class MidiMessageSequenceModel  : ValueTreeObject<IDs::MidiMessageSequenceModel>
+class MidiMessageSequenceModel  : public ValueTreeObject<IDs::MidiMessageSequenceModel>
 {
 public:
     MidiMessageSequenceModel (const ValueTree& v, UndoManager* um)
@@ -31,11 +31,17 @@ public:
         return ret;
     }
 
-    void setMidiMessageSequence (const MidiMessageSequence& sequence) noexcept
+    void setMidiMessageSequence (MidiMessageSequence& sequence) noexcept
     {
         getState().removeAllChildren (getUndoManager());
+        addMidiMessageSequence (sequence);
+    }
+
+    void addMidiMessageSequence (MidiMessageSequence& sequence) noexcept
+    {
+        sequence.sort();
         for (MidiMessageSequence::MidiEventHolder* event : sequence)
-            addEvent (event->message);
+             addEvent (event->message);
     }
 
     void addEvent (const MidiMessage& message) noexcept
@@ -52,6 +58,5 @@ public:
         getState().addChild (MidiMessageModel::createStateForMessage (message), insertIndex, getUndoManager());
     }
 
-private:
     GenericValueTreeObjectArray<MidiMessageModel> midiMessages;
 };

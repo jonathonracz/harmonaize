@@ -26,10 +26,18 @@ namespace Utility
 {
 
 template<typename Type>
-void writeBackDefault (CachedValue<Type>& value)
+void writeBackDefault (CachedValue<Type>& value) noexcept
 {
     if (value.isUsingDefault())
         value = value.getDefault();
+}
+
+inline Colour randomColor() noexcept
+{
+    return Colour (
+            static_cast<uint8> (Random::getSystemRandom().nextInt(255)),
+            static_cast<uint8> (Random::getSystemRandom().nextInt(255)),
+            static_cast<uint8> (Random::getSystemRandom().nextInt(255)));
 }
 
 }
