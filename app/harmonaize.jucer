@@ -13,6 +13,10 @@
             file="Source/hmnz_EditWindow.cpp"/>
       <FILE id="DtfSsB" name="hmnz_EditWindow.h" compile="0" resource="0"
             file="Source/hmnz_EditWindow.h"/>
+      <FILE id="IsiKKq" name="hmnz_PreferencesView.cpp" compile="1" resource="0"
+            file="Source/hmnz_PreferencesView.cpp"/>
+      <FILE id="OJwva3" name="hmnz_PreferencesView.h" compile="0" resource="0"
+            file="Source/hmnz_PreferencesView.h"/>
       <FILE id="BqfivX" name="hmnz_TransportView.cpp" compile="1" resource="0"
             file="Source/hmnz_TransportView.cpp"/>
       <FILE id="KG4fSG" name="hmnz_TransportView.h" compile="0" resource="0"

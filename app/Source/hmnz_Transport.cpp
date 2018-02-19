@@ -30,12 +30,8 @@ Transport::Transport (const ValueTree& v, UndoManager* um, Edit* const _edit)
       loopEnabled (getState(), IDs::TransportProps::LoopEnabled, nullptr, false)
 {
     output.setSource (this);
+    HarmonaizeApplication::getDeviceManager().addChangeListener (this);
     HarmonaizeApplication::getDeviceManager().addAudioCallback (&output);
-
-    keyboardState.addListener (&midiMessageCollector);
-    String firstMidiInput = MidiInput::getDevices()[0];
-    if (firstMidiInput.isNotEmpty())
-        HarmonaizeApplication::getDeviceManager().addMidiInputCallback (firstMidiInput, &midiMessageCollector);
 
     getState().addListener (this);
 }
@@ -187,4 +183,19 @@ void Transport::handleAsyncUpdate()
     getState().setPropertyExcludingListener (this, playHeadKeySigNumSharpsOrFlats.getPropertyID(), readPositionKeySigNumSharpsOrFlats.load (std::memory_order_relaxed), nullptr);
     getState().setPropertyExcludingListener (this, playHeadKeySigIsMinor.getPropertyID(), readPositionKeySigIsMinor.load (std::memory_order_relaxed), nullptr);
     std::atomic_thread_fence (std::memory_order_acquire);
+}
+
+void Transport::changeListenerCallback (ChangeBroadcaster* source)
+{
+    if (source == &HarmonaizeApplication::getDeviceManager())
+    {
+        StringArray midiInputs = MidiInput::getDevices();
+        for (String input : midiInputs)
+        {
+            if (HarmonaizeApplication::getDeviceManager().isMidiInputEnabled (input))
+                HarmonaizeApplication::getDeviceManager().addMidiInputCallback (input, &midiMessageCollector);
+            else
+                HarmonaizeApplication::getDeviceManager().removeMidiInputCallback (input, &midiMessageCollector);
+        }
+    }
 }

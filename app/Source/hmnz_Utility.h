@@ -40,4 +40,19 @@ inline Colour randomColor() noexcept
             static_cast<uint8> (Random::getSystemRandom().nextInt(255)));
 }
 
+inline void printMidiBuffer (const MidiBuffer& buffer) noexcept
+{
+    MidiMessage midiMessage;
+    int midiMessageSamplePosition;
+    MidiBuffer::Iterator midiIterator (buffer);
+    if (!buffer.isEmpty())
+    {
+        DBG ("BEGIN MIDI BUFFER");
+        while (midiIterator.getNextEvent (midiMessage, midiMessageSamplePosition))
+        {
+            DBG (midiMessage.getDescription());
+        }
+    }
+}
+
 }

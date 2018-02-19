@@ -39,7 +39,6 @@ Track::Track (const ValueTree& v, UndoManager* um, Edit* const _edit)
     pianoSound->loadRegions();
     pianoSound->loadSamples (&HarmonaizeApplication::getFormatManager());
     synthesizer.addSound (pianoSound);
-
 }
 
 void Track::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
@@ -57,8 +56,8 @@ void Track::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
                                   const MidiBuffer& incomingMidiBuffer,
                                   const AudioPlayHead::CurrentPositionInfo& positionInfo)
 {
-    audioBuffer.clear();
     synthesizer.renderNextBlock (audioBuffer, incomingMidiBuffer, 0, audioBuffer.getNumSamples());
+
     if (!positionInfo.isPlaying)
         return;
 

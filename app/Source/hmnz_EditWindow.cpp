@@ -12,7 +12,7 @@
 #include "hmnz_Application.h"
 
 EditWindow::EditWindow()
-    : DocumentWindow (HarmonaizeApplication::getInstance()->getApplicationName(),
+    : DocumentWindow (HarmonaizeApplication::getApp().getApplicationName(),
                       Desktop::getInstance().getDefaultLookAndFeel().findColour (ResizableWindow::backgroundColourId),
                       DocumentWindow::allButtons)
 {
