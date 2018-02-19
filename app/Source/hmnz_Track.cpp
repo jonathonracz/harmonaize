@@ -10,12 +10,12 @@
 
 #include "hmnz_Track.h"
 #include "hmnz_Edit.h"
-#include "hmnz_VariantConverters.h"
+#include "hmnz_Application.h"
 
 Track::Track (const ValueTree& v, UndoManager* um, Edit* const _edit)
     : ValueTreeObject (v, um),
       name (getState(), IDs::TrackProps::Name, getUndoManager(), "New Track"),
-      color (getState(), IDs::TrackProps::Color, getUndoManager(), Colour (Random::getSystemRandom().nextInt(255), Random::getSystemRandom().nextInt(255), Random::getSystemRandom().nextInt(255))),
+      color (getState(), IDs::TrackProps::Color, getUndoManager(), Utility::randomColor()),
       type (getState(), IDs::TrackProps::Type, getUndoManager(), IDs::TrackProps::Types::Midi),
       recordArmed (getState(), IDs::TrackProps::RecordArmed, nullptr, false),
       edit (_edit),
@@ -29,11 +29,23 @@ Track::Track (const ValueTree& v, UndoManager* um, Edit* const _edit)
     // at least provide a good starting point. 2048 is what's used internally
     // by JUCE.
     midiBuffer.ensureSize (2048);
+
+    for (int i = 0; i < 16; ++i)
+        synthesizer.addVoice (new sfzero::Voice);
+
+    File instrumentsDirectory = File::getSpecialLocation (File::SpecialLocationType::userDocumentsDirectory).getChildFile ("./HarmonAIze/Instruments");
+    jassert (instrumentsDirectory.isDirectory());
+    sfzero::Sound* pianoSound = new sfzero::Sound (instrumentsDirectory.getChildFile ("./UprightPiano/UprightPiano.sfz"));
+    pianoSound->loadRegions();
+    pianoSound->loadSamples (&HarmonaizeApplication::getFormatManager());
+    synthesizer.addSound (pianoSound);
+
 }
 
 void Track::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
     audioBuffer.setSize (2, samplesPerBlockExpected); // TODO: Hardcoded number of channels.
+    synthesizer.setCurrentPlaybackSampleRate (sampleRate);
 }
 
 void Track::releaseResources()
@@ -45,8 +57,13 @@ void Track::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
                                   const MidiBuffer& incomingMidiBuffer,
                                   const AudioPlayHead::CurrentPositionInfo& positionInfo)
 {
+    audioBuffer.clear();
+    synthesizer.renderNextBlock (audioBuffer, incomingMidiBuffer, 0, audioBuffer.getNumSamples());
+    if (!positionInfo.isPlaying)
+        return;
+
     auto beatForLocalSample = [&](int64 sample) -> double {
-        return edit->masterTrack->tempo->beat ((positionInfo.timeInSamples + sample) / edit->transport->sampleRate.get());
+        return edit->masterTrack.tempo->beat ((positionInfo.timeInSamples + sample) / edit->transport.getActiveSampleRate());
     };
 
     /*

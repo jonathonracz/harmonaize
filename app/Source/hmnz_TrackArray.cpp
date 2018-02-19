@@ -21,5 +21,7 @@ TrackArray::TrackArray (Edit* const _edit)
 Track* TrackArray::createNewObject (const ValueTree& v, UndoManager* um)
 {
     jassert (um == edit->getUndoManager());
-    return new Track (v, um, edit);
+    Track* newTrack = new Track (v, um, edit);
+    newTrack->prepareToPlay (edit->transport.getActiveSamplesPerBlockExpected(), edit->transport.getActiveSampleRate());
+    return newTrack;
 }

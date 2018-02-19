@@ -33,7 +33,6 @@ public:
     CachedValue<String> name;
     CachedValue<Colour> color;
     CachedValue<Identifier> type;
-    CachedValue<int> midiTrack;
     CachedValue<SPSCAtomicWrapper<bool>> recordArmed;
 
     Edit* const edit;
@@ -41,7 +40,8 @@ public:
 private:
     AudioBuffer<float> audioBuffer;
     MidiBuffer midiBuffer;
+    MidiMessageSequence recordingSequence;
     ClipList clipList;
 
-    Clip* currentRecordTarget = nullptr;
+    sfzero::Synth synthesizer;
 };

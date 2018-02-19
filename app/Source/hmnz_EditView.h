@@ -26,6 +26,7 @@ private:
     WeakReference<Edit> edit;
 
     TransportView transportView;
+    std::unique_ptr<MidiKeyboardComponent> keyboard;
 
     void resized() override;
     void paint (Graphics&) override;

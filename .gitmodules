@@ -10,3 +10,6 @@
 [submodule "harmonaize/external/mma"]
 	path = harmonaize/external/mma
 	url = https://github.com/infojunkie/mma.git
+[submodule "app/Source/External/SFZero"]
+	path = app/Source/External/SFZero
+	url = https://github.com/jonathonracz/SFZeroModule.git

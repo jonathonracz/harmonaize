@@ -10,20 +10,18 @@
 
 #include "hmnz_Edit.h"
 #include "hmnz_Application.h"
-#include "hmnz_Transport.h"
-#include "hmnz_Utility.h"
 
 Edit::Edit (const ValueTree& v)
     : ValueTreeObject<IDs::Edit> (v, &undoManager),
+      masterTrack (getState().getOrCreateChildWithName (MasterTrack::identifier, nullptr), getUndoManager(), this),
+      transport (getState().getOrCreateChildWithName (Transport::identifier, nullptr), getUndoManager(), this),
       tracks (this)
 {
     // TODO: Validate the ValueTree data model, display an error if
     // something unexpected occurs, etc...
-
-    masterTrack = std::unique_ptr<MasterTrack> (new MasterTrack (getState().getOrCreateChildWithName (MasterTrack::identifier, nullptr), getUndoManager(), this));
-    transport = std::unique_ptr<Transport> (new Transport (getState().getOrCreateChildWithName (Transport::identifier, nullptr), getUndoManager(), this));
-
     getState().addListener (this);
+    if (tracks.objects.size() == 0)
+        tracks.insertStateAtObjectIndex (Track::createDefaultState(), -1);
 
     stateDebugger.setSource (getState());
 }
@@ -38,7 +36,7 @@ void Edit::valueTreePropertyChanged (ValueTree& tree, const Identifier& id)
 
 void Edit::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
-    masterTrack->prepareToPlay (samplesPerBlockExpected, sampleRate);
+    masterTrack.prepareToPlay (samplesPerBlockExpected, sampleRate);
     for (Track* track : tracks.objects)
     {
         track->prepareToPlay (samplesPerBlockExpected, sampleRate);
@@ -47,7 +45,8 @@ void Edit::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 
 void Edit::releaseResources()
 {
-    masterTrack->releaseResources();
+    masterTrack.releaseResources();
+    const TrackArray::ScopedLockType sl (tracks.getLock());
     for (Track* track : tracks.objects)
     {
         track->releaseResources();
@@ -58,6 +57,7 @@ void Edit::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
         const MidiBuffer& incomingMidiBuffer,
         const AudioPlayHead::CurrentPositionInfo& positionInfo)
 {
+    const TrackArray::ScopedLockType sl (tracks.getLock());
     for (Track* track : tracks.objects)
     {
         track->getNextAudioBlockWithInputs (audioBuffer, incomingMidiBuffer, positionInfo);

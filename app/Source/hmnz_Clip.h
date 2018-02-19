@@ -19,7 +19,7 @@ class Track;
 class Clip  : public ValueTreeObject<IDs::Clip>
 {
 public:
-    Clip (const ValueTree& v, UndoManager* um, const Track* owner);
+    Clip (const ValueTree& v, UndoManager* um, const Track* track);
 
     CachedValue<double> start;
     CachedValue<double> length;
@@ -27,8 +27,6 @@ public:
     CachedValue<Identifier> type;
 
 private:
-    const Track* owner;
-
-    void valueTreePropertyChanged (ValueTree &treeWhosePropertyHasChanged, const Identifier &property) override;
-    void valueTreeChildAdded (ValueTree &parentTree, ValueTree &childWhichHasBeenAdded) override;
+    const Track* track;
+    MidiMessageSequenceModel midiMessageSequenceModel;
 };

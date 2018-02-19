@@ -21,8 +21,6 @@ public:
           numerator (getState(), IDs::TimeSigNumerator, getUndoManager(), 4),
           denominator (getState(), IDs::TimeSigDenominator, getUndoManager(), 4)
     {
-        Utility::writeBackDefault (numerator);
-        Utility::writeBackDefault (denominator);
     }
 
     double barInTermsOfBeat (double beat) const noexcept

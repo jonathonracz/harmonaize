@@ -23,6 +23,7 @@ public:
 
     static HarmonaizeApplication& getApp();
     static AudioDeviceManager& getDeviceManager();
+    static AudioFormatManager& getFormatManager();
 
     const String getApplicationName() override       { return ProjectInfo::projectName; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }
@@ -37,4 +38,5 @@ public:
 private:
     UnitTestRunner unitTestRunner;
     AudioDeviceManager audioDeviceManager;
+    AudioFormatManager audioFormatManager;
 };
