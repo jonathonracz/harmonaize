@@ -18,9 +18,8 @@ class Track;
 class ClipArray : public ValueTreeObjectArray<Clip>
 {
 public:
-    ClipArray (const ValueTree& v, UndoManager* um, Track* const track);
+    ClipArray (const ValueTree& v, UndoManager* um);
 
 private:
-    Track* const track;
     Clip* createNewObject (const ValueTree& v, UndoManager* um) override;
 };

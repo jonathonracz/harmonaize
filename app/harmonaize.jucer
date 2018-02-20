@@ -24,7 +24,6 @@
     </GROUP>
     <GROUP id="{186A05D2-465A-EAF5-224F-706A2514D5F8}" name="Model">
       <GROUP id="{F1611D00-5B76-00F5-E54F-78CD868347B4}" name="Arrangement">
-        <FILE id="GQsi7H" name="hmnz_Clip.cpp" compile="1" resource="0" file="Source/hmnz_Clip.cpp"/>
         <FILE id="XA4JeV" name="hmnz_Clip.h" compile="0" resource="0" file="Source/hmnz_Clip.h"/>
         <FILE id="NDGLkI" name="hmnz_ClipArray.cpp" compile="1" resource="0"
               file="Source/hmnz_ClipArray.cpp"/>
