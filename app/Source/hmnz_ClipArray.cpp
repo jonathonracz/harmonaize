@@ -11,13 +11,13 @@
 #include "hmnz_ClipArray.h"
 #include "hmnz_Track.h"
 
-ClipArray::ClipArray (const ValueTree& v, UndoManager* um, Track* const _track)
-    : ValueTreeObjectArray (v, um), track (_track)
+ClipArray::ClipArray (const ValueTree& v, UndoManager* um)
+    : ValueTreeObjectArray (v, um)
 {
     addObjects();
 }
 
 Clip* ClipArray::createNewObject (const ValueTree& v, UndoManager* um)
 {
-    return new Clip (v, um, track);
+    return new Clip (v, um);
 }

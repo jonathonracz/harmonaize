@@ -17,7 +17,7 @@ class ClipList  : public ValueTreeObject<IDs::ClipList>
 {
 public:
     ClipList (const ValueTree& v, UndoManager* um, Track* const _track)
-        : ValueTreeObject (v, um), clips (v, um, _track), track (_track)
+        : ValueTreeObject (v, um), clips (v, um), track (_track)
     {
         getState().addListener (this);
     }
@@ -93,11 +93,11 @@ private:
 
             if (child->start >= changedChild->start && child->length <= changedChild->length)
                 childrenToDelete.add (i);
-                else if (changedChild->start < (child->start + child->length))
-                    child->length = changedChild->start - child->start;
-                    else if (changedChild->start + changedChild->length > child->start)
-                        child->start = changedChild->start + changedChild->length;
-                        }
+            else if (changedChild->start < (child->start + child->length))
+                child->length.setValue (changedChild->start.get() - child->start.get(), getUndoManager());
+            else if (changedChild->start + changedChild->length > child->start)
+                child->start.setValue (changedChild->start.get() + changedChild->length.get(), getUndoManager());
+        }
 
         for (int i = childrenToDelete.size() - 1; i >= 0; --i)
             getState().removeChild (i, getUndoManager());

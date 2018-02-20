@@ -61,8 +61,8 @@ void Track::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
     if (!positionInfo.isPlaying)
         return;
 
-    auto beatForLocalSample = [&](int64 sample) -> double {
-        return edit->masterTrack.tempo->beat ((positionInfo.timeInSamples + sample) / edit->transport.getActiveSampleRate());
+    auto beatForSample = [&](int64 sample) -> double {
+        return edit->masterTrack.tempo->beat (sample / edit->transport.getActiveSampleRate());
     };
 
     /*

@@ -53,6 +53,11 @@ struct ArrayForwardIterator
         return *internal;
     }
 
+    Type operator->() const
+    {
+        return *internal;
+    }
+
 private:
     Type* internal;
 
