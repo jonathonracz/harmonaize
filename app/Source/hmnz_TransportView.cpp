@@ -11,6 +11,7 @@
 #include "hmnz_TransportView.h"
 #include "hmnz_Transport.h"
 #include "hmnz_Edit.h"
+#include "hmnz_KeySignature.h"
 
 TransportView::TransportView()
 {
@@ -22,17 +23,20 @@ TransportView::TransportView()
     beatLabel.addListener (this);
     tempoLabel.addListener (this);
     timeSignatureLabel.addListener (this);
-    keySignatureLabel.addListener (this);
+    keySignatureComboBox.addListener (this);
 
     goToBeginningButton.setButtonText (translate ("Go to beginning"));
     stopPlayButton.setButtonText (translate ("Play"));
     recordButton.setButtonText (translate ("Record"));
 
-    timeText.setText (translate ("Seconds"));
-    beatText.setText (translate ("Beat"));
-    tempoText.setText (translate ("Tempo"));
-    timeSignatureText.setText (translate ("Time"));
-    keySignatureText.setText (translate ("Key"));
+    timeText.setText (translate ("Seconds"), NotificationType::dontSendNotification);
+    beatText.setText (translate ("Beat"), NotificationType::dontSendNotification);
+    tempoText.setText (translate ("Tempo"), NotificationType::dontSendNotification);
+    timeText.setEditable(false);
+    beatText.setEditable(false);
+    tempoText.setEditable(false);
+//    timeSignatureText.setText (translate ("Time"));
+    keySignatureText.setText (translate ("Key"), NotificationType::dontSendNotification);
 
     stopPlayButton.setClickingTogglesState (true);
     recordButton.setClickingTogglesState (true);
@@ -45,7 +49,7 @@ TransportView::TransportView()
     addAndMakeVisible (beatLabel);
     addAndMakeVisible (tempoLabel);
     addAndMakeVisible (timeSignatureLabel);
-    addAndMakeVisible (keySignatureLabel);
+    addAndMakeVisible (keySignatureComboBox);
 
     addAndMakeVisible (timeText);
     addAndMakeVisible (beatText);
@@ -69,7 +73,9 @@ void TransportView::setTransport (Transport* _transport)
         tempoLabel.setText (String (transport->playHeadTempo), NotificationType::dontSendNotification);
         timeSignatureLabel.setText (String (transport->playHeadTimeSigNumerator) + "/" + String (transport->playHeadTimeSigDenominator), NotificationType::dontSendNotification);
         //timeSignatureLabel.setText (String (transport->playPositionTime), NotificationType::dontSendNotification);
-        //keySignatureLabel.setText (String (transport->playPositionTime), NotificationType::dontSendNotification);
+        StringArray items = KeySignature::getKeyDescriptions();
+        keySignatureComboBox.addItemList(items, 1);
+//        keySignatureLabel.setText (String (transport->playPositionTime), NotificationType::dontSendNotification);
     }
 }
 
@@ -84,7 +90,7 @@ void TransportView::resized()
     text.items.add (FlexItem (beatText).withFlex (1.0f));
     text.items.add (FlexItem (tempoText).withFlex (1.0f));
     //text.items.add (FlexItem (timeSignatureText).withFlex (1.0f));
-    //text.items.add (FlexItem (keySignatureText).withFlex (1.0f));
+    text.items.add (FlexItem (keySignatureText).withFlex (1.0f));
 
     FlexBox labels;
     labels.flexDirection = FlexBox::Direction::row;
@@ -92,7 +98,7 @@ void TransportView::resized()
     labels.items.add (FlexItem (beatLabel).withFlex (1.0f));
     labels.items.add (FlexItem (tempoLabel).withFlex (1.0f));
     //labels.items.add (FlexItem (timeSignatureLabel).withFlex (1.0f));
-    //labels.items.add (FlexItem (keySignatureLabel).withFlex (1.0f));
+    labels.items.add (FlexItem (keySignatureComboBox).withFlex (1.0f));
 
     FlexBox buttons;
     buttons.flexDirection = FlexBox::Direction::row;
@@ -129,6 +135,34 @@ void TransportView::valueTreePropertyChanged (ValueTree& treeChanged, const Iden
     {
         beatLabel.setText (String (transport->playHeadBeat), NotificationType::dontSendNotification);
     }
+    else if (property == transport->playHeadKeySigNumSharpsOrFlats.getPropertyID())
+    {
+        bool minor = transport->playHeadKeySigIsMinor.get();
+        int numSharpsOrFlats = transport->playHeadKeySigNumSharpsOrFlats.get();
+        String desc = KeySignature::createKeyDescription(numSharpsOrFlats, minor);
+        for (int i = 0; i < keySignatureComboBox.getNumItems(); i++) {
+            String val = keySignatureComboBox.getItemText(i);
+            if (val == desc) {
+                //                int select = keySignatureComboBox.getItemId(i);
+                keySignatureComboBox.setSelectedItemIndex(i, dontSendNotification);
+                //                keySignatureComboBox.setSelectedId(select, dontSendNotification);
+            }
+        }
+    }
+    else if (property == transport->playHeadKeySigIsMinor.getPropertyID())
+    {
+        bool minor = transport->playHeadKeySigIsMinor.get();
+        int numSharpsOrFlats = transport->playHeadKeySigNumSharpsOrFlats.get();
+        String desc = KeySignature::createKeyDescription(numSharpsOrFlats, minor);
+        for (int i = 0; i < keySignatureComboBox.getNumItems(); i++) {
+            String val = keySignatureComboBox.getItemText(i);
+            if (val == desc) {
+//                int select = keySignatureComboBox.getItemId(i);
+                keySignatureComboBox.setSelectedItemIndex(i, dontSendNotification);
+//                keySignatureComboBox.setSelectedId(select, dontSendNotification);
+            }
+        }
+    }
 }
 
 void TransportView::buttonClicked (Button* button)
@@ -159,4 +193,13 @@ void TransportView::buttonStateChanged (Button* button)
         else
             button->setButtonText (translate ("Play"));
     }
+}
+
+void TransportView::comboBoxChanged (ComboBox* comboBox)
+{
+//    int id = comboBox->getSelectedId();
+    String val = comboBox->getText();
+    std::pair<int, bool> key = KeySignature::createRepresentationFromDescription(val);
+    transport->playHeadKeySigNumSharpsOrFlats = key.first;
+    transport->playHeadKeySigIsMinor = key.second;
 }

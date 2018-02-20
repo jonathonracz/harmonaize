@@ -170,6 +170,26 @@ void Transport::valueTreePropertyChanged (ValueTree& tree, const Identifier& ide
                 default: jassertfalse;
             }
         }
+        else if (identifier == playHeadTimeSigNumerator.getPropertyID())
+        {
+            edit->masterTrack.timeSignature->numerator = tree[playHeadTimeSigNumerator.getPropertyID()];
+        }
+        else if (identifier == playHeadTimeSigDenominator.getPropertyID())
+        {
+            edit->masterTrack.timeSignature->denominator = tree[playHeadTimeSigDenominator.getPropertyID()];
+        }
+        else if (identifier == playHeadTempo.getPropertyID())
+        {
+            edit->masterTrack.tempo->automation.markers.objects[0]->value = tree[playHeadTempo.getPropertyID()];
+        }
+        else if (identifier == playHeadKeySigNumSharpsOrFlats.getPropertyID())
+        {
+            edit->masterTrack.keySignature->numSharpsOrFlats = tree[playHeadKeySigNumSharpsOrFlats.getPropertyID()];
+        }
+        else if (identifier == playHeadKeySigIsMinor.getPropertyID())
+        {
+            edit->masterTrack.keySignature->isMinor = tree[playHeadKeySigIsMinor.getPropertyID()];
+        }
     }
 }
 

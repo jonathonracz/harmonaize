@@ -32,7 +32,7 @@ public:
         return ret;
     }
 
-    static String createKeyDescription(int numSharpsOrFlats, bool isMinor) noexcept
+    static String createKeyDescription (int numSharpsOrFlats, bool isMinor) noexcept
     {
         jassert (numSharpsOrFlats >= 7 || numSharpsOrFlats <= 7);
         String ret;
