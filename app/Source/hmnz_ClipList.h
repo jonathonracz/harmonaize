@@ -11,13 +11,14 @@
 #pragma once
 
 #include "hmnz_ValueTreeObject.h"
-#include "hmnz_ClipArray.h"
+#include "hmnz_GenericValueTreeObjectArray.h"
+#include "hmnz_Clip.h"
 
 class ClipList  : public ValueTreeObject<IDs::ClipList>
 {
 public:
-    ClipList (const ValueTree& v, UndoManager* um, Track* const _track)
-        : ValueTreeObject (v, um), clips (v, um), track (_track)
+    ClipList (const ValueTree& v, UndoManager* um)
+        : ValueTreeObject (v, um), clips (v, um)
     {
         getState().addListener (this);
     }
@@ -41,11 +42,9 @@ public:
         return nullptr;
     }
 
-    ClipArray clips;
+    GenericValueTreeObjectArray<Clip> clips;
 
 private:
-    Track* const track;
-
     void valueTreePropertyChanged (ValueTree& treeChanged, const Identifier& property) override
     {
         if (treeChanged.getParent() == getState() && (property == IDs::ClipProps::Start || property == IDs::ClipProps::Length))
