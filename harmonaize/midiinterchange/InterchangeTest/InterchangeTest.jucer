@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="bK3BJy" name="InterchangeTest" displaySplashScreen="0" reportAppUsage="0"
+<JUCERPROJECT id="bK3BJy" name="InterchangeTest" displaySplashScreen="1" reportAppUsage="1"
               splashScreenColour="Dark" projectType="consoleapp" version="1.0.0"
               bundleIdentifier="com.yourcompany.InterchangeTest" includeBinaryInAppConfig="1"
               cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.0"
