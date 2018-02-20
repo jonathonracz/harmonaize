@@ -19,7 +19,7 @@ Track::Track (const ValueTree& v, UndoManager* um, Edit* const _edit)
       type (getState(), IDs::TrackProps::Type, getUndoManager(), IDs::TrackProps::Types::Midi),
       recordArmed (getState(), IDs::TrackProps::RecordArmed, nullptr, false),
       edit (_edit),
-      clipList (getState().getOrCreateChildWithName (IDs::ClipList, nullptr), getUndoManager(), this)
+      clipList (getState().getOrCreateChildWithName (IDs::ClipList, nullptr), getUndoManager())
 {
     Utility::writeBackDefault (name);
     Utility::writeBackDefault (color);
