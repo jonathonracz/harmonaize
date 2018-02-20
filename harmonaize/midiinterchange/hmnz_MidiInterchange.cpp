@@ -20,10 +20,13 @@ MidiFile interchange::callPython(MidiFile song) {
     py::module python = py::module::import("python");
     py::object result = python.attr("openFile")(bytes);
     std::string n = result.cast<std::string>();
+    std::cout << std::endl << n << std::endl;
     MemoryBlock block(n.data(), n.size());
     MidiFile newSong = MidiFile();
-    MemoryInputStream inputStream(block.getData(), block.getSize(), false);
-    newSong.readFrom(inputStream);
+    File f = File("./generated_files/accomp.mid");
+    FileInputStream is(f);
+//    MemoryInputStream inputStream(block.getData(), block.getSize(), false);
+    newSong.readFrom(is);
     return newSong;
 }
 

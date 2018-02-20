@@ -12,4 +12,5 @@ def openFile(p):
     newFile = genAccompaniment(midifile)
     f = BytesIO()
     newFile.save(file=f)
+    print(f.getvalue())
     return f.getvalue()
