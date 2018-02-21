@@ -27,7 +27,44 @@ public:
     {
     }
 
+    MidiMessageSequence getMidiMessageSequence (double timeDelta = 0.0) const noexcept
+    {
+        return getPartialMidiMessageSequence (std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), timeDelta);
+    }
 
+    MidiMessageSequence getPartialMidiMessageSequence (double rangeStart, double rangeEnd, double timeDelta = 0.0) const noexcept
+    {
+        MidiMessageSequence ret = midiMessageSequenceModel.getPartialMidiMessageSequence (rangeStart, rangeEnd, timeDelta);
+        ret.addTimeToMessages (start);
+        return ret;
+    }
+
+    void addMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0, bool resizeToFit = true)
+    {
+        if (resizeToFit)
+        {
+            adjustBoundsToFitMessageTimestamp (sequence.getStartTime());
+            adjustBoundsToFitMessageTimestamp (sequence.getEndTime());
+        }
+
+        midiMessageSequenceModel.addMidiMessageSequence (sequence, -start + timeDelta);
+    }
+
+    void addEvent (const MidiMessage& message, double timeDelta = 0.0, bool resizeToFit = true) noexcept
+    {
+        if (resizeToFit)
+            adjustBoundsToFitMessageTimestamp (message.getTimeStamp() + timeDelta);
+
+        midiMessageSequenceModel.addEvent (MidiMessage (message, message.getTimeStamp() - start + timeDelta));
+    }
+
+    void setStartTimeKeepingEndTime (double newStartTime) noexcept
+    {
+        double startDelta = start - newStartTime;
+        start = newStartTime;
+        length = length + startDelta;
+        midiMessageSequenceModel.addTimeToMessages (startDelta);
+    }
 
     CachedValue<double> start;
     CachedValue<double> length;
@@ -36,4 +73,12 @@ public:
 
 private:
     MidiMessageSequenceModel midiMessageSequenceModel;
+
+    void adjustBoundsToFitMessageTimestamp (double timestamp) noexcept
+    {
+        if (timestamp < start)
+            setStartTimeKeepingEndTime (timestamp);
+        else if (timestamp > start + length)
+            length = timestamp + length;
+    }
 };
