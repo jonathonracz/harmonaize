@@ -36,7 +36,7 @@ public:
         jdr::ArrayForwardIterator<MidiMessageModel*> startIt = std::lower_bound (begin, end, rangeStart, sortComparator);
         jdr::ArrayForwardIterator<MidiMessageModel*> endIt = std::upper_bound (begin, end, rangeEnd, sortComparator);
         MidiMessageSequence ret;
-        for (jdr::ArrayForwardIterator<MidiMessageModel*> it = startIt; startIt != endIt; ++it)
+        for (jdr::ArrayForwardIterator<MidiMessageModel*> it = startIt; it != endIt; ++it)
             ret.addEvent (it->getMessage(), timeDelta);
 
         return ret;

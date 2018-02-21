@@ -80,7 +80,7 @@ void Track::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
         }
 
         // Write back any incoming MIDI if we're recording.
-        if (positionInfo.isRecording && recordArmed.get())
+        if (positionInfo.isRecording )//&& recordArmed.get())
         {
             RecordedMidiMessage newRecordedMessage;
             newRecordedMessage.recordSessionID = edit->transport.getActiveRecordOperationID();
@@ -94,7 +94,7 @@ void Track::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
                 midiWriteBackQueue.enqueue (newRecordedMessage);
             }
 
-            handleAsyncUpdate(); // Trigger writeback on the message thread.
+            triggerAsyncUpdate(); // Trigger writeback on the message thread.
         }
     }
 
