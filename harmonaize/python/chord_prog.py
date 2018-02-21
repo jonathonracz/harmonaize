@@ -3,8 +3,41 @@
 
 class ChordProg():
 	def __init__(self, tonic, filename, tempo, groove):
-		self.keyMap = {'C': 0, 'D': 1, 'E': 2, 'F': 3, 'G': 4, 'A': 5, 'B': 6}
-		self.keys = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+		self.keyMap = {
+		 	 'C': 0, 
+			 'C#': 1, 'Db': 1,
+			 'D': 2, 
+			 'D#': 3, 'Eb': 3,
+			 'E': 4, 
+			 'F': 5, 
+			 'F#': 6, 'Gb': 6,
+			 'G': 7, 
+			 'G#': 8, 'Ab': 8,
+			 'A': 9, 
+			 'A#': 10, 'Bb': 10,
+			 'B': 11}
+
+		self.keys = {
+			 0: 'C', 
+			 1: 'C#', # 1: 'Db',
+			 2: 'D', 
+			 3: 'D#', # 3: 'Eb',
+			 4: 'E', 
+			 5: 'F', 
+			 6: 'F#', # 6: 'Gb',
+			 7: 'G', 
+			 8: 'G#', # 8: 'Ab',
+			 9: 'A', 
+			 10: 'A#', # 10: 'Bb',
+			 11: 'B'}
+
+		self.semitones = {'P1': 0, 'A1':1, 'd2':0, 'm2':1, 'M2':2, 'A2':3,
+                              'd3':3, 'm3':3, 'M3':4, 'A3':5, 'd4':4, 'P4':5,
+                              'A4':6, 'd5':6, 'P5':7, 'A5':8, 'd6':7, 'm6':8,
+                              'M6':9, 'A6':10,'d7':9, 'm7':10, 'M7':11, 'A7':12,
+                              'd8':11, 'P8':12}
+
+		self.majorScale = ['M2', 'M3', 'P4', 'P5', 'M6', 'M7', 'P8']
 		self.tonic = tonic
 		self.filename = filename
 		self.counter = 1
@@ -12,7 +45,18 @@ class ChordProg():
 		self.groove = groove
 
 
+	def intervalJump(self, interval):
+		newNote = (self.keyMap[self.tonic] + self.semitones[interval]) % 12
+		return self.keys[newNote]
+
+	def makeMinor(self, chord):
+		newChord = chord + 'm'
+		return newChord
+
+
 	def getChordFromTonic(self, chordNum, minor = False):
+		oldChordNum = self.keyMap[self.tonic]
+
 		newChordNum = (self.keyMap[self.tonic] + chordNum  - 1) % 7
 		newChord = self.keys[newChordNum] 
 		if minor:
@@ -22,18 +66,19 @@ class ChordProg():
 	def basicChordProg1(self):
 		chordList = []
 		chordList.append(self.tonic)
-		chordList.append(self.getChordFromTonic(4))
-		chordList.append(self.getChordFromTonic(6, True))
-		chordList.append(self.getChordFromTonic(5))
+		chordList.append(self.intervalJump("P4"))
+		chordList.append(self.makeMinor(self.intervalJump("M6")))
+		chordList.append(self.intervalJump("P5"))
 		return chordList
 
 	def basicChordProg2(self):
 		chordList = []
 		chordList.append(self.tonic)
-		chordList.append(self.getChordFromTonic(5))
-		chordList.append(self.getChordFromTonic(6, True))
-		chordList.append(self.getChordFromTonic(3, True))
-		chordList.append(self.getChordFromTonic(4))
+		chordList.append(self.intervalJump("P5"))
+		chordList.append(self.makeMinor(self.intervalJump("M6")))
+		chordList.append(self.makeMinor(self.intervalJump("M3")))
+		chordList.append(self.intervalJump("P4"))
+		print(chordList)
 		return chordList
 
 	def writeMMAHeader(self, file):
