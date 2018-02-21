@@ -62,6 +62,8 @@ void Transport::transportRecord (bool shouldStartRecording)
 {
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
     recordEnabled = shouldStartRecording;
+    if (shouldStartRecording)
+        recordOperationID.fetch_add (1, std::memory_order_release);
 }
 
 void Transport::transportRewind()
@@ -169,6 +171,10 @@ void Transport::valueTreePropertyChanged (ValueTree& tree, const Identifier& ide
                 case stopped: transportPlay (false); break;
                 default: jassertfalse;
             }
+        }
+        else if (identifier == recordEnabled.getPropertyID())
+        {
+            transportRecord (recordEnabled.get());
         }
         else if (identifier == playHeadTimeSigNumerator.getPropertyID())
         {

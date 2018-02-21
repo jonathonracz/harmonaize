@@ -13,6 +13,7 @@
 #include "hmnz_ValueTreeObject.h"
 #include "hmnz_MidiMessageModel.h"
 #include "hmnz_MidiMessageSequenceModel.h"
+#include "hmnz_VariantConverters.h"
 
 class Clip  : public ValueTreeObject<IDs::Clip>
 {
@@ -34,9 +35,7 @@ public:
 
     MidiMessageSequence getPartialMidiMessageSequence (double rangeStart, double rangeEnd, double timeDelta = 0.0) const noexcept
     {
-        MidiMessageSequence ret = midiMessageSequenceModel.getPartialMidiMessageSequence (rangeStart, rangeEnd, timeDelta);
-        ret.addTimeToMessages (start);
-        return ret;
+        return midiMessageSequenceModel.getPartialMidiMessageSequence (rangeStart, rangeEnd, timeDelta + start);
     }
 
     void addMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0, bool resizeToFit = true)
@@ -66,6 +65,16 @@ public:
         midiMessageSequenceModel.addTimeToMessages (startDelta);
     }
 
+    static ValueTree createState (double start, double length, const Colour& color, const Identifier& type)
+    {
+        ValueTree ret (createDefaultState());
+        ret.setProperty (IDs::ClipProps::Start, start, nullptr);
+        ret.setProperty (IDs::ClipProps::Length, length, nullptr);
+        ret.setProperty (IDs::ClipProps::Color, VariantConverter<Colour>::toVar (color), nullptr);
+        ret.setProperty (IDs::ClipProps::Type, VariantConverter<Identifier>::toVar (type), nullptr);
+        return ret;
+    }
+
     CachedValue<double> start;
     CachedValue<double> length;
     CachedValue<Colour> color;
@@ -81,4 +90,6 @@ private:
         else if (timestamp > start + length)
             length = timestamp + length;
     }
+
+    JUCE_DECLARE_WEAK_REFERENCEABLE (Clip)
 };
