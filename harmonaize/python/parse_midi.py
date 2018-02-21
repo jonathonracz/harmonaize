@@ -20,7 +20,13 @@ def parseMidi(midi):
 	return FileAttributes
 	
 def chooseBestGroove(tempo, time_signature):
-	return GROOVES[0]
+	if tempo < 90:
+		grooves = GROOVES[('slow', time_signature)]
+	elif tempo < 150:
+		grooves = GROOVES[('regular', time_signature)]
+	else:
+		grooves = GROOVES[('fast', time_signature)]
+	return grooves[0]
 
 def getMessageWithType(messages, msg_type):
 	return next(filter(lambda msg: msg.type == msg_type, messages))
