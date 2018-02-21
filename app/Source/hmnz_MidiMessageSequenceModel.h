@@ -22,12 +22,12 @@ public:
     {
     }
 
-    MidiMessageSequence getMidiMessageSequence() const noexcept
+    MidiMessageSequence getMidiMessageSequence (double timeDelta = 0.0) const noexcept
     {
-        return getPartialMidiMessageSequence (std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max());
+        return getPartialMidiMessageSequence (std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), timeDelta);
     }
 
-    MidiMessageSequence getPartialMidiMessageSequence (double rangeStart, double rangeEnd) const noexcept
+    MidiMessageSequence getPartialMidiMessageSequence (double rangeStart, double rangeEnd, double timeDelta = 0.0) const noexcept
     {
         jdr::ArrayForwardIterator<MidiMessageModel*> begin = jdr::ArrayForwardIterator<MidiMessageModel*>::begin (midiMessages.objects);
         jdr::ArrayForwardIterator<MidiMessageModel*> end = jdr::ArrayForwardIterator<MidiMessageModel*>::end (midiMessages.objects);
@@ -37,25 +37,24 @@ public:
         jdr::ArrayForwardIterator<MidiMessageModel*> endIt = std::upper_bound (begin, end, rangeEnd, sortComparator);
         MidiMessageSequence ret;
         for (jdr::ArrayForwardIterator<MidiMessageModel*> it = startIt; startIt != endIt; ++it)
-            ret.addEvent (it->getMessage());
+            ret.addEvent (it->getMessage(), timeDelta);
 
         return ret;
     }
 
-    void setMidiMessageSequence (MidiMessageSequence& sequence) noexcept
+    void setMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0) noexcept
     {
         getState().removeAllChildren (getUndoManager());
-        addMidiMessageSequence (sequence);
+        addMidiMessageSequence (sequence, timeDelta);
     }
 
-    void addMidiMessageSequence (MidiMessageSequence& sequence) noexcept
+    void addMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0) noexcept
     {
-        sequence.sort();
         for (MidiMessageSequence::MidiEventHolder* event : sequence)
-             addEvent (event->message);
+             addEvent (event->message, timeDelta);
     }
 
-    void addEvent (const MidiMessage& message) noexcept
+    void addEvent (const MidiMessage& message, double timeDelta = 0.0) noexcept
     {
         MessageSortComparator sortComparator;
         jdr::ArrayForwardIterator<MidiMessageModel*> insertLocation =
@@ -65,7 +64,88 @@ public:
                               sortComparator);
 
         int insertIndex = (insertLocation == jdr::ArrayForwardIterator<MidiMessageModel*>::end (midiMessages.objects)) ? -1 : midiMessages.objects.indexOf (*insertLocation);
-        getState().addChild (MidiMessageModel::createStateForMessage (message), insertIndex, getUndoManager());
+        getState().addChild (MidiMessageModel::createStateForMessage (message, timeDelta), insertIndex, getUndoManager());
+    }
+
+    void addTimeToMessages (double timeDelta) noexcept
+    {
+        for (MidiMessageModel* message : midiMessages.objects)
+            message->timestamp = message->timestamp + timeDelta;
+    }
+
+    MidiMessageModel* findNoteOnOffSiblingFor (MidiMessageModel* message) const noexcept
+    {
+        int indexOfMessage = midiMessages.objects.indexOf (message);
+        if (!message || indexOfMessage < 0)
+            return nullptr;
+
+        MidiMessage messageObject = message->getMessage();
+        if (messageObject.isNoteOn (true))
+        {
+            for (int i = indexOfMessage + 1; i < midiMessages.objects.size(); ++i)
+            {
+                MidiMessage potentialPartnerMessage = midiMessages.objects[i]->getMessage();
+                if (potentialPartnerMessage.isNoteOff (true) && potentialPartnerMessage.getNoteNumber() == messageObject.getNoteNumber())
+                    return midiMessages.objects[i];
+            }
+        }
+        else if (messageObject.isNoteOff (true))
+        {
+            for (int i = indexOfMessage - 1; i > 0; --i)
+            {
+                MidiMessage potentialPartnerMessage = midiMessages.objects[i]->getMessage();
+                if (potentialPartnerMessage.isNoteOn (true) && potentialPartnerMessage.getNoteNumber() == messageObject.getNoteNumber())
+                    return midiMessages.objects[i];
+            }
+        }
+
+        return nullptr;
+    }
+
+    void trimMessagesOutsideBounds (double start, double end) noexcept
+    {
+        Array<MidiMessageModel*> messagesToRemove;
+        Array<MidiMessage> messagesToAdd;
+        for (MidiMessageModel* message : midiMessages.objects)
+        {
+            if (message->timestamp < start || message->timestamp > end)
+            {
+                MidiMessage messageObject = message->getMessage();
+                if (messageObject.isNoteOnOrOff())
+                {
+                    MidiMessageModel* sibling = findNoteOnOffSiblingFor (message);
+                    if (sibling)
+                    {
+                        if (messageObject.isNoteOn (true))
+                        {
+                            jassert (sibling->getMessage().isNoteOff (true));
+                            if (sibling->timestamp > start)
+                            {
+                                messagesToRemove.add (message);
+                                messagesToAdd.add (MidiMessage (messageObject, start));
+                            }
+                        }
+                        else
+                        {
+                            jassert (sibling->getMessage().isNoteOn (true));
+                            if (sibling->timestamp < end)
+                            {
+                                messagesToRemove.add (message);
+                                messagesToAdd.add (MidiMessage (messageObject, end));
+                            }
+                        }
+                    }
+                }
+
+                messagesToRemove.add (message);
+            }
+        }
+
+        for (MidiMessageModel* message : messagesToRemove)
+            midiMessages.removeObject (message);
+
+        for (MidiMessage& message : messagesToAdd)
+            addEvent (message);
     }
 
     GenericValueTreeObjectArray<MidiMessageModel> midiMessages;

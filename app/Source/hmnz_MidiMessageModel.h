@@ -28,17 +28,17 @@ public:
         return MidiMessage (bytes.get().getData(), static_cast<int> (bytes.get().getSize()), timestamp);
     }
 
-    void setMessage (const MidiMessage& message) noexcept
+    void setMessage (const MidiMessage& message, double timeDelta = 0.0) noexcept
     {
-        bytes = MemoryBlock (message.getRawData(), message.getRawDataSize());
-        timestamp = message.getTimeStamp();
+        bytes = MemoryBlock (message.getRawData(), static_cast<size_t> (message.getRawDataSize()));
+        timestamp = message.getTimeStamp() + timeDelta;
     }
 
-    static ValueTree createStateForMessage (const MidiMessage& message)
+    static ValueTree createStateForMessage (const MidiMessage& message, double timeDelta = 0.0)
     {
         ValueTree ret (identifier);
-        ret.setProperty (IDs::MidiMessageModelProps::Bytes, MemoryBlock (message.getRawData(), message.getRawDataSize()), nullptr);
-        ret.setProperty (IDs::MidiMessageModelProps::Timestamp, message.getTimeStamp(), nullptr);
+        ret.setProperty (IDs::MidiMessageModelProps::Bytes, MemoryBlock (message.getRawData(), static_cast<size_t> (message.getRawDataSize())), nullptr);
+        ret.setProperty (IDs::MidiMessageModelProps::Timestamp, message.getTimeStamp() + timeDelta, nullptr);
         return ret;
     }
 

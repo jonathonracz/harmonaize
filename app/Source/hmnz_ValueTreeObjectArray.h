@@ -81,6 +81,11 @@ public:
         insertStateAtIndex (v, stateIndex);
     }
 
+    void removeObject (ObjectType* object) noexcept
+    {
+        parent.removeChild (object->getState(), undoManager);
+    }
+
     int compareElements (ObjectType* first, ObjectType* second) const
     {
         int index1 = parent.indexOf (first->getState());
