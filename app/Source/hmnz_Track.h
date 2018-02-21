@@ -15,20 +15,22 @@
 #include "hmnz_ClipList.h"
 #include "hmnz_PositionedAudioMidiSource.h"
 #include "hmnz_CacheValueWrappers.h"
+#include "External/readerwriterqueue/readerwriterqueue.h"
 
 class Edit;
 
 class Track : public ValueTreeObject<IDs::Track>,
-              public PositionedAudioMidiSource
+              public PositionedAudioMidiSource,
+              public AsyncUpdater
 {
 public:
     Track (const ValueTree& v, UndoManager* um, Edit* const edit);
 
-    void prepareToPlay (int samplesPerBlockExpected, double sampleRate);
-    void releaseResources();
+    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
+    void releaseResources() override;
     void getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
         const MidiBuffer& incomingMidiBuffer,
-        const AudioPlayHead::CurrentPositionInfo& positionInfo);
+        const AudioPlayHead::CurrentPositionInfo& positionInfo) override;
 
     CachedValue<String> name;
     CachedValue<Colour> color;
@@ -40,8 +42,27 @@ public:
 private:
     AudioBuffer<float> audioBuffer;
     MidiBuffer midiBuffer;
-    MidiMessageSequence recordingSequence;
     ClipList clipList;
 
+    MidiMessageSequence midiReadCache;
+
+    struct RecordedMidiMessage
+    {
+        uint64 recordSessionID;
+        MidiMessage message;
+    };
+    moodycamel::ReaderWriterQueue<RecordedMidiMessage> midiWriteBackQueue;
+    uint64 currentRecordSessionID = 0;
+    WeakReference<Clip> currentRecordClip;
+
     sfzero::Synth synthesizer;
+
+    void updateMidiReadCache() noexcept;
+    void flushMidiWriteBackQueue() noexcept;
+
+    void handleAsyncUpdate() override;
+
+    void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
+    void valueTreeChildAdded (ValueTree&, ValueTree&) override;
+    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override;
 };

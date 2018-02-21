@@ -47,10 +47,14 @@ public:
 private:
     void valueTreePropertyChanged (ValueTree& treeChanged, const Identifier& property) override
     {
-        if (treeChanged.getParent() == getState() && (property == IDs::ClipProps::Start || property == IDs::ClipProps::Length))
+        jassert (treeChanged != getState());
+        if (treeChanged.getParent() == getState())
         {
-            fixClipOverlaps (treeChanged);
-            sortClips();
+            if (property == IDs::ClipProps::Start || property == IDs::ClipProps::Length)
+            {
+                fixClipOverlaps (treeChanged);
+                sortClips();
+            }
         }
     }
 

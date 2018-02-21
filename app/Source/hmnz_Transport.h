@@ -49,6 +49,7 @@ public:
 
     int getActiveSamplesPerBlockExpected() const noexcept { return activeSamplesPerBlockExpected; }
     double getActiveSampleRate() const noexcept { return activeSampleRate; }
+    uint64 getActiveRecordOperationID() const noexcept { return recordOperationID.load (std::memory_order_acquire); }
 
     CachedValue<double> playHeadTime;
     CachedValue<double> playHeadBeat;
@@ -77,6 +78,7 @@ private:
 
     int activeSamplesPerBlockExpected = -1;
     double activeSampleRate = 0.0;
+    std::atomic<uint64> recordOperationID = { 0 };
 
     // MIDI bits
     MidiMessageCollector midiMessageCollector;
