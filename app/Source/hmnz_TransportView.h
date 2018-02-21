@@ -18,7 +18,8 @@ class TransportView : public Component,
                       public ValueTree::Listener,
                       public Button::Listener,
                       public Label::Listener,
-                      public ComboBox::Listener
+                      public ComboBox::Listener,
+                      public Slider::Listener
 {
 public:
     TransportView();
@@ -34,9 +35,10 @@ private:
 
     Label timeLabel;
     Label beatLabel;
-    Label tempoLabel;
+//    Label tempoLabel;
     Label timeSignatureLabel;
     
+    Slider tempoSlider;
     ComboBox keySignatureComboBox;
 
     Label timeText;
@@ -58,6 +60,7 @@ private:
     void buttonStateChanged (Button*) override;
     
     void comboBoxChanged (ComboBox*) override;
+    void sliderValueChanged (Slider*) override;
 
     void labelTextChanged (Label*) override {}
 
