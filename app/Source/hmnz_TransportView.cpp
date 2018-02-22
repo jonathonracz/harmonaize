@@ -32,6 +32,8 @@ TransportView::TransportView()
     recordButton.setButtonText (translate ("Record"));
     clearButton.setButtonText(translate("Clear"));
     generateAccompanimentButton.setButtonText(translate("Generate\nAccompaniment"));
+    
+    recordButton.setColour(TextButton::ColourIds::buttonOnColourId, Colours::red);
 
     timeText.setText (translate ("Seconds"), NotificationType::dontSendNotification);
     beatText.setText (translate ("Beat"), NotificationType::dontSendNotification);
@@ -77,6 +79,7 @@ void TransportView::setTransport (Transport* _transport)
         timeLabel.setText (String (transport->playHeadTime), NotificationType::dontSendNotification);
         beatLabel.setText (String (transport->playHeadBeat), NotificationType::dontSendNotification);
 //        tempoSlider = Slider(Slider::SliderStyle::LinearHorizontal, Slider::TextEntryBoxPosition::TextBoxBelow);
+        tempoSlider.setColour(Slider::ColourIds::textBoxOutlineColourId, Colours::transparentWhite);
         tempoSlider.setTextBoxStyle (Slider::TextBoxBelow, 0, 80, 25);
         tempoSlider.setRange (1, 200);
         tempoSlider.setTextValueSuffix (" BPM");
