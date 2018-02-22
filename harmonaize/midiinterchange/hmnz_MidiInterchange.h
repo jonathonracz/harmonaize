@@ -26,6 +26,9 @@ public:
         std::string file = convert (song);
         py::scoped_interpreter guard{};
         py::bytes bytes (file);
+        File fil("./example.mid");
+        FileOutputStream fileStream(fil);
+        song.writeTo(fileStream);
         py::module os = py::module::import ("os");
         os.attr ("chdir")("../../../../../harmonaize/midiinterchange/");
         py::module python = py::module::import ("python");

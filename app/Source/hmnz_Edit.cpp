@@ -52,7 +52,7 @@ void Edit::importFromMidi (const MidiFile& midiFile, int trackOffset, double tim
     jassert (midiFile.getTimeFormat() > 0); // Only support PPQ.
 
     double length = midiFile.getLastTimestamp() / midiFile.getTimeFormat();
-    for (int i = 0; i < midiFile.getNumTracks(); ++i)
+    for (int i = 1; i < midiFile.getNumTracks(); ++i)
     {
         MidiMessageSequence trackSequence;
         midiFile.getTrack (i)->extractMidiChannelMessages (i, trackSequence, false);

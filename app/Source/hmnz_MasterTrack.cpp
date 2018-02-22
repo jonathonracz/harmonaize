@@ -26,7 +26,7 @@ MidiMessageSequence MasterTrack::createMetaEventsSequence() const noexcept
     // TODO: This is extremely rudimentary and does not support automation
     MidiMessageSequence ret;
     auto microsecondsPerBeat = [](double bpm) -> int {
-        return static_cast<int> (1.0f / ((bpm / 60.0) / std::milli::den));
+        return static_cast<int> (60000000.0f / bpm);
     };
 
     ret.addEvent (MidiMessage::tempoMetaEvent (microsecondsPerBeat (tempo->tempoAtTime (0.0))));
