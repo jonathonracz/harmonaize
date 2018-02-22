@@ -1,8 +1,11 @@
-Builds
 JuceLibraryCode
 .DS_Store
 *.pyc
-clocks.mid
-Skyfall.mid
 accomp.mid
 accomp.mma
+generated_files
+.idea
+example.mid
+xcuserdata
+Debug
+Release

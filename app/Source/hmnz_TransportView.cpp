@@ -250,15 +250,16 @@ void TransportView::buttonClicked (Button* button)
     }
     else if (button == &clearButton)
     {
-        /*
+        // TODO: This belongs in some sort of arrangement controller, not transport.
         if (transport)
         {
-            for (Track* track : transport->edit->tracks.objects)
+            while (transport->edit->getState().getChildWithName (Track::identifier).isValid())
             {
-                track->clipList
+                transport->edit->getState().removeChild (transport->edit->getState().getChildWithName (Track::identifier).isValid(), transport->getUndoManager());
             }
+
+            transport->edit->getState().addChild (Track::createDefaultState(), -1, transport->getUndoManager());
         }
-         */
     }
     else if (button == &generateAccompanimentButton)
     {

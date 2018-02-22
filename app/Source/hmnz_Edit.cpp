@@ -52,23 +52,23 @@ void Edit::importFromMidi (const MidiFile& midiFile, int trackOffset, double tim
     jassert (midiFile.getTimeFormat() > 0); // Only support PPQ.
 
     double length = midiFile.getLastTimestamp() / midiFile.getTimeFormat();
-    for (int i = 1; i < midiFile.getNumTracks(); ++i)
+    while (midiFile.getNumTracks() + trackOffset > tracks.objects.size())
+        getState().addChild (Track::createDefaultState(), -1, getUndoManager());
+
+    for (int i = 0; i < midiFile.getNumTracks(); ++i)
     {
-        MidiMessageSequence trackSequence;
-        midiFile.getTrack (i)->extractMidiChannelMessages (i, trackSequence, false);
+        MidiMessageSequence trackSequence (*midiFile.getTrack (i));
         for (MidiMessageSequence::MidiEventHolder* event : trackSequence)
         {
             event->message.setTimeStamp ((event->message.getTimeStamp() / midiFile.getTimeFormat()) + timeOffset);
-            int destinationTrack = std::max (0, i + trackOffset);
-            while (destinationTrack > tracks.objects.size())
-                getState().addChild (Track::createDefaultState(), -1, getUndoManager());
-
-            Track* importTargetTrack = tracks.objects[destinationTrack];
-            if (importTargetTrack)
-                importTargetTrack->addMidiMessageSequenceAsClip (timeOffset, length, trackSequence);
-            else
-                jassertfalse;
         }
+
+        int destinationTrack = std::max (0, i + trackOffset);
+        Track* importTargetTrack = tracks.objects[destinationTrack];
+        if (importTargetTrack)
+            importTargetTrack->addMidiMessageSequenceAsClip (timeOffset, length, trackSequence);
+        else
+            jassertfalse;
     }
 }
 
