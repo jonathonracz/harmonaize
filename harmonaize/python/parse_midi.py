@@ -27,7 +27,11 @@ def chooseBestGroove(tempo, time_signature):
 		grooves = GROOVES[('regular', time_signature)]
 	else:
 		grooves = GROOVES[('fast', time_signature)]
-	return random.choice(grooves)
+
+	if len(grooves) > 0:
+		return random.choice(grooves)
+	else:
+		return random.choice(GROOVES)
 
 def getMessageWithType(messages, msg_type):
 	return next(filter(lambda msg: msg.type == msg_type, messages))
