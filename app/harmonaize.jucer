@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="OexI64" name="harmonaize" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.harmonaize.harmonaize" includeBinaryInAppConfig="1"
-              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.0"
+              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.1"
               displaySplashScreen="1" reportAppUsage="1" splashScreenColour="Dark">
   <MAINGROUP id="TpvEFM" name="harmonaize">
     <GROUP id="{4C57DD66-0DB0-A254-59EF-09BAA05140B1}" name="GUI">
@@ -96,10 +96,6 @@
     <FILE id="iDgIBJ" name="hmnz_Application.h" compile="0" resource="0"
           file="Source/hmnz_Application.h"/>
     <FILE id="O1PXYS" name="hmnz_Main.cpp" compile="1" resource="0" file="Source/hmnz_Main.cpp"/>
-    <FILE id="H3nS2R" name="hmnz_MainToolbarFactory.h" compile="0" resource="0"
-          file="Source/hmnz_MainToolbarFactory.h"/>
-    <FILE id="vpdFSA" name="hmnz_MidiImporter.h" compile="0" resource="0"
-          file="Source/hmnz_MidiImporter.h"/>
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="" extraLinkerFlags="">
