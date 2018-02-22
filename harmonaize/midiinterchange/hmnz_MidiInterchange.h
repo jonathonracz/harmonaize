@@ -32,9 +32,14 @@ public:
         py::exec(R"(
                  import sys
                  import os
-                 os.chdir("../../../../../harmonaize/external/mido/")
+                 print(os.getcwd())
+                 if os.getcwd() == '/Users/Landon/Documents/School/Semester8/EECS 498/harmonaize/harmonaize/midiinterchange':
+                    os.chdir('../external/mido/')
+                 else:
+                    os.chdir("../../../../../harmonaize/external/mido/")
                  import mido
                  os.chdir("../../midiinterchange/")
+                 print(os.getcwd())
                  )");
 //        py::module os = py::module::import ("os");
 //        os.attr ("chdir")("harmonaize/midiinterchange/");
