@@ -38,7 +38,18 @@ public:
         return midiMessageSequenceModel.getPartialMidiMessageSequence (rangeStart, rangeEnd, timeDelta + start);
     }
 
-    void addMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0, bool resizeToFit = true)
+    void setMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0, bool resizeToFit = true) noexcept
+    {
+        if (resizeToFit)
+        {
+            adjustBoundsToFitMessageTimestamp (sequence.getStartTime());
+            adjustBoundsToFitMessageTimestamp (sequence.getEndTime());
+        }
+
+        midiMessageSequenceModel.setMidiMessageSequence (sequence, -start + timeDelta);
+    }
+
+    void addMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0, bool resizeToFit = true) noexcept
     {
         if (resizeToFit)
         {
@@ -65,13 +76,22 @@ public:
         midiMessageSequenceModel.addTimeToMessages (startDelta);
     }
 
-    static ValueTree createState (double start, double length, const Colour& color, const Identifier& type)
+    static ValueTree createState (double start, double length, const Identifier& type, const Colour& color)
     {
         ValueTree ret (createDefaultState());
         ret.setProperty (IDs::ClipProps::Start, start, nullptr);
         ret.setProperty (IDs::ClipProps::Length, length, nullptr);
         ret.setProperty (IDs::ClipProps::Color, VariantConverter<Colour>::toVar (color), nullptr);
         ret.setProperty (IDs::ClipProps::Type, VariantConverter<Identifier>::toVar (type), nullptr);
+        return ret;
+    }
+
+    static ValueTree createState (double start, double length, const MidiMessageSequence& sequence, const Colour& color)
+    {
+        ValueTree ret = createState(start, length, IDs::ClipProps::Types::Midi, color);
+        Clip clipObject (ret, nullptr);
+        clipObject.setMidiMessageSequence (sequence, 0.0, true);
+
         return ret;
     }
 

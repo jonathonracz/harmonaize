@@ -23,8 +23,8 @@ Transport::Transport (const ValueTree& v, UndoManager* um, Edit* const _edit)
       playHeadKeySigIsMinor (getState(), IDs::TransportProps::PlayHeadKeySigIsMinor, nullptr, false),
       playState (getState(), IDs::TransportProps::PlayState, nullptr, State::stopped),
       recordEnabled (getState(), IDs::TransportProps::RecordEnabled, nullptr, false),
-      edit (_edit),
       pulsesPerQuarterNote(getState(), IDs::TransportProps::PulsesPerQuarterNote, nullptr, 960.0),
+      edit (_edit),
       loopStartBeat (getState(), IDs::TransportProps::LoopStartBeat, nullptr, 0.0),
       loopEndBeat (getState(), IDs::TransportProps::LoopEndBeat, nullptr, 16.0),
       loopEnabled (getState(), IDs::TransportProps::LoopEnabled, nullptr, false)

@@ -61,6 +61,7 @@ public:
 
     CachedValue<SPSCAtomicWrapper<int>> playState;
     CachedValue<SPSCAtomicWrapper<bool>> recordEnabled;
+    CachedValue<SPSCAtomicWrapper<double>> pulsesPerQuarterNote;
 
     Edit* const edit;
 
@@ -97,7 +98,6 @@ private:
 
     AudioPlayHead::CurrentPositionInfo currentPositionInfo;
 
-    CachedValue<SPSCAtomicWrapper<double>> pulsesPerQuarterNote;
     CachedValue<SPSCAtomicWrapper<double>> loopStartBeat;
     CachedValue<SPSCAtomicWrapper<double>> loopEndBeat;
     CachedValue<SPSCAtomicWrapper<bool>> loopEnabled;

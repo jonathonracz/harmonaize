@@ -32,6 +32,9 @@ public:
         const MidiBuffer& incomingMidiBuffer,
         const AudioPlayHead::CurrentPositionInfo& positionInfo) override;
 
+    MidiMessageSequence getMidiMessageSequence() const noexcept;
+    void addMidiMessageSequenceAsClip (double start, double length, const MidiMessageSequence& sequence) noexcept;
+
     CachedValue<String> name;
     CachedValue<Colour> color;
     CachedValue<Identifier> type;

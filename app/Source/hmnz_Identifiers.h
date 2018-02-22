@@ -70,14 +70,6 @@ namespace IDs
     }
 
     DECLARE_ID (ClipList)
-    namespace ClipListProps
-    {
-        DECLARE_ID (Type)
-        namespace Types
-        {
-            DECLARE_ID (Midi)
-        }
-    }
 
     DECLARE_ID (Clip)
     namespace ClipProps

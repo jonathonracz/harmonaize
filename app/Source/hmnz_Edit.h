@@ -36,6 +36,9 @@ public:
         const MidiBuffer& incomingMidiBuffer,
         const AudioPlayHead::CurrentPositionInfo& positionInfo) override;
 
+    MidiFile exportToMidi() const noexcept;
+    void importFromMidi (const MidiFile& midiFile, int trackOffset, double timeOffset) noexcept;
+
     MasterTrack masterTrack;
     Transport transport;
     TrackArray tracks;
@@ -44,8 +47,7 @@ private:
     UndoManager undoManager;
     jcf::ValueTreeDebugger stateDebugger;
 
-    // ValueTree methods
-    void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
+    void convertTimestampsFromBeatsToTicks (MidiMessageSequence& sequence) const noexcept;
 
     JUCE_DECLARE_WEAK_REFERENCEABLE (Edit)
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Edit)
