@@ -10,7 +10,6 @@
 
 #pragma once
 
-#include "InterchangeTest/JuceLibraryCode/JuceHeader.h"
 #include "../external/pybind11/include/pybind11/stl.h"
 #include "../external/pybind11/include/pybind11/embed.h"
 #include <iostream>
@@ -20,9 +19,34 @@
 namespace py = pybind11;
 using namespace py::literals;
 
-class interchange {
+class Interchange {
 public:
-    MidiFile callPython(MidiFile file);
+    static MidiFile callPython (MidiFile file) noexcept
+    {
+        std::string file = convert (song);
+        py::scoped_interpreter guard{};
+        py::bytes bytes (file);
+        py::module python = py::module::import ("python");
+        py::object result = python.attr ("openFile")(bytes);
+        std::string n = result.cast<std::string>();
+        //std::cout << std::endl << n << std::endl;
+        MemoryBlock block (n.data(), n.size());
+        MidiFile newSong = MidiFile();
+        File f = File ("./generated_files/accomp.mid");
+        FileInputStream is (f);
+        newSong.readFrom (is);
+        return newSong;
+    }
+
 private:
-    std::string convert(MidiFile file);
+    static std::string convert (MidiFile file) noexcept
+    {
+        MemoryBlock file = MemoryBlock();
+        MemoryOutputStream stream (file, false);
+        song.writeTo (stream);
+        std::string s;
+        s.resize (file.getSize());
+        memcpy (&s[0], file.getData(), file.getSize());
+        return s;
+    }
 };
