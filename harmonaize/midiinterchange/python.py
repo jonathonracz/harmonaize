@@ -1,6 +1,7 @@
 """python code that gets called"""
 import sys
 sys.path.append('../python')
+sys.path.append('../external/mido/mido/')
 from io import BytesIO
 from mido import MidiFile
 from generate_midi import genAccompaniment
