@@ -35,6 +35,8 @@ void EditView::setEdit (Edit* _edit)
         keyboard = std::unique_ptr<MidiKeyboardComponent> (new MidiKeyboardComponent (
                 edit->transport.getMidiKeyboardState(), MidiKeyboardComponent::Orientation::horizontalKeyboard));
         addAndMakeVisible (*keyboard);
+        keyboard->setKeyWidth(53);
+        keyboard->setLowestVisibleKey(60);
         resized(); // Re-layout everything.
     }
 }
