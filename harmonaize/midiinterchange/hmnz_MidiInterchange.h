@@ -29,8 +29,17 @@ public:
         File fil("./example.mid");
         FileOutputStream fileStream(fil);
         song.writeTo(fileStream);
-        py::module os = py::module::import ("os");
-        os.attr ("chdir")("../../../../../harmonaize/midiinterchange/");
+        py::exec(R"(
+                 import sys
+                 import os
+                 os.chdir("../../../../../harmonaize/external/mido/")
+                 print(os.getcwd())
+                 sys.path.append("mido/")
+                 import mido
+                 os.chdir("../../midiinterchange/")
+                 )");
+//        py::module os = py::module::import ("os");
+//        os.attr ("chdir")("harmonaize/midiinterchange/");
         py::module python = py::module::import ("python");
         /*py::object result = */python.attr ("openFile")(bytes);
 //        std::string n = result.cast<std::string>();       
