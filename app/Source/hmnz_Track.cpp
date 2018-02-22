@@ -101,21 +101,33 @@ void Track::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
     synthesizer.renderNextBlock (audioBuffer, midiBuffer, 0, audioBuffer.getNumSamples());
 }
 
-void Track::updateMidiReadCache() noexcept
+MidiMessageSequence Track::getMidiMessageSequence() const noexcept
 {
-    HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
-    MidiMessageSequence newReadCache;
+    MidiMessageSequence ret;
     for (Clip* clip : clipList.clips.objects)
     {
         if (clip->type == IDs::ClipProps::Types::Midi)
         {
-            newReadCache.addSequence (clip->getMidiMessageSequence(), 0.0);
+            ret.addSequence (clip->getMidiMessageSequence(), 0.0);
         }
     }
 
+    return ret;
+}
+
+void Track::addMidiMessageSequenceAsClip (double start, double length, const MidiMessageSequence& sequence) noexcept
+{
+    clipList.clips.insertStateAtObjectIndex (Clip::createState (start, length, sequence, color), -1);
+}
+
+void Track::updateMidiReadCache() noexcept
+{
+    HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
+    MidiMessageSequence newReadCache = getMidiMessageSequence();
+
     {
         std::lock_guard<std::mutex> (edit->transport.getCallbackLock());
-        midiReadCache.swapWith (newReadCache);
+        newReadCache.swapWith (newReadCache);
     }
 }
 
@@ -136,7 +148,7 @@ void Track::flushMidiWriteBackQueue() noexcept
 
             if (!currentRecordClip)
             {
-                ValueTree newClipState = Clip::createState (pulledMessage.message.getTimeStamp(), 1.0, color, IDs::ClipProps::Types::Midi);
+                ValueTree newClipState = Clip::createState (pulledMessage.message.getTimeStamp(), 1.0, IDs::ClipProps::Types::Midi, color);
                 clipList.getState().addChild (newClipState, -1, getUndoManager());
                 currentRecordClip = clipList.clips.objectWithState (newClipState);
             }
