@@ -29,5 +29,5 @@ void PreferencesView::resized()
 
 void PreferencesView::paint (Graphics& g)
 {
-    g.fillAll (Colours::red);
+    g.fillAll (Colours::grey);
 }

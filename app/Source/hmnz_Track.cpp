@@ -167,24 +167,27 @@ void Track::handleAsyncUpdate()
 void Track::valueTreePropertyChanged (ValueTree& tree, const Identifier& property)
 {
     // TODO: This can be specialized a lot more to filter when we do this expensive operation.
+    updateMidiReadCache();
     if (tree.isAChildOf (clipList.getState()))
     {
-        updateMidiReadCache();
+        // TODO: if statements are missing cases
     }
 }
 
 void Track::valueTreeChildAdded (ValueTree& parent, ValueTree& childAdded)
 {
+    updateMidiReadCache();
     if (parent == clipList.getState())
     {
-        updateMidiReadCache();
+        // TODO: if statements are missing cases
     }
 }
 
 void Track::valueTreeChildRemoved (ValueTree& parent, ValueTree& removedChild, int)
 {
+    updateMidiReadCache();
     if (parent == clipList.getState())
     {
-        updateMidiReadCache();
+        // TODO: if statements are missing cases
     }
 }

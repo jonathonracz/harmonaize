@@ -33,8 +33,6 @@ public:
                  import sys
                  import os
                  os.chdir("../../../../../harmonaize/external/mido/")
-                 print(os.getcwd())
-                 sys.path.append("mido/")
                  import mido
                  os.chdir("../../midiinterchange/")
                  )");
