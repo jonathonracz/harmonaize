@@ -18,6 +18,7 @@ TransportView::TransportView()
     goToBeginningButton.addListener (this);
     stopPlayButton.addListener (this);
     recordButton.addListener (this);
+    clearButton.addListener(this);
 
     timeLabel.addListener (this);
     beatLabel.addListener (this);
@@ -28,6 +29,7 @@ TransportView::TransportView()
     goToBeginningButton.setButtonText (translate ("Go to beginning"));
     stopPlayButton.setButtonText (translate ("Play"));
     recordButton.setButtonText (translate ("Record"));
+    clearButton.setButtonText(translate("Clear"));
 
     timeText.setText (translate ("Seconds"), NotificationType::dontSendNotification);
     beatText.setText (translate ("Beat"), NotificationType::dontSendNotification);
@@ -44,6 +46,7 @@ TransportView::TransportView()
     addAndMakeVisible (goToBeginningButton);
     addAndMakeVisible (stopPlayButton);
     addAndMakeVisible (recordButton);
+    addAndMakeVisible(clearButton);
 
     addAndMakeVisible (timeLabel);
     addAndMakeVisible (beatLabel);
@@ -124,6 +127,7 @@ void TransportView::resized()
     buttons.items.add (FlexItem (goToBeginningButton).withFlex (1.0f));
     buttons.items.add (FlexItem (stopPlayButton).withFlex (1.0f));
     buttons.items.add (FlexItem (recordButton).withFlex (1.0f));
+    buttons.items.add (FlexItem (clearButton).withFlex (1.0f));
 
     FlexItem textFlex = FlexItem (text).withFlex (0.0f);
     FlexItem labelsFlex = FlexItem (labels).withFlex (0.0f);
@@ -207,6 +211,11 @@ void TransportView::buttonClicked (Button* button)
     {
         if (transport)
             transport->transportRecord (button->getToggleState());
+    }
+    else if (button == &clearButton)
+    {
+        if (transport)
+            transport->playHeadTime = 0.0f;
     }
 }
 
