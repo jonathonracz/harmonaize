@@ -33,6 +33,7 @@ private:
     TextButton stopPlayButton;
     TextButton recordButton;
     TextButton clearButton;
+    TextButton generateAccompanimentButton;
 
     Label timeLabel;
     Label beatLabel;
