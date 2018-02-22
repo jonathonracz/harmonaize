@@ -16,3 +16,6 @@
 [submodule "app/Source/External/readerwriterqueue"]
 	path = app/Source/External/readerwriterqueue
 	url = https://github.com/cameron314/readerwriterqueue.git
+[submodule "harmonaize/external/mido"]
+	path = harmonaize/external/mido
+	url = https://github.com/olemb/mido.git
