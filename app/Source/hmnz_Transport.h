@@ -60,6 +60,7 @@ public:
     CachedValue<bool> playHeadKeySigIsMinor;
 
     CachedValue<SPSCAtomicWrapper<int>> playState;
+    CachedValue<SPSCAtomicWrapper<double>> pulsesPerQuarterNote;
 
     Edit* const edit;
 
@@ -96,7 +97,6 @@ private:
 
     AudioPlayHead::CurrentPositionInfo currentPositionInfo;
 
-    CachedValue<SPSCAtomicWrapper<double>> pulsesPerQuarterNote;
     CachedValue<SPSCAtomicWrapper<bool>> recordEnabled;
     CachedValue<SPSCAtomicWrapper<double>> loopStartBeat;
     CachedValue<SPSCAtomicWrapper<double>> loopEndBeat;

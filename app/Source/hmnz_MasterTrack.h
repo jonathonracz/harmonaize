@@ -28,6 +28,8 @@ public:
     void releaseResources() override {}
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override {}
 
+    MidiMessageSequence createMetaEventsSequence() const noexcept;
+
     std::unique_ptr<Tempo> tempo;
     std::unique_ptr<TimeSignature> timeSignature;
     std::unique_ptr<KeySignature> keySignature;
