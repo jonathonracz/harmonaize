@@ -21,16 +21,17 @@ using namespace py::literals;
 
 class Interchange {
 public:
-    static MidiFile callPython (MidiFile file) noexcept
+    static MidiFile callPython (MidiFile song) noexcept
     {
         std::string file = convert (song);
         py::scoped_interpreter guard{};
         py::bytes bytes (file);
+        py::module os = py::module::import ("os");
+        os.attr ("chdir")("../../../../../harmonaize/midiinterchange/");
         py::module python = py::module::import ("python");
-        py::object result = python.attr ("openFile")(bytes);
-        std::string n = result.cast<std::string>();
-        //std::cout << std::endl << n << std::endl;
-        MemoryBlock block (n.data(), n.size());
+        /*py::object result = */python.attr ("openFile")(bytes);
+//        std::string n = result.cast<std::string>();       
+//        MemoryBlock block (n.data(), n.size());
         MidiFile newSong = MidiFile();
         File f = File ("./generated_files/accomp.mid");
         FileInputStream is (f);
@@ -39,7 +40,7 @@ public:
     }
 
 private:
-    static std::string convert (MidiFile file) noexcept
+    static std::string convert (MidiFile song) noexcept
     {
         MemoryBlock file = MemoryBlock();
         MemoryOutputStream stream (file, false);
