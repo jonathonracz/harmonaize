@@ -3,7 +3,8 @@
 <JUCERPROJECT id="OexI64" name="harmonaize" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.harmonaize.harmonaize" includeBinaryInAppConfig="1"
               cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.1"
-              displaySplashScreen="1" reportAppUsage="1" splashScreenColour="Dark">
+              displaySplashScreen="1" reportAppUsage="1" splashScreenColour="Dark"
+              headerPath="/usr/local/Cellar/python3/3.6.4_2/Frameworks/Python.framework/Versions/3.6/include/python3.6m/">
   <MAINGROUP id="TpvEFM" name="harmonaize">
     <GROUP id="{4C57DD66-0DB0-A254-59EF-09BAA05140B1}" name="GUI">
       <FILE id="IlADi2" name="hmnz_EditView.cpp" compile="1" resource="0"
@@ -98,7 +99,7 @@
     <FILE id="O1PXYS" name="hmnz_Main.cpp" compile="1" resource="0" file="Source/hmnz_Main.cpp"/>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="" extraLinkerFlags="">
+    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="" extraLinkerFlags="-L/usr/local/opt/python3/Frameworks/Python.framework/Versions/3.6/lib/python3.6/config-3.6m-darwin -lpython3.6m -ldl -framework CoreFoundation">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" enablePluginBinaryCopyStep="1" isDebug="1" optimisation="1"
                        linkTimeOptimisation="0" targetName="harmonaize"/>
