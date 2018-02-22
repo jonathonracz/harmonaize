@@ -1,4 +1,5 @@
 import mido
+import random
 from grooves import GROOVES
 
 def parseMidi(midi):
@@ -26,7 +27,7 @@ def chooseBestGroove(tempo, time_signature):
 		grooves = GROOVES[('regular', time_signature)]
 	else:
 		grooves = GROOVES[('fast', time_signature)]
-	return grooves[0]
+	return random.choice(grooves)
 
 def getMessageWithType(messages, msg_type):
 	return next(filter(lambda msg: msg.type == msg_type, messages))
