@@ -127,7 +127,7 @@ void Track::updateMidiReadCache() noexcept
 
     {
         std::lock_guard<std::mutex> (edit->transport.getCallbackLock());
-        newReadCache.swapWith (newReadCache);
+        midiReadCache.swapWith (newReadCache);
     }
 }
 
