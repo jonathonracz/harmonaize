@@ -164,6 +164,10 @@ void TransportView::valueTreePropertyChanged (ValueTree& treeChanged, const Iden
         else if (int (treeChanged[property]) == Transport::State::stopped)
             stopPlayButton.setToggleState (false, NotificationType::dontSendNotification);
     }
+    else if (property == transport->recordEnabled.getPropertyID())
+    {
+        recordButton.setToggleState(bool (treeChanged[property]), NotificationType::dontSendNotification);
+    }
     else if (property == transport->playHeadTime.getPropertyID())
     {
         timeLabel.setText (String (transport->playHeadTime), NotificationType::dontSendNotification);
@@ -212,7 +216,13 @@ void TransportView::buttonClicked (Button* button)
     else if (button == &stopPlayButton)
     {
         if (transport)
+        {
             transport->transportPlay (button->getToggleState());
+            if (transport->recordEnabled.get())
+            {
+                transport->transportRecord (button->getToggleState());
+            }
+        }
     }
     else if (button == &recordButton)
     {
