@@ -253,9 +253,12 @@ void TransportView::buttonClicked (Button* button)
         // TODO: This belongs in some sort of arrangement controller, not transport.
         if (transport)
         {
-            while (transport->edit->getState().getChildWithName (Track::identifier).isValid())
+            // TODO: Also, this is stupidly written and hacky
+            int indexToRemove = Utility::getIndexOfImmediateChildWithName (transport->edit->getState(), Track::identifier);
+            while (indexToRemove >= 0)
             {
-                transport->edit->getState().removeChild (transport->edit->getState().getChildWithName (Track::identifier).isValid(), transport->getUndoManager());
+                transport->edit->getState().removeChild (indexToRemove, transport->getUndoManager());
+                indexToRemove = Utility::getIndexOfImmediateChildWithName (transport->edit->getState(), Track::identifier);
             }
 
             transport->edit->getState().addChild (Track::createDefaultState(), -1, transport->getUndoManager());

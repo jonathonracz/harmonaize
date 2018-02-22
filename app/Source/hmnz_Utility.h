@@ -55,4 +55,13 @@ inline void printMidiBuffer (const MidiBuffer& buffer) noexcept
     }
 }
 
+inline int getIndexOfImmediateChildWithName (const ValueTree& parent, const Identifier& type)
+{
+    for (int i = 0; i < parent.getNumChildren(); ++i)
+        if (parent.getChild (i).getType() == type)
+            return i;
+
+    return -1;
+}
+
 }
