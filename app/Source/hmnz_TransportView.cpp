@@ -11,7 +11,7 @@
 #include "hmnz_TransportView.h"
 #include "hmnz_Transport.h"
 #include "hmnz_Edit.h"
-#include "hmnz_KeySignature.h"
+#include "../../harmonaize/midiinterchange/hmnz_MidiInterchange.h"
 
 TransportView::TransportView()
 {
@@ -237,15 +237,21 @@ void TransportView::buttonClicked (Button* button)
     }
     else if (button == &clearButton)
     {
+        /*
         if (transport)
         {
-            transport->playHeadTime = 0.0f;
-            // TODO: Erase current melody
+            for (Track* track : transport->edit->tracks.objects)
+            {
+                track->clipList
+            }
         }
+         */
     }
     else if (button == &generateAccompanimentButton)
     {
-        // TODO: Add functionality to generate accompaniment on current melody
+        MidiFile midiFile = transport->edit->exportToMidi();
+        midiFile = Interchange::callPython (midiFile);
+        transport->edit->importFromMidi (midiFile, 1, 0.0);
     }
 }
 

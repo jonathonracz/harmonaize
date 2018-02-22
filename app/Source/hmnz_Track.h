@@ -41,11 +41,11 @@ public:
     CachedValue<SPSCAtomicWrapper<bool>> recordArmed;
 
     Edit* const edit;
+    ClipList clipList;
 
 private:
     AudioBuffer<float> audioBuffer;
     MidiBuffer midiBuffer;
-    ClipList clipList;
 
     MidiMessageSequence midiReadCache;
 
