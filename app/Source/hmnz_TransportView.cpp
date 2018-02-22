@@ -96,6 +96,15 @@ void TransportView::resized()
 
     FlexBox text;
     text.flexDirection = FlexBox::Direction::row;
+    timeText.setJustificationType(Justification::centred);
+    beatText.setJustificationType(Justification::centred);
+    tempoText.setJustificationType(Justification::centred);
+    keySignatureText.setJustificationType(Justification::centred);
+    Font font = Font (20);
+    timeText.setFont (font);
+    beatText.setFont (font);
+    tempoText.setFont (font);
+    keySignatureText.setFont (font);
     FlexItem timeT = FlexItem (timeText).withFlex (0.5f);
     FlexItem beatT = FlexItem (beatText).withFlex (0.5f);
     FlexItem tempoT = FlexItem (tempoText).withFlex (0.5f);
@@ -110,6 +119,10 @@ void TransportView::resized()
 
     FlexBox labels;
     labels.flexDirection = FlexBox::Direction::row;
+    timeLabel.setJustificationType(Justification::centred);
+    beatLabel.setJustificationType(Justification::centred);
+    timeLabel.setFont (font);
+    beatLabel.setFont (font); 
     FlexItem timeL = FlexItem (timeLabel).withFlex (0.5f);
     FlexItem beatL = FlexItem (beatLabel).withFlex (0.5f);
     FlexItem tempoL = FlexItem (tempoSlider).withFlex (0.5f);
