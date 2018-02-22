@@ -1,11 +1,11 @@
-# harmonAIze
+# HarmonAIze
 
-# GoatMix
-
-Welcome to the GoatMix repository! Please keep in mind that audio plugins are extremely fickle and complex things when it comes to building, due to the massive number of dependencies, SDKs, and build gymnastics needed to compile them and make them run. That said, this document will attempt to explain as clearly and concisely as possible how to get started.
+Welcome to the HarmonAIze repository! Please keep in mind that audio applications are extremely fickle and complex things when it comes to building, due to the massive number of dependencies, SDKs, and build gymnastics needed to compile them and make them run. That said, this document will attempt to explain as clearly and concisely as possible how to get started.
 
 ## Step 1: Have the correct build tools.
-MobileMix is tested to build using Xcode 9.1 under macOS High Sierra (10.13). 
+HarmonAIze is tested to build using Xcode 9.1 under macOS High Sierra (10.13).
+
+Python 3.6 is required to be installed under `/usr/local/opt/python3/Frameworks/Python.framework` to build and run. It can be installed via `brew install python3`.
 
 ## Step 2: Clone the repository recursively.
 
@@ -15,7 +15,7 @@ It will take a while to clone everything. Once complete, open `harmonaize/app/Bu
 
 ## Step 3: Build.
 
-This is where things will either go without a hitch or crash and burn, mostly due to paths to SDKs (which are included as submodules) are not referenced correctly for whatever reason. In the case of simply building and side-loading the app onto a device, there shouldn't be any issues so long as you're on one of the supported platforms.
+This is where things will either go without a hitch or crash and burn, mostly due to paths to frameworks/libraries (which are included as submodules) are not referenced correctly for whatever reason. In the case of simply building and side-loading the app onto a device, there _shouldn't_ be any issues so long as you're on one of the supported platforms.
 
 ## Appendix
 
