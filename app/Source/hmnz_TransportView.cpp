@@ -19,6 +19,7 @@ TransportView::TransportView()
     stopPlayButton.addListener (this);
     recordButton.addListener (this);
     clearButton.addListener(this);
+    generateAccompanimentButton.addListener(this);
 
     timeLabel.addListener (this);
     beatLabel.addListener (this);
@@ -30,6 +31,7 @@ TransportView::TransportView()
     stopPlayButton.setButtonText (translate ("Play"));
     recordButton.setButtonText (translate ("Record"));
     clearButton.setButtonText(translate("Clear"));
+    generateAccompanimentButton.setButtonText(translate("Generate\nAccompaniment"));
 
     timeText.setText (translate ("Seconds"), NotificationType::dontSendNotification);
     beatText.setText (translate ("Beat"), NotificationType::dontSendNotification);
@@ -47,6 +49,7 @@ TransportView::TransportView()
     addAndMakeVisible (stopPlayButton);
     addAndMakeVisible (recordButton);
     addAndMakeVisible(clearButton);
+    addAndMakeVisible(generateAccompanimentButton);
 
     addAndMakeVisible (timeLabel);
     addAndMakeVisible (beatLabel);
@@ -128,6 +131,7 @@ void TransportView::resized()
     buttons.items.add (FlexItem (stopPlayButton).withFlex (1.0f));
     buttons.items.add (FlexItem (recordButton).withFlex (1.0f));
     buttons.items.add (FlexItem (clearButton).withFlex (1.0f));
+    buttons.items.add (FlexItem (generateAccompanimentButton).withFlex (1.0f));
 
     FlexItem textFlex = FlexItem (text).withFlex (0.0f);
     FlexItem labelsFlex = FlexItem (labels).withFlex (0.0f);
@@ -210,12 +214,22 @@ void TransportView::buttonClicked (Button* button)
     else if (button == &recordButton)
     {
         if (transport)
+        {
             transport->transportRecord (button->getToggleState());
+            transport->transportPlay (button->getToggleState());
+        }
     }
     else if (button == &clearButton)
     {
         if (transport)
+        {
             transport->playHeadTime = 0.0f;
+            // TODO: Erase current melody
+        }
+    }
+    else if (button == &generateAccompanimentButton)
+    {
+        // TODO: Add functionality to generate accompaniment on current melody
     }
 }
 
