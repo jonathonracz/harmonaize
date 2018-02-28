@@ -30,9 +30,9 @@ public:
 
     MidiMessageSequence createMetaEventsSequence() const noexcept;
 
-    std::unique_ptr<Tempo> tempo;
-    std::unique_ptr<TimeSignature> timeSignature;
-    std::unique_ptr<KeySignature> keySignature;
+    Tempo tempo;
+    TimeSignature timeSignature;
+    KeySignature keySignature;
 
 private:
     Edit* const edit;

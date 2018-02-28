@@ -29,14 +29,14 @@ public:
 
     MidiMessageSequence getPartialMidiMessageSequence (double rangeStart, double rangeEnd, double timeDelta = 0.0) const noexcept
     {
-        jdr::ArrayForwardIterator<MidiMessageModel*> begin = jdr::ArrayForwardIterator<MidiMessageModel*>::begin (midiMessages.objects);
-        jdr::ArrayForwardIterator<MidiMessageModel*> end = jdr::ArrayForwardIterator<MidiMessageModel*>::end (midiMessages.objects);
+        auto begin = midiMessages.begin();
+        auto end = midiMessages.end();
 
         MessageSortComparator sortComparator;
-        jdr::ArrayForwardIterator<MidiMessageModel*> startIt = std::lower_bound (begin, end, rangeStart, sortComparator);
-        jdr::ArrayForwardIterator<MidiMessageModel*> endIt = std::upper_bound (begin, end, rangeEnd, sortComparator);
+        auto startIt = std::lower_bound (begin, end, rangeStart, sortComparator);
+        auto endIt = std::upper_bound (begin, end, rangeEnd, sortComparator);
         MidiMessageSequence ret;
-        for (jdr::ArrayForwardIterator<MidiMessageModel*> it = startIt; it != endIt; ++it)
+        for (auto it = startIt; it != endIt; ++it)
             ret.addEvent (it->getMessage(), timeDelta);
 
         return ret;
@@ -57,45 +57,45 @@ public:
     void addEvent (const MidiMessage& message, double timeDelta = 0.0) noexcept
     {
         MessageSortComparator sortComparator;
-        jdr::ArrayForwardIterator<MidiMessageModel*> insertLocation =
-            std::upper_bound (jdr::ArrayForwardIterator<MidiMessageModel*>::begin (midiMessages.objects),
-                              jdr::ArrayForwardIterator<MidiMessageModel*>::end (midiMessages.objects),
+        auto insertLocation =
+            std::upper_bound (midiMessages.begin(),
+                              midiMessages.end(),
                               message.getTimeStamp(),
                               sortComparator);
 
-        int insertIndex = (insertLocation == jdr::ArrayForwardIterator<MidiMessageModel*>::end (midiMessages.objects)) ? -1 : midiMessages.objects.indexOf (*insertLocation);
+        int insertIndex = (insertLocation == midiMessages.end()) ? -1 : midiMessages.indexOf (*insertLocation);
         getState().addChild (MidiMessageModel::createStateForMessage (message, timeDelta), insertIndex, getUndoManager());
     }
 
     void addTimeToMessages (double timeDelta) noexcept
     {
-        for (MidiMessageModel* message : midiMessages.objects)
-            message->timestamp = message->timestamp + timeDelta;
+        for (MidiMessageModel* message : midiMessages)
+            message->timestamp = message->timestamp.get() + timeDelta;
     }
 
     MidiMessageModel* findNoteOnOffSiblingFor (MidiMessageModel* message) const noexcept
     {
-        int indexOfMessage = midiMessages.objects.indexOf (message);
+        int indexOfMessage = midiMessages.indexOf (message);
         if (!message || indexOfMessage < 0)
             return nullptr;
 
         MidiMessage messageObject = message->getMessage();
         if (messageObject.isNoteOn (true))
         {
-            for (int i = indexOfMessage + 1; i < midiMessages.objects.size(); ++i)
+            for (int i = indexOfMessage + 1; i < midiMessages.size(); ++i)
             {
-                MidiMessage potentialPartnerMessage = midiMessages.objects[i]->getMessage();
+                MidiMessage potentialPartnerMessage = midiMessages[i]->getMessage();
                 if (potentialPartnerMessage.isNoteOff (true) && potentialPartnerMessage.getNoteNumber() == messageObject.getNoteNumber())
-                    return midiMessages.objects[i];
+                    return midiMessages[i];
             }
         }
         else if (messageObject.isNoteOff (true))
         {
             for (int i = indexOfMessage - 1; i > 0; --i)
             {
-                MidiMessage potentialPartnerMessage = midiMessages.objects[i]->getMessage();
+                MidiMessage potentialPartnerMessage = midiMessages[i]->getMessage();
                 if (potentialPartnerMessage.isNoteOn (true) && potentialPartnerMessage.getNoteNumber() == messageObject.getNoteNumber())
-                    return midiMessages.objects[i];
+                    return midiMessages[i];
             }
         }
 
@@ -106,7 +106,7 @@ public:
     {
         Array<MidiMessageModel*> messagesToRemove;
         Array<MidiMessage> messagesToAdd;
-        for (MidiMessageModel* message : midiMessages.objects)
+        for (MidiMessageModel* message : midiMessages)
         {
             if (message->timestamp < start || message->timestamp > end)
             {

@@ -18,7 +18,8 @@ class Tempo : public ValueTreeObject<IDs::Tempo>
 {
 public:
     Tempo (const ValueTree& v, UndoManager* um)
-        : ValueTreeObject (v, um), automation (Automation<double>::createDefaultState(), um, 120.0),
+        : ValueTreeObject (v, um),
+          automation (Automation<double>::createDefaultState(), um, 120.0),
           tempoMap (automation)
     {
         getState().addChild (automation.getState(), -1, nullptr);

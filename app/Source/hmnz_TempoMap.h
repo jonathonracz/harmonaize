@@ -24,30 +24,28 @@ public:
 
     double beat (double time) const noexcept
     {
-        std::shared_ptr<OwnedArray<TempoFunctions::TempoFunction>> currentTempoFunction = tempoFunction;
-        for (int i = 0; i < currentTempoFunction->size(); ++i)
+        for (int i = 0; i < tempoFunction.size(); ++i)
         {
-            TempoFunctions::TempoFunction* currFunction = currentTempoFunction->getUnchecked (i);
+            TempoFunctions::TempoFunction* currFunction = tempoFunction.getUnchecked (i);
             if (time <= currFunction->time (currFunction->b1))
                 return currFunction->beat (time);
         }
 
         jassertfalse;
-        return currentTempoFunction->getLast()->beat (time);
+        return tempoFunction.getLast()->beat (time);
     }
 
     double time (double beat) const noexcept
     {
-        std::shared_ptr<OwnedArray<TempoFunctions::TempoFunction>> currentTempoFunction = tempoFunction;
-        for (int i = 0; i < currentTempoFunction->size(); ++i)
+        for (int i = 0; i < tempoFunction.size(); ++i)
         {
-            TempoFunctions::TempoFunction* currFunction = currentTempoFunction->getUnchecked (i);
+            TempoFunctions::TempoFunction* currFunction = tempoFunction.getUnchecked (i);
             if (beat <= currFunction->b1)
                 return currFunction->time (beat);
         }
 
         jassertfalse;
-        return currentTempoFunction->getLast()->time (beat);
+        return tempoFunction.getLast()->time (beat);
     }
 
     double tempoAtTime (double time) const noexcept
@@ -57,26 +55,26 @@ public:
 
     double tempoAtBeat (double beat) const noexcept
     {
-        return automationSource.getValueAtBeat (beat);
+        return automationSource.getValueAtTime (beat);
     }
 
 private:
     Automation<double>& automationSource;
-    std::shared_ptr<OwnedArray<TempoFunctions::TempoFunction>> tempoFunction;
+    OwnedArray<TempoFunctions::TempoFunction> tempoFunction;
 
     void recomputeTempoIntervals()
     {
-        std::shared_ptr<OwnedArray<TempoFunctions::TempoFunction>> newTempoFunction = std::make_shared<OwnedArray<TempoFunctions::TempoFunction>>();
+        OwnedArray<TempoFunctions::TempoFunction> newTempoFunction;
         for (int i = 0; i < getNumMarkers() - 1; ++i)
         {
             ValueTree startMarker = getMarker (i);
             ValueTree endMarker = getMarker (i + 1);
 
-            double b0 = startMarker[IDs::AutomationMarkerProps::Beat];
-            double b1 = endMarker[IDs::AutomationMarkerProps::Beat];
+            double b0 = startMarker[IDs::AutomationMarkerProps::Time];
+            double b1 = endMarker[IDs::AutomationMarkerProps::Time];
             double t0 = startMarker[IDs::AutomationMarkerProps::Value];
             double t1 = endMarker[IDs::AutomationMarkerProps::Value];
-            double timeOffset = (i == 0) ? 0.0 : newTempoFunction->getLast()->time (newTempoFunction->getLast()->b0);
+            double timeOffset = (i == 0) ? 0.0 : newTempoFunction.getLast()->time (newTempoFunction.getLast()->b0);
             int functionType = endMarker[IDs::AutomationMarkerProps::Type];
             TempoFunctions::TempoFunction* newFunction = nullptr;
 
@@ -94,15 +92,15 @@ private:
                 }
                 default: jassertfalse;
             }
-            newTempoFunction->add (newFunction);
+            newTempoFunction.add (newFunction);
         }
 
-        tempoFunction = newTempoFunction;
+        tempoFunction.swapWith (newTempoFunction);
     }
 
     int getNumMarkers() const noexcept
     {
-        int numActiveAutomationMarkers = (double (automationSource.markers.objects.getFirst()->beat.get()) == std::numeric_limits<double>::lowest()) ? 0 : automationSource.markers.objects.size();
+        int numActiveAutomationMarkers = (double (automationSource.getFirst()->time.get()) == std::numeric_limits<double>::lowest()) ? 0 : automationSource.size();
         return 2 + numActiveAutomationMarkers;
     }
 
@@ -115,15 +113,15 @@ private:
             edgeMarker.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::step, nullptr);
 
             double beat = (index == 0) ? 0.0 : std::numeric_limits<double>::max();
-            edgeMarker.setProperty (IDs::AutomationMarkerProps::Beat, beat, nullptr);
+            edgeMarker.setProperty (IDs::AutomationMarkerProps::Time, beat, nullptr);
 
-            double value = (index == 0) ? automationSource.markers.objects.getFirst()->value.get() : automationSource.markers.objects.getLast()->value.get();
+            double value = (index == 0) ? automationSource.getFirst()->value.get() : automationSource.getLast()->value.get();
             edgeMarker.setProperty (IDs::AutomationMarkerProps::Value, value, nullptr);
 
             return edgeMarker;
         }
 
-        return automationSource.markers.objects[index - 1]->getState();
+        return automationSource[index - 1]->getState();
     }
 
     void valueTreeChildAdded (ValueTree& parent, ValueTree& addedChild) override

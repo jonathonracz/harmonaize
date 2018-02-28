@@ -104,19 +104,19 @@ void Transport::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
     int64 samplePosition = readPosition.load (std::memory_order_acquire);
     double timePosition = samplePosition / getActiveSampleRate();
     double ppq = pulsesPerQuarterNote.get();
-    int timeSigNumerator = edit->masterTrack.timeSignature->numerator.get();
-    int timeSigDenominator = edit->masterTrack.timeSignature->denominator.get();
-    double quarterNotesPerBeat = edit->masterTrack.timeSignature->quarterNotesPerBeat();
-    double beat = edit->masterTrack.tempo->beat (timePosition);
+    int timeSigNumerator = edit->masterTrack.timeSignature.numerator.get();
+    int timeSigDenominator = edit->masterTrack.timeSignature.denominator.get();
+    double quarterNotesPerBeat = edit->masterTrack.timeSignature.quarterNotesPerBeat();
+    double beat = edit->masterTrack.tempo.beat (timePosition);
 
-    currentPositionInfo.bpm = edit->masterTrack.tempo->tempoAtTime (timePosition);
+    currentPositionInfo.bpm = edit->masterTrack.tempo.tempoAtTime (timePosition);
     currentPositionInfo.timeSigNumerator = timeSigNumerator;
     currentPositionInfo.timeSigDenominator = timeSigDenominator;
     currentPositionInfo.timeInSamples = samplePosition;
     currentPositionInfo.timeInSeconds = timePosition;
     currentPositionInfo.editOriginTime = 0.0;
     currentPositionInfo.ppqPosition = beat * ppq * quarterNotesPerBeat;
-    currentPositionInfo.ppqPositionOfLastBarStart = edit->masterTrack.timeSignature->barInTermsOfBeat (beat) * ppq * quarterNotesPerBeat;
+    currentPositionInfo.ppqPositionOfLastBarStart = edit->masterTrack.timeSignature.barInTermsOfBeat (beat) * ppq * quarterNotesPerBeat;
     currentPositionInfo.frameRate = AudioPlayHead::FrameRateType::fpsUnknown;
     currentPositionInfo.isPlaying = (static_cast<int> (playState.get()) == static_cast<int> (State::playing));
     currentPositionInfo.isRecording = recordEnabled.get();
@@ -140,8 +140,8 @@ void Transport::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
     readPositionTempo.store (currentPositionInfo.bpm, std::memory_order_relaxed);
     readPositionTimeSigNumerator.store (timeSigDenominator, std::memory_order_relaxed);
     readPositionTimeSigDenominator.store (timeSigDenominator, std::memory_order_relaxed);
-    readPositionKeySigNumSharpsOrFlats.store (edit->masterTrack.keySignature->numSharpsOrFlats.get(), std::memory_order_relaxed);
-    readPositionKeySigIsMinor.store (edit->masterTrack.keySignature->isMinor.get(), std::memory_order_relaxed);
+    readPositionKeySigNumSharpsOrFlats.store (edit->masterTrack.keySignature.numSharpsOrFlats.get(), std::memory_order_relaxed);
+    readPositionKeySigIsMinor.store (edit->masterTrack.keySignature.isMinor.get(), std::memory_order_relaxed);
     triggerAsyncUpdate();
 }
 
@@ -153,14 +153,14 @@ void Transport::valueTreePropertyChanged (ValueTree& tree, const Identifier& ide
         {
             double time = std::max (0.0, playHeadTime.get());
             tree.setPropertyExcludingListener (this, playHeadTime.getPropertyID(), time, nullptr);
-            tree.setPropertyExcludingListener (this, playHeadBeat.getPropertyID(), edit->masterTrack.tempo->beat (time), nullptr);
+            tree.setPropertyExcludingListener (this, playHeadBeat.getPropertyID(), edit->masterTrack.tempo.beat (time), nullptr);
             setPositionSecond (time);
         }
         else if (identifier == playHeadBeat.getPropertyID())
         {
-            double time = std::max (0.0, edit->masterTrack.tempo->time (playHeadBeat));
+            double time = std::max (0.0, edit->masterTrack.tempo.time (playHeadBeat));
             tree.setPropertyExcludingListener (this, playHeadTime.getPropertyID(), time, nullptr);
-            tree.setPropertyExcludingListener (this, playHeadBeat.getPropertyID(), edit->masterTrack.tempo->beat (time), nullptr);
+            tree.setPropertyExcludingListener (this, playHeadBeat.getPropertyID(), edit->masterTrack.tempo.beat (time), nullptr);
             setPositionSecond (time);
         }
         else if (identifier == playState.getPropertyID())
@@ -178,23 +178,23 @@ void Transport::valueTreePropertyChanged (ValueTree& tree, const Identifier& ide
         }
         else if (identifier == playHeadTimeSigNumerator.getPropertyID())
         {
-            edit->masterTrack.timeSignature->numerator = tree[playHeadTimeSigNumerator.getPropertyID()];
+            edit->masterTrack.timeSignature.numerator = tree[playHeadTimeSigNumerator.getPropertyID()];
         }
         else if (identifier == playHeadTimeSigDenominator.getPropertyID())
         {
-            edit->masterTrack.timeSignature->denominator = tree[playHeadTimeSigDenominator.getPropertyID()];
+            edit->masterTrack.timeSignature.denominator = tree[playHeadTimeSigDenominator.getPropertyID()];
         }
         else if (identifier == playHeadTempo.getPropertyID())
         {
-            edit->masterTrack.tempo->automation.markers.objects[0]->value = tree[playHeadTempo.getPropertyID()];
+            edit->masterTrack.tempo.automation.getFirst()->value = tree[playHeadTempo.getPropertyID()];
         }
         else if (identifier == playHeadKeySigNumSharpsOrFlats.getPropertyID())
         {
-            edit->masterTrack.keySignature->numSharpsOrFlats = tree[playHeadKeySigNumSharpsOrFlats.getPropertyID()];
+            edit->masterTrack.keySignature.numSharpsOrFlats = tree[playHeadKeySigNumSharpsOrFlats.getPropertyID()];
         }
         else if (identifier == playHeadKeySigIsMinor.getPropertyID())
         {
-            edit->masterTrack.keySignature->isMinor = tree[playHeadKeySigIsMinor.getPropertyID()];
+            edit->masterTrack.keySignature.isMinor = tree[playHeadKeySigIsMinor.getPropertyID()];
         }
     }
 }

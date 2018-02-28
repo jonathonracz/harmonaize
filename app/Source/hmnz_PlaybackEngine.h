@@ -1,13 +1,16 @@
 /*
   ==============================================================================
 
-    hmnz_AutomationUnitTest.cpp
-    Created: 1 Feb 2018 5:43:08pm
+    hmnz_PlaybackEngine.h
+    Created: 23 Feb 2018 3:14:33pm
     Author:  Jonathon Racz
 
   ==============================================================================
 */
 
-#include "hmnz_AutomationUnitTest.h"
+#pragma once
 
-static AutomationUnitTest automationUnitTest;
+class PlaybackEngine
+{
+
+};

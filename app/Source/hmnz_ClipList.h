@@ -26,7 +26,7 @@ public:
     Array<Clip*> getClipsForInterval (double start, double end) const noexcept
     {
         Array<Clip*> ret;
-        for (Clip* clip : clips.objects)
+        for (Clip* clip : clips)
             if (clip->start >= start && clip->start + clip->length < end)
                 ret.add (clip);
 
@@ -35,7 +35,7 @@ public:
 
     Clip* clipAtTime (double time) const noexcept
     {
-        for (Clip* clip : clips.objects)
+        for (Clip* clip : clips)
             if (clip->start >= time && clip->start + clip->length < time)
                 return clip;
 
@@ -87,10 +87,10 @@ private:
     void fixClipOverlaps (const ValueTree& dominantClip) noexcept
     {
         Array<int> childrenToDelete;
-        Clip* changedChild = clips.objects[getState().indexOf (dominantClip)];
-        for (int i = 0; i < clips.objects.size(); ++i)
+        Clip* changedChild = clips[getState().indexOf (dominantClip)];
+        for (int i = 0; i < clips.size(); ++i)
         {
-            Clip* child = clips.objects[i];
+            Clip* child = clips[i];
             if (child == changedChild)
                 continue;
 

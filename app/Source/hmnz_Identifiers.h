@@ -16,6 +16,8 @@ namespace IDs
 {
 #define DECLARE_ID(name) const Identifier name (#name);
 
+    DECLARE_ID (Test)
+
     DECLARE_ID (Edit)
     namespace EditProps
     {
@@ -112,7 +114,7 @@ namespace IDs
     DECLARE_ID (AutomationMarker)
     namespace AutomationMarkerProps
     {
-        DECLARE_ID (Beat)
+        DECLARE_ID (Time)
         DECLARE_ID (Value)
         DECLARE_ID (Type)
     }
