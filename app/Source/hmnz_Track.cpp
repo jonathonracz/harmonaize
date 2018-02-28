@@ -60,11 +60,11 @@ void Track::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
     if (positionInfo.isPlaying)
     {
         auto beatForSample = [&](int64 sample) -> double {
-            return edit->masterTrack.tempo->beat (sample / edit->transport.getActiveSampleRate());
+            return edit->masterTrack.tempo.beat (sample / edit->transport.getActiveSampleRate());
         };
 
         auto sampleForBeat = [&](double beat) -> int64 {
-            return static_cast<int64> (edit->masterTrack.tempo->time (beat) * edit->transport.getActiveSampleRate());
+            return static_cast<int64> (edit->masterTrack.tempo.time (beat) * edit->transport.getActiveSampleRate());
         };
 
         // Pull MIDI data for this frame from the active sequence.
@@ -104,7 +104,7 @@ void Track::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
 MidiMessageSequence Track::getMidiMessageSequence() const noexcept
 {
     MidiMessageSequence ret;
-    for (Clip* clip : clipList.clips.objects)
+    for (Clip* clip : clipList.clips)
     {
         if (clip->type == IDs::ClipProps::Types::Midi)
         {

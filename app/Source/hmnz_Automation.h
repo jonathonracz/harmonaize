@@ -10,11 +10,13 @@
 
 #pragma once
 
-#include "hmnz_AutomationMarkerArray.h"
-#include "hmnz_ValueTreeIterator.h"
+#include "hmnz_ArrayIterator.h"
+#include "hmnz_AutomationMarker.h"
+#include "hmnz_GenericValueTreeObjectArray.h"
+#include "hmnz_ArrayIterator.h"
 
 /**
-    Represents an Automation lane containing a collection of beat mapped
+    Represents an Automation lane containing a collection of time mapped
     markers.
 */
 template<typename ValueType>
@@ -24,41 +26,43 @@ public:
     Automation (const ValueTree& v, UndoManager* um, ValueType originValue = ValueType())
         : ValueTreeObject (v, um), markers (v, um)
     {
-        if (getState().getNumChildren() == 0)
-        {
-            // Create a default origin marker.
-            getState().addChild (AutomationMarker<ValueType>::createDefaultState(), -1, nullptr);
-            getState().getChild (0).setProperty (IDs::AutomationMarkerProps::Value, originValue, nullptr);
-        }
+        //getState().addListener (this);
 
-        validateMarkers();
+        DBG ("Automation Constructor");
+        //if (markers.size() == 0)
+        //{
+        //    // Create a default origin marker.
+        //    addMarker (std::numeric_limits<double>::lowest(), originValue, AutomationMarker<ValueType>::Type::origin);
+        //}
+
+        //validateMarkers();
     }
 
-    void addMarker (const AutomationMarker<ValueType>& marker)
+    ~Automation()
     {
-        addMarker (marker.getState());
+        getState().removeListener (this);
+        DBG ("Automation destructor");
     }
 
-    void addMarker (ValueTree v)
+    void addMarker (double time, ValueType value, int type) noexcept
     {
     #if JUCE_DEBUG
         markerChangedViaMethods = true;
     #endif
 
         beginNewTransaction ("Add automation marker");
-        double beat = v[IDs::AutomationMarkerProps::Beat];
-        ValueTree markerBefore = markerBeforeBeat (beat);
-        ValueTree markerAfter = markerAfterBeat (beat);
+        auto markerBefore = markerBeforeTime (time);
+        auto markerAfter = markerAfterTime (time);
 
-        if (double(markerBefore[IDs::AutomationMarkerProps::Beat]) == std::numeric_limits<double>::lowest())
+        if (markerBefore && markerBefore->time == std::numeric_limits<double>::lowest())
         {
-            markerBefore.setProperty (IDs::AutomationMarkerProps::Beat, beat, getUndoManager());
-            markerBefore.setProperty (IDs::AutomationMarkerProps::Value, v[IDs::AutomationMarkerProps::Value], getUndoManager());
+            markerBefore->time = time;
+            markerBefore->value = value;
         }
         else
         {
-            int indexOfBefore = getState().indexOf (markerBefore);
-            int indexOfAfter = getState().indexOf (markerAfter);
+            int indexOfBefore = markers.indexOf (markerBefore);
+            int indexOfAfter = markers.indexOf (markerAfter);
 
             int insertionIndex;
             if (indexOfBefore < 0)
@@ -68,24 +72,25 @@ public:
 
             if (indexOfBefore < 0)
             {
-                int originalAutomationType = v[IDs::AutomationMarkerProps::Type];
-                v.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<ValueType>::Type::origin, nullptr);
+                int originalAutomationType = type;
+                type = AutomationMarker<ValueType>::Type::origin;
                 if (indexOfAfter >= 0)
                 {
-                    jassert (int (markerAfter[IDs::AutomationMarkerProps::Type]) == AutomationMarker<ValueType>::Type::origin);
-                    markerAfter.setProperty(IDs::AutomationMarkerProps::Type, originalAutomationType, nullptr);
+                    jassert (markerAfter->type == AutomationMarker<ValueType>::Type::origin);
+                    markerAfter->type = originalAutomationType;
                 }
             }
 
-            getState().addChild (v, insertionIndex, getUndoManager());
+            ValueTree newMarkerState = AutomationMarker<ValueType>::createState (time, value, type);
+            markers.insertStateAtObjectIndex (newMarkerState, insertionIndex);
         }
 
         validateMarkers();
     }
 
-    void removeMarker (const AutomationMarker<ValueType>& marker)
+    void removeMarker (AutomationMarker<ValueType>* marker)
     {
-        removeMarker (marker.getState());
+        removeMarker (marker->getState());
     }
 
     void removeMarker (const ValueTree& v)
@@ -106,7 +111,7 @@ public:
         beginNewTransaction ("Remove automation marker");
         if (getState().getNumChildren() == 1)
         {
-            childToRemove.setProperty (IDs::AutomationMarkerProps::Beat, std::numeric_limits<double>::lowest(), getUndoManager());
+            childToRemove.setProperty (IDs::AutomationMarkerProps::Time, std::numeric_limits<double>::lowest(), getUndoManager());
         }
         else
         {
@@ -118,40 +123,70 @@ public:
         validateMarkers();
     }
 
-    ValueType getValueAtBeat (double beat)
+    jdr::OwnedArrayForwardIteratorConst<ValueType> begin() const noexcept
     {
-        ValueTree markerBefore = markerBeforeBeat (beat);
-        ValueTree markerAfter = markerAfterBeat (beat);
+        return markers.begin();
+    }
 
-        jassert (markerBefore.isValid() || markerAfter.isValid());
+    jdr::OwnedArrayForwardIteratorConst<ValueType> end() const noexcept
+    {
+        return markers.end();
+    }
 
-        if (!markerBefore.isValid())
+    AutomationMarker<ValueType>* const operator[] (int index) const noexcept
+    {
+        return markers[index];
+    }
+
+    AutomationMarker<ValueType>* const getFirst() const noexcept
+    {
+        return markers.getFirst();
+    }
+
+    AutomationMarker<ValueType>* const getLast() const noexcept
+    {
+        return markers.getLast();
+    }
+
+    int size() const noexcept
+    {
+        return markers.size();
+    }
+
+    ValueType getValueAtTime (double time) noexcept
+    {
+        AutomationMarker<ValueType>* const markerBefore = markerBeforeTime (time);
+        AutomationMarker<ValueType>* const markerAfter = markerAfterTime (time);
+
+        jassert (markerBefore || markerAfter);
+
+        if (!markerBefore)
         {
-            return markerAfter[IDs::AutomationMarkerProps::Value];
+            return markerAfter->value;
         }
-        else if (!markerAfter.isValid())
+        else if (!markerAfter)
         {
-            return markerBefore[IDs::AutomationMarkerProps::Value];
+            return markerBefore->value;
         }
 
-        int afterType = markerAfter[IDs::AutomationMarkerProps::Type];
-        double beforeBeat = markerBefore[IDs::AutomationMarkerProps::Beat];
-        double afterBeat = markerAfter[IDs::AutomationMarkerProps::Beat];
-        double beforeValue = markerBefore[IDs::AutomationMarkerProps::Value];
-        double afterValue = markerAfter[IDs::AutomationMarkerProps::Value];
+        int afterType = markerAfter->type;
+        double beforeTime = markerBefore->time;
+        double afterTime = markerAfter->time;
+        double beforeValue = markerBefore->value;
+        double afterValue = markerAfter->value;
         ValueType retValue;
         switch (afterType)
         {
             case AutomationMarker<ValueType>::Type::linear:
             {
-                if (afterBeat == beforeBeat) // We'd get division by zero
+                if (afterTime == beforeTime) // We'd get division by zero
                 {
                     retValue = afterValue;
                 }
                 else
                 {
-                    double beatDelta = (beat - beforeBeat) / (afterBeat - beforeBeat);
-                    double retValueDouble = beforeValue + ((afterValue - beforeValue) * beatDelta);
+                    double timeDelta = (time - beforeTime) / (afterTime - beforeTime);
+                    double retValueDouble = beforeValue + ((afterValue - beforeValue) * timeDelta);
                     if (std::is_integral<ValueType>::value)
                         retValueDouble = std::round (retValueDouble);
 
@@ -161,7 +196,7 @@ public:
             }
             case AutomationMarker<ValueType>::Type::step:
             {
-                if (beat < afterBeat)
+                if (time < afterTime)
                     retValue = beforeValue;
                 else
                     retValue = afterValue;
@@ -175,13 +210,11 @@ public:
 
     int numTimedMarkers() const noexcept
     {
-        if (markers.objects.size() == 1 && double (markers.objects[0]->beat.get()) == std::numeric_limits<double>::lowest())
+        if (markers.size() == 1 && double (markers.getFirst()->time.get()) == std::numeric_limits<double>::lowest())
             return 0;
 
-        return markers.objects.size();
+        return markers.size();
     }
-
-    AutomationMarkerArray<ValueType> markers;
 
     static ValueTree createDefaultState()
     {
@@ -191,44 +224,46 @@ public:
     }
 
 private:
+    GenericValueTreeObjectArray<AutomationMarker<ValueType>> markers;
 #if JUCE_DEBUG
     bool markerChangedViaMethods = false;
 #endif
 
-    ValueTree markerBeforeBeat (double beat)
+    AutomationMarker<ValueType>* const markerBeforeTime (double time)
     {
-        ValueTree markerAfter = markerAfterBeat (beat);
-        if (!markerAfter.isValid())
+        auto markerAfter = markerAfterTime (time);
+        if (!markerAfter)
         {
-            int numChildren = getState().getNumChildren();
-            if (numChildren > 0)
-                return getState().getChild (numChildren - 1);
+            int numObjects = markers.size();
+            if (numObjects > 0)
+                return markers.getLast();
 
-            return ValueTree();
+            return nullptr;
         }
 
-        int indexOfMarkerAfter = getState().indexOf (markerAfter);
+        int indexOfMarkerAfter = markers.indexOf (markerAfter);
         jassert (indexOfMarkerAfter >= 0);
         if (indexOfMarkerAfter == 0)
-            return ValueTree();
+            return nullptr;
 
-        return getState().getChild (indexOfMarkerAfter - 1);
+        return markers[indexOfMarkerAfter - 1];
     }
 
-    ValueTree markerAfterBeat (double beat)
+    AutomationMarker<ValueType>* const markerAfterTime (double time)
     {
-        auto lessThan = [](ValueTree first, double second) -> bool {
-            return double(first[IDs::AutomationMarkerProps::Beat]) < second;
+        auto lessThan = [](AutomationMarker<ValueType>* const first, double second) -> bool {
+            return first->time < second;
         };
-        jdr::ValueTreeForwardIterator begin = jdr::ValueTreeForwardIterator::begin (getState());
-        jdr::ValueTreeForwardIterator end = jdr::ValueTreeForwardIterator::end (getState());
-        jdr::ValueTreeForwardIterator result = std::lower_bound (begin, end, beat, lessThan);
-        return (result != end) ? *result : ValueTree();
+        auto begin = markers.begin();
+        auto end = markers.end();
+        auto result = std::lower_bound (begin, end, time, lessThan);
+        return (result != end) ? *result : nullptr;
     }
 
     void valueTreeChildAdded (ValueTree& parent, ValueTree& addedChild) override
     {
     #if JUCE_DEBUG
+        jassert (addedChild.getType() == AutomationMarker<ValueType>::identifier);
         jassert (markerChangedViaMethods);
         markerChangedViaMethods = false;
     #endif
@@ -248,32 +283,27 @@ private:
         jassert (indexOfTreeChanged >= 0);
         if (property == IDs::AutomationMarkerProps::Type)
         {
-            if (indexOfTreeChanged == 0)
-                jassert (int (treeChanged[property]) == AutomationMarker<ValueType>::Type::origin);
-            else
-                jassert (int (treeChanged[property]) != AutomationMarker<ValueType>::Type::origin);
-
             beginNewTransaction ("Automation marker type change");
             treeChanged.setProperty (property, treeChanged[property], getUndoManager());
         }
-        else if (property == IDs::AutomationMarkerProps::Beat)
+        else if (property == IDs::AutomationMarkerProps::Time)
         {
             ValueTree markerBefore = getState().getChild (indexOfTreeChanged - 1);
             ValueTree markerAfter = getState().getChild (indexOfTreeChanged + 1);
 
-            beginNewTransaction ("Automation marker beat change");
-            double newBeat = treeChanged[property];
+            beginNewTransaction ("Automation marker time change");
+            double newTime = treeChanged[property];
             if (markerBefore.isValid())
             {
                 // Behavior: constrain automation times to be within their
                 // siblings.
-                double beforeBeat = markerBefore[property];
-                treeChanged.setProperty (property, std::max (newBeat, beforeBeat), getUndoManager());
+                double beforeTime = markerBefore[property];
+                treeChanged.setProperty (property, std::max (newTime, beforeTime), getUndoManager());
             }
             else if (markerAfter.isValid())
             {
-                double afterBeat = markerAfter[property];
-                treeChanged.setProperty (property, std::min (newBeat, afterBeat), getUndoManager());
+                double afterTime = markerAfter[property];
+                treeChanged.setProperty (property, std::min (newTime, afterTime), getUndoManager());
             }
         }
         else if (property == IDs::AutomationMarkerProps::Value)
@@ -285,18 +315,20 @@ private:
 
     void validateMarkers()
     {
-        double currentBeat = std::numeric_limits<double>::lowest();
+        double currentTime = std::numeric_limits<double>::lowest();
         jassert (getState().getNumChildren() > 0);
         for (int i = 0; i < getState().getNumChildren(); ++i)
         {
             ValueTree child = getState().getChild (i);
             jassert (child.getType() == IDs::AutomationMarker);
-            jassert (currentBeat <= double(child[IDs::AutomationMarkerProps::Beat]));
-            currentBeat = child [IDs::AutomationMarkerProps::Beat];
+            jassert (currentTime <= double(child[IDs::AutomationMarkerProps::Time]));
+            currentTime = child [IDs::AutomationMarkerProps::Time];
             if (i == 0)
                 jassert (int (child[IDs::AutomationMarkerProps::Type]) == AutomationMarker<ValueType>::Type::origin);
             else
                 jassert (int (child[IDs::AutomationMarkerProps::Type]) != AutomationMarker<ValueType>::Type::origin);
         }
     }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Automation)
 };

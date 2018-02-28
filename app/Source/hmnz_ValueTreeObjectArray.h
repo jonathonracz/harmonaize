@@ -11,6 +11,7 @@
 #pragma once
 
 #include "hmnz_ValueTreeObject.h"
+#include "hmnz_ArrayIterator.h"
 
 /**
     Generic list of ValueTree-backed objects. Originally based on code by David
@@ -33,9 +34,25 @@ public:
             deleteObject (objects.removeAndReturn (objects.size() - 1));
     }
 
-    bool isChildTree (ValueTree& v) const
+    ValueTree& getParent() const
+    {
+        return parent;
+    }
+
+    UndoManager* getUndoManager() const
+    {
+        return undoManager;
+    }
+
+    bool isChildTree (const ValueTree& v) const
     {
         return isSuitableType (v) && v.getParent() == parent;
+    }
+
+    int indexOf (ObjectType* obj) const noexcept
+    {
+        const ScopedLockType sl (arrayLock);
+        return objects.indexOf (obj);
     }
 
     int indexOfStateInObjects (const ValueTree& v) const noexcept
@@ -49,11 +66,12 @@ public:
 
     int indexOfObjectInState (ObjectType* object) const noexcept
     {
-        return parent.indexOf (object->getState());
+        return (object != nullptr) ? parent.indexOf (object->getState()) : -1;
     }
 
-    ObjectType* objectWithState (const ValueTree& state) const
+    ObjectType* const objectWithState (const ValueTree& state) const noexcept
     {
+        const ScopedLockType sl (arrayLock);
         for (ObjectType* object : objects)
         {
             if (object->getState() == state)
@@ -63,22 +81,28 @@ public:
         return nullptr;
     }
 
-    void insertStateAtIndex (const ValueTree& v, int index) noexcept
+    void addState (const ValueTree& v) noexcept
+    {
+        insertState (v, -1);
+    }
+
+    void insertState (const ValueTree& v, int index) noexcept
     {
         parent.addChild (v, index, undoManager);
     }
 
     void insertStateAtObjectIndex (const ValueTree& v, int index) noexcept
     {
+        const ScopedLockType sl (arrayLock);
         jassert (index <= objects.size());
         if (index < 0 || index >= objects.size())
         {
-            insertStateAtIndex (v, -1);
+            insertState (v, -1);
             return;
         }
 
         int stateIndex = indexOfObjectInState (objects[index]);
-        insertStateAtIndex (v, stateIndex);
+        insertState (v, stateIndex);
     }
 
     void removeObject (ObjectType* object) noexcept
@@ -86,7 +110,41 @@ public:
         parent.removeChild (object->getState(), undoManager);
     }
 
-    int compareElements (ObjectType* first, ObjectType* second) const
+    int size() const noexcept
+    {
+        const ScopedLockType sl (arrayLock);
+        return objects.size();
+    }
+
+    ObjectType* const operator[] (int index) const noexcept
+    {
+        const ScopedLockType sl (arrayLock);
+        return objects[index];
+    }
+
+    ObjectType* const getFirst() const noexcept
+    {
+        const ScopedLockType sl (arrayLock);
+        return objects.getFirst();
+    }
+
+    ObjectType* const getLast() const noexcept
+    {
+        const ScopedLockType sl (arrayLock);
+        return objects.getLast();
+    }
+
+    jdr::OwnedArrayForwardIteratorConst<ObjectType> begin() const noexcept
+    {
+        return jdr::OwnedArrayForwardIteratorConst<ObjectType>::begin (objects);
+    }
+
+    jdr::OwnedArrayForwardIteratorConst<ObjectType> end() const noexcept
+    {
+        return jdr::OwnedArrayForwardIteratorConst<ObjectType>::end (objects);
+    }
+
+    int compareElements (ObjectType* first, ObjectType* second) const noexcept
     {
         int index1 = parent.indexOf (first->getState());
         int index2 = parent.indexOf (second->getState());
@@ -98,17 +156,11 @@ public:
         return arrayLock;
     }
 
-    Array<ObjectType*> objects;
-
     using ScopedLockType = typename CriticalSectionType::ScopedLockType;
 
 protected:
-    ValueTree parent;
-    UndoManager* undoManager;
-    CriticalSectionType arrayLock;
-
     // Call this in your derived constructor.
-    void addObjects()
+    void addObjects() noexcept
     {
         for (const auto& v : parent)
             if (isSuitableType (v))
@@ -117,49 +169,58 @@ protected:
     }
 
     virtual ObjectType* createNewObject (const ValueTree& v, UndoManager* um) = 0;
-    virtual void deleteObject (ObjectType* object) { delete object; }
+    virtual void deleteObject (ObjectType* object) { delete object; DBG ("DeleteObject"); }
 
     virtual void newObjectAdded (ObjectType*) {}
     virtual void objectRemoved (ObjectType*) {}
     virtual void objectOrderChanged() {}
 
 private:
-    bool isSuitableType (const ValueTree& v) const
+    OwnedArray<ObjectType> objects;
+    ValueTree parent;
+    UndoManager* undoManager;
+    CriticalSectionType arrayLock;
+
+    bool isSuitableType (const ValueTree& v) const noexcept
     {
         return ObjectType::identifier == v.getType();
     }
 
-    void sortArray()
+    void sortArray() noexcept
     {
         objects.sort (*this);
     }
 
     void valueTreeChildAdded (ValueTree&, ValueTree& tree) override
     {
-        if (isChildTree (tree))
+        ObjectType* addedObject = nullptr;
+        int indexOfAlreadyExistingObject = indexOfStateInObjects (tree);
+        jassert (isChildTree (tree));
+
+        if (indexOfAlreadyExistingObject < 0)
         {
             const int index = parent.indexOf (tree);
             (void) index;
             jassert (index >= 0);
 
-            if (ObjectType* newObject = createNewObject (tree, undoManager))
-            {
-                {
-                    const ScopedLockType sl (arrayLock);
+            addedObject = createNewObject (tree, undoManager);
 
-                    if (index == parent.getNumChildren() - 1)
-                        objects.add (newObject);
-                    else
-                        objects.addSorted (*this, newObject);
-                }
-
-                newObjectAdded (newObject);
-            }
-            else
             {
-                jassertfalse;
+                const ScopedLockType sl (arrayLock);
+
+                if (index == parent.getNumChildren() - 1)
+                    objects.add (addedObject);
+                else
+                    objects.addSorted (*this, addedObject);
             }
         }
+        else
+        {
+            addedObject = objects[indexOfAlreadyExistingObject];
+        }
+
+        jassert (addedObject);
+        newObjectAdded (addedObject);
     }
 
     void valueTreeChildRemoved (ValueTree& exParent, ValueTree& tree, int) override

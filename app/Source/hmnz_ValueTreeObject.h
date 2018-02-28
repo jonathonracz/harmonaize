@@ -22,10 +22,15 @@ public:
     ValueTreeObject (const ValueTree& v, UndoManager* um)
         : state (v), undoManager (um)
     {
+        jassert (v.isValid());
         jassert (v.getType() == identifier);
+        DBG ("Object created");
     }
 
-    virtual ~ValueTreeObject() = default;
+    virtual ~ValueTreeObject()
+    {
+        DBG ("Object deleted");
+    }
 
     ValueTree& getState() noexcept
     {

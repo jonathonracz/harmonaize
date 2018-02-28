@@ -5,6 +5,10 @@
               cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.1"
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark">
   <MAINGROUP id="TpvEFM" name="harmonaize">
+    <GROUP id="{8E9CA3BB-0F7E-92E6-FD6F-57F2308CE58F}" name="Playback">
+      <FILE id="bB6Qzw" name="hmnz_PlaybackEngine.h" compile="0" resource="0"
+            file="Source/hmnz_PlaybackEngine.h"/>
+    </GROUP>
     <GROUP id="{4C57DD66-0DB0-A254-59EF-09BAA05140B1}" name="GUI">
       <FILE id="IlADi2" name="hmnz_EditView.cpp" compile="1" resource="0"
             file="Source/hmnz_EditView.cpp"/>
@@ -62,10 +66,6 @@
               file="Source/hmnz_Automation.h"/>
         <FILE id="BO2kwJ" name="hmnz_AutomationMarker.h" compile="0" resource="0"
               file="Source/hmnz_AutomationMarker.h"/>
-        <FILE id="uGFuW0" name="hmnz_AutomationMarkerArray.h" compile="0" resource="0"
-              file="Source/hmnz_AutomationMarkerArray.h"/>
-        <FILE id="ap8Exc" name="hmnz_AutomationUnitTest.cpp" compile="1" resource="0"
-              file="Source/hmnz_AutomationUnitTest.cpp"/>
         <FILE id="kG4SKm" name="hmnz_AutomationUnitTest.h" compile="0" resource="0"
               file="Source/hmnz_AutomationUnitTest.h"/>
       </GROUP>
@@ -78,6 +78,8 @@
               resource="0" file="Source/hmnz_GenericValueTreeObjectArray.h"/>
         <FILE id="nxytED" name="hmnz_PositionedAudioMidiSource.h" compile="0"
               resource="0" file="Source/hmnz_PositionedAudioMidiSource.h"/>
+        <FILE id="cZvLFc" name="hmnz_UnitTests.cpp" compile="1" resource="0"
+              file="Source/hmnz_UnitTests.cpp"/>
         <FILE id="xkySKO" name="hmnz_Utility.h" compile="0" resource="0" file="Source/hmnz_Utility.h"/>
         <FILE id="AtR89Z" name="hmnz_ValueTreeIterator.h" compile="0" resource="0"
               file="Source/hmnz_ValueTreeIterator.h"/>
@@ -85,6 +87,12 @@
               file="Source/hmnz_ValueTreeObject.h"/>
         <FILE id="KtYKY2" name="hmnz_ValueTreeObjectArray.h" compile="0" resource="0"
               file="Source/hmnz_ValueTreeObjectArray.h"/>
+        <FILE id="BS955J" name="hmnz_ValueTreeObjectArrayUnitTest.h" compile="0"
+              resource="0" file="Source/hmnz_ValueTreeObjectArrayUnitTest.h"/>
+        <FILE id="c19Hzg" name="hmnz_ValueTreeObjectUnitTest.h" compile="0"
+              resource="0" file="Source/hmnz_ValueTreeObjectUnitTest.h"/>
+        <FILE id="oJZ999" name="hmnz_ValueTreeObjectWithArrayUnitTest.h" compile="0"
+              resource="0" file="Source/hmnz_ValueTreeObjectWithArrayUnitTest.h"/>
         <FILE id="oGqJ3e" name="hmnz_VariantConverters.h" compile="0" resource="0"
               file="Source/hmnz_VariantConverters.h"/>
       </GROUP>
@@ -120,10 +128,13 @@
         <MODULEPATH id="jcf_debug" path="Source/External/juce_toys"/>
         <MODULEPATH id="juce_audio_utils" path="../harmonaize/external/JUCE/modules"/>
         <MODULEPATH id="SFZero" path="Source/External"/>
+        <MODULEPATH id="jcf_advanced_leak_detector" path="Source/External/juce_toys"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
   <MODULES>
+    <MODULE id="jcf_advanced_leak_detector" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="0"/>
     <MODULE id="jcf_debug" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>

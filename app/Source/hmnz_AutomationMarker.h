@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <jcf_advanced_leak_detector/jcf_advanced_leak_detector.h>
 #include "hmnz_ValueTreeObject.h"
 #include "hmnz_CacheValueWrappers.h"
 
@@ -22,7 +23,7 @@ template<typename ValueType>
 class AutomationMarker  : public ValueTreeObject<IDs::AutomationMarker>
 {
 public:
-    enum Type : int
+    enum Type   : int
     {
         origin,
         linear,
@@ -32,24 +33,32 @@ public:
     AutomationMarker (const ValueTree& v, UndoManager* um)
         : ValueTreeObject (v, um),
           // Due to sibling constraints and other factors, undo is handled by the owner Automation object.
-          beat (getState(), IDs::AutomationMarkerProps::Beat, nullptr),
+          time (getState(), IDs::AutomationMarkerProps::Time, nullptr),
           value (getState(), IDs::AutomationMarkerProps::Value, nullptr),
           type (getState(), IDs::AutomationMarkerProps::Type, nullptr)
     {
+        DBG ("Marker constructor");
         static_assert(std::is_arithmetic<ValueType>::value, "Must be arithmetic");
-        jassert (v.getType() == IDs::AutomationMarker);
     }
 
-    static ValueTree createDefaultState()
+    ~AutomationMarker()
     {
-        ValueTree ret (identifier);
-        ret.setProperty (IDs::AutomationMarkerProps::Beat, std::numeric_limits<double>::lowest(), nullptr);
-        ret.setProperty (IDs::AutomationMarkerProps::Value, ValueType(), nullptr);
-        ret.setProperty (IDs::AutomationMarkerProps::Type, Type::origin, nullptr);
+        DBG ("Marker destructor");
+    }
+
+    static ValueTree createState (double time, ValueType value, int type) noexcept
+    {
+        ValueTree ret = AutomationMarker<ValueType>::createDefaultState();
+        ret.setProperty (IDs::AutomationMarkerProps::Time, time, nullptr);
+        ret.setProperty (IDs::AutomationMarkerProps::Value, value, nullptr);
+        ret.setProperty (IDs::AutomationMarkerProps::Type, type, nullptr);
         return ret;
     }
 
-    CachedValue<SPSCAtomicWrapper<double>> beat;
-    CachedValue<SPSCAtomicWrapper<ValueType>> value;
-    CachedValue<SPSCAtomicWrapper<int>> type;
+    CachedValue<double> time;
+    CachedValue<ValueType> value;
+    CachedValue<int> type;
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AutomationMarker)
 };

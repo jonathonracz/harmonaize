@@ -20,7 +20,7 @@ Edit::Edit (const ValueTree& v)
     // TODO: Validate the ValueTree data model, display an error if
     // something unexpected occurs, etc...
     getState().addListener (this);
-    if (tracks.objects.size() == 0)
+    if (tracks.size() == 0)
         tracks.insertStateAtObjectIndex (Track::createDefaultState(), -1);
 
     stateDebugger.setSource (getState());
@@ -37,7 +37,7 @@ MidiFile Edit::exportToMidi() const noexcept
     MidiMessageSequence trackEvents = masterTrack.createMetaEventsSequence();
     convertTimestampsFromBeatsToTicks (trackEvents);
     ret.addTrack (trackEvents);
-    for (Track* track : tracks.objects)
+    for (Track* track : tracks)
     {
         trackEvents = track->getMidiMessageSequence();
         convertTimestampsFromBeatsToTicks (trackEvents);
@@ -52,7 +52,7 @@ void Edit::importFromMidi (const MidiFile& midiFile, int trackOffset, double tim
     jassert (midiFile.getTimeFormat() > 0); // Only support PPQ.
 
     double length = midiFile.getLastTimestamp() / midiFile.getTimeFormat();
-    while (midiFile.getNumTracks() + trackOffset > tracks.objects.size())
+    while (midiFile.getNumTracks() + trackOffset > tracks.size())
         getState().addChild (Track::createDefaultState(), -1, getUndoManager());
 
     for (int i = 0; i < midiFile.getNumTracks(); ++i)
@@ -64,7 +64,7 @@ void Edit::importFromMidi (const MidiFile& midiFile, int trackOffset, double tim
         }
 
         int destinationTrack = std::max (0, i + trackOffset);
-        Track* importTargetTrack = tracks.objects[destinationTrack];
+        Track* importTargetTrack = tracks[destinationTrack];
         if (importTargetTrack)
             importTargetTrack->addMidiMessageSequenceAsClip (timeOffset, length, trackSequence);
         else
@@ -75,7 +75,7 @@ void Edit::importFromMidi (const MidiFile& midiFile, int trackOffset, double tim
 void Edit::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
     masterTrack.prepareToPlay (samplesPerBlockExpected, sampleRate);
-    for (Track* track : tracks.objects)
+    for (Track* track : tracks)
     {
         track->prepareToPlay (samplesPerBlockExpected, sampleRate);
     }
@@ -85,7 +85,7 @@ void Edit::releaseResources()
 {
     masterTrack.releaseResources();
     const TrackArray::ScopedLockType sl (tracks.getLock());
-    for (Track* track : tracks.objects)
+    for (Track* track : tracks)
     {
         track->releaseResources();
     }
@@ -96,7 +96,7 @@ void Edit::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
         const AudioPlayHead::CurrentPositionInfo& positionInfo)
 {
     const TrackArray::ScopedLockType sl (tracks.getLock());
-    for (Track* track : tracks.objects)
+    for (Track* track : tracks)
     {
         track->getNextAudioBlockWithInputs (audioBuffer, incomingMidiBuffer, positionInfo);
     }

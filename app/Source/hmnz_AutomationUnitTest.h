@@ -22,63 +22,57 @@ public:
 
     void runTest() override
     {
-        beginTest ("Main automation test");
+        beginTest ("Test");
 
         ValueTree defaultAutomation = Automation<double>::createDefaultState();
-        Automation<double> automation (defaultAutomation, nullptr);
+        Automation<double>* fuck = new Automation<double> (defaultAutomation, nullptr);
+        delete fuck;
 
-        ValueTree newMarker = AutomationMarker<double>::createDefaultState();
-        newMarker.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::linear, nullptr);
-        newMarker.setProperty (IDs::AutomationMarkerProps::Value, 5.0, nullptr);
-        newMarker.setProperty (IDs::AutomationMarkerProps::Beat, 4.0, nullptr);
-        automation.addMarker (newMarker);
+        Automation<double>* automation = new Automation<double> (defaultAutomation, nullptr);
 
-        expect (automation.getValueAtBeat (2.0) == 5.0);
-        expect (automation.getValueAtBeat (6.0) == 5.0);
+        automation->addMarker (4.0, 5.0, AutomationMarker<double>::Type::linear);
 
-        newMarker = AutomationMarker<double>::createDefaultState();
-        newMarker.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::step, nullptr);
-        newMarker.setProperty (IDs::AutomationMarkerProps::Value, 4.0, nullptr);
-        newMarker.setProperty (IDs::AutomationMarkerProps::Beat, 2.0, nullptr);
-        automation.addMarker (newMarker);
+        expect (automation->getValueAtTime (2.0) == 5.0);
+        expect (automation->getValueAtTime (6.0) == 5.0);
 
-        expect (automation.getValueAtBeat (1.0) == 4.0);
-        expect (automation.getValueAtBeat (3.0) == 4.0);
-        expect (automation.getValueAtBeat (4.0) == 5.0);
-        expect (automation.getValueAtBeat (5.0) == 5.0);
+        automation->addMarker (2.0, 4.0, AutomationMarker<double>::Type::step);
 
-        newMarker = AutomationMarker<double>::createDefaultState();
-        newMarker.setProperty (IDs::AutomationMarkerProps::Type, AutomationMarker<double>::Type::linear, nullptr);
-        newMarker.setProperty (IDs::AutomationMarkerProps::Value, 3.0, nullptr);
-        newMarker.setProperty (IDs::AutomationMarkerProps::Beat, 3.0, nullptr);
-        automation.addMarker (newMarker);
+        expect (automation->getValueAtTime (1.0) == 4.0);
+        expect (automation->getValueAtTime (3.0) == 4.0);
+        expect (automation->getValueAtTime (4.0) == 5.0);
+        expect (automation->getValueAtTime (5.0) == 5.0);
 
-        expect (automation.getValueAtBeat (1.0) == 4.0);
-        expect (automation.getValueAtBeat (2.0) == 4.0);
-        expect (automation.getValueAtBeat (2.5) == 3.5);
-        expect (automation.getValueAtBeat (3.0) == 3.0);
-        expect (automation.getValueAtBeat (3.5) == 3.0);
-        expect (automation.getValueAtBeat (4.0) == 5.0);
-        expect (automation.getValueAtBeat (6.0) == 5.0);
+        automation->addMarker (3.0, 3.0, AutomationMarker<double>::Type::linear);
 
-        automation.removeMarker (0);
+        expect (automation->getValueAtTime (1.0) == 4.0);
+        expect (automation->getValueAtTime (2.0) == 4.0);
+        expect (automation->getValueAtTime (2.5) == 3.5);
+        expect (automation->getValueAtTime (3.0) == 3.0);
+        expect (automation->getValueAtTime (3.5) == 3.0);
+        expect (automation->getValueAtTime (4.0) == 5.0);
+        expect (automation->getValueAtTime (6.0) == 5.0);
 
-        expect (automation.getValueAtBeat (2.0) == 3.0);
-        expect (automation.getValueAtBeat (3.0) == 3.0);
-        expect (automation.getValueAtBeat (3.5) == 3.0);
-        expect (automation.getValueAtBeat (4.0) == 5.0);
-        expect (automation.getValueAtBeat (6.0) == 5.0);
+        automation->removeMarker (0);
 
-        automation.removeMarker (1);
+        expect (automation->getValueAtTime (2.0) == 3.0);
+        expect (automation->getValueAtTime (3.0) == 3.0);
+        expect (automation->getValueAtTime (3.5) == 3.0);
+        expect (automation->getValueAtTime (4.0) == 5.0);
+        expect (automation->getValueAtTime (6.0) == 5.0);
 
-        expect (automation.getValueAtBeat (2.0) == 3.0);
-        expect (automation.getValueAtBeat (3.0) == 3.0);
-        expect (automation.getValueAtBeat (4.0) == 3.0);
+        automation->removeMarker (1);
 
-        automation.removeMarker (0);
+        expect (automation->getValueAtTime (2.0) == 3.0);
+        expect (automation->getValueAtTime (3.0) == 3.0);
+        expect (automation->getValueAtTime (4.0) == 3.0);
 
-        expect (automation.getValueAtBeat (2.0) == 3.0);
-        expect (automation.getValueAtBeat (3.0) == 3.0);
-        expect (automation.getValueAtBeat (4.0) == 3.0);
+        automation->removeMarker (0);
+
+        expect (automation->getValueAtTime (2.0) == 3.0);
+        expect (automation->getValueAtTime (3.0) == 3.0);
+        expect (automation->getValueAtTime (4.0) == 3.0);
+
+        delete automation;
+        DBG ("BLAH");
     }
 };
