@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    hmnz_Automation.h
+    hmnz_AutomationLane.h
     Created: 31 Jan 2018 6:06:45pm
     Author:  Jonathon Racz
 
@@ -27,21 +27,13 @@ public:
         : ValueTreeObject (v, um), markers (v, um)
     {
         //getState().addListener (this);
+        if (markers.size() == 0)
+        {
+            // Create a default origin marker.
+            addMarker (std::numeric_limits<double>::lowest(), originValue, AutomationMarker<ValueType>::Type::origin);
+        }
 
-        DBG ("Automation Constructor");
-        //if (markers.size() == 0)
-        //{
-        //    // Create a default origin marker.
-        //    addMarker (std::numeric_limits<double>::lowest(), originValue, AutomationMarker<ValueType>::Type::origin);
-        //}
-
-        //validateMarkers();
-    }
-
-    ~Automation()
-    {
-        getState().removeListener (this);
-        DBG ("Automation destructor");
+        validateMarkers();
     }
 
     void addMarker (double time, ValueType value, int type) noexcept
@@ -81,7 +73,10 @@ public:
                 }
             }
 
-            ValueTree newMarkerState = AutomationMarker<ValueType>::createState (time, value, type);
+            ValueTree newMarkerState = AutomationMarker<ValueType>::createDefaultState();
+            newMarkerState.setProperty (IDs::AutomationMarkerProps::Time, time, nullptr);
+            newMarkerState.setProperty (IDs::AutomationMarkerProps::Value, value, nullptr);
+            newMarkerState.setProperty (IDs::AutomationMarkerProps::Type, type, nullptr);
             markers.insertStateAtObjectIndex (newMarkerState, insertionIndex);
         }
 
@@ -214,13 +209,6 @@ public:
             return 0;
 
         return markers.size();
-    }
-
-    static ValueTree createDefaultState()
-    {
-        // Children will be lazily created after this barebones state is passed
-        // to an Automation object.
-        return ValueTree (identifier);
     }
 
 private:
