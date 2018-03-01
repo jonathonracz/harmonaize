@@ -16,7 +16,7 @@
 class ValueTreeObjectArrayUnitTest   : public UnitTest
 {
 public:
-    using TestObject = ValueTreeObjectUnitTest::TestValueTreeObject;
+    using TestObject = ValueTreeObjectUnitTest::TestValueTreeObject<double>;
 
     ValueTreeObjectArrayUnitTest()
         : UnitTest ("ValueTreeObjectArray")

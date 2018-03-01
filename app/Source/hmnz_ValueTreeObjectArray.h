@@ -169,7 +169,7 @@ protected:
     }
 
     virtual ObjectType* createNewObject (const ValueTree& v, UndoManager* um) = 0;
-    virtual void deleteObject (ObjectType* object) { delete object; DBG ("DeleteObject"); }
+    virtual void deleteObject (ObjectType* object) { delete object; }
 
     virtual void newObjectAdded (ObjectType*) {}
     virtual void objectRemoved (ObjectType*) {}

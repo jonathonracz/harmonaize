@@ -37,22 +37,7 @@ public:
           value (getState(), IDs::AutomationMarkerProps::Value, nullptr),
           type (getState(), IDs::AutomationMarkerProps::Type, nullptr)
     {
-        DBG ("Marker constructor");
         static_assert(std::is_arithmetic<ValueType>::value, "Must be arithmetic");
-    }
-
-    ~AutomationMarker()
-    {
-        DBG ("Marker destructor");
-    }
-
-    static ValueTree createState (double time, ValueType value, int type) noexcept
-    {
-        ValueTree ret = AutomationMarker<ValueType>::createDefaultState();
-        ret.setProperty (IDs::AutomationMarkerProps::Time, time, nullptr);
-        ret.setProperty (IDs::AutomationMarkerProps::Value, value, nullptr);
-        ret.setProperty (IDs::AutomationMarkerProps::Type, type, nullptr);
-        return ret;
     }
 
     CachedValue<double> time;

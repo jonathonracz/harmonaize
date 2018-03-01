@@ -16,6 +16,7 @@
 class ValueTreeObjectUnitTest   : public UnitTest
 {
 public:
+    template<class Type>
     class TestValueTreeObject   : public ValueTreeObject<IDs::Test>
     {
     public:
@@ -34,8 +35,10 @@ public:
     {
         beginTest ("Test");
 
-        ValueTree defaultState = TestValueTreeObject::createDefaultState();
+        ValueTree defaultState = TestValueTreeObject<double>::createDefaultState();
         UndoManager defaultUm;
-        TestValueTreeObject (defaultState, &defaultUm);
+        {
+            TestValueTreeObject<double> object (defaultState, &defaultUm);
+        }
     }
 };
