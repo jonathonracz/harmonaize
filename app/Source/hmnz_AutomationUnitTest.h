@@ -25,8 +25,8 @@ public:
         beginTest ("Test");
 
         ValueTree defaultAutomation = Automation<double>::createDefaultState();
-        Automation<double>* fuck = new Automation<double> (defaultAutomation, nullptr);
-        delete fuck;
+        Automation<double>* blah = new Automation<double> (defaultAutomation, nullptr);
+        delete blah;
 
         Automation<double>* automation = new Automation<double> (defaultAutomation, nullptr);
 
