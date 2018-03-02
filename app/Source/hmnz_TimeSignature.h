@@ -18,8 +18,8 @@ class TimeSignature : public ValueTreeObject<IDs::TimeSignature>
 public:
     TimeSignature (const ValueTree& v, UndoManager* um)
         : ValueTreeObject (v, um),
-          numerator (getState(), IDs::TimeSigNumerator, getUndoManager(), 4),
-          denominator (getState(), IDs::TimeSigDenominator, getUndoManager(), 4)
+          numerator (getState(), IDs::TimeSignatureProps::Numerator, getUndoManager(), 4),
+          denominator (getState(), IDs::TimeSignatureProps::Denominator, getUndoManager(), 4)
     {
     }
 
@@ -49,6 +49,6 @@ public:
         return beat - std::fmod (beat, numerator.get());
     }
 
-    CachedValue<SPSCAtomicWrapper<int>> numerator;
-    CachedValue<SPSCAtomicWrapper<int>> denominator;
+    CachedValue<int> numerator;
+    CachedValue<int> denominator;
 };

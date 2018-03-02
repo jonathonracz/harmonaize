@@ -17,8 +17,8 @@ class KeySignature  : public ValueTreeObject<IDs::KeySignature>
 public:
     KeySignature(const ValueTree& v, UndoManager* um)
         : ValueTreeObject (v, um),
-          numSharpsOrFlats (getState(), IDs::KeySigNumberOfSharpsOrFlats, getUndoManager(), 0),
-          isMinor (getState(), IDs::KeySigIsMinor, getUndoManager(), false)
+          numSharpsOrFlats (getState(), IDs::KeySignatureProps::NumberOfSharpsOrFlats, getUndoManager(), 0),
+          isMinor (getState(), IDs::KeySignatureProps::IsMinor, getUndoManager(), false)
     {
     }
 
@@ -133,6 +133,6 @@ public:
         return std::make_pair (numSharpsOrFlats, isMinor);
     }
 
-    CachedValue<SPSCAtomicWrapper<int>> numSharpsOrFlats;
-    CachedValue<SPSCAtomicWrapper<bool>> isMinor;
+    CachedValue<int> numSharpsOrFlats;
+    CachedValue<bool> isMinor;
 };

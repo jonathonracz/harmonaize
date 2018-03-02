@@ -15,19 +15,20 @@
 class ValueTreeObjectWithArrayUnitTest   : public UnitTest
 {
 public:
-    using TestObject = ValueTreeObjectUnitTest::TestValueTreeObject<double>;
-
-    class ObjectWithArray   : public TestObject
+    template<class Type>
+    class ObjectWithArray   : public ValueTreeObject<IDs::TestWithArray>
     {
     public:
         ObjectWithArray (const ValueTree& v, UndoManager* um)
-            : TestObject (v, um), array (v, um)
+            : ValueTreeObject (v, um), array (v, um)
         {
-            ValueTree internallyAddedState = TestObject::createDefaultState();
+            ValueTree internallyAddedState = ValueTreeObjectUnitTest::TestValueTreeObject<Type>::createDefaultState();
             array.addState (internallyAddedState);
         }
 
-        GenericValueTreeObjectArray<TestObject> array;
+    private:
+        GenericValueTreeObjectArray<ValueTreeObjectUnitTest::TestValueTreeObject<Type>> array;
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ObjectWithArray)
     };
 
     ValueTreeObjectWithArrayUnitTest()
@@ -39,8 +40,7 @@ public:
     {
         beginTest ("Test");
 
-        ValueTree defaultState = TestObject::createDefaultState();
-        UndoManager defaultUm;
-        ObjectWithArray testObject (defaultState, &defaultUm);
+        ValueTree defaultState = ObjectWithArray<double>::createDefaultState();
+        ObjectWithArray<double> testObject (defaultState, nullptr);
     }
 };
