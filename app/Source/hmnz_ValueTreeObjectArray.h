@@ -191,36 +191,39 @@ private:
         objects.sort (*this);
     }
 
-    void valueTreeChildAdded (ValueTree&, ValueTree& tree) override
+    void valueTreeChildAdded (ValueTree& treeChildAddedTo, ValueTree& tree) override
     {
-        ObjectType* addedObject = nullptr;
-        int indexOfAlreadyExistingObject = indexOfStateInObjects (tree);
-        jassert (isChildTree (tree));
-
-        if (indexOfAlreadyExistingObject < 0)
+        if (treeChildAddedTo == parent)
         {
-            const int index = parent.indexOf (tree);
-            (void) index;
-            jassert (index >= 0);
+            ObjectType* addedObject = nullptr;
+            int indexOfAlreadyExistingObject = indexOfStateInObjects (tree);
+            jassert (isChildTree (tree));
 
-            addedObject = createNewObject (tree, undoManager);
-
+            if (indexOfAlreadyExistingObject < 0)
             {
-                const ScopedLockType sl (arrayLock);
+                const int index = parent.indexOf (tree);
+                (void) index;
+                jassert (index >= 0);
 
-                if (index == parent.getNumChildren() - 1)
-                    objects.add (addedObject);
-                else
-                    objects.addSorted (*this, addedObject);
+                addedObject = createNewObject (tree, undoManager);
+
+                {
+                    const ScopedLockType sl (arrayLock);
+
+                    if (index == parent.getNumChildren() - 1)
+                        objects.add (addedObject);
+                    else
+                        objects.addSorted (*this, addedObject);
+                }
             }
-        }
-        else
-        {
-            addedObject = objects[indexOfAlreadyExistingObject];
-        }
+            else
+            {
+                addedObject = objects[indexOfAlreadyExistingObject];
+            }
 
-        jassert (addedObject);
-        newObjectAdded (addedObject);
+            jassert (addedObject);
+            newObjectAdded (addedObject);
+        }
     }
 
     void valueTreeChildRemoved (ValueTree& exParent, ValueTree& tree, int) override
