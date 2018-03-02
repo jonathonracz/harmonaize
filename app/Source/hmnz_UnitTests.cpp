@@ -24,8 +24,4 @@ static ValueTreeObjectArrayUnitTest valueTreeObjectArrayUnitTest;
 
 static ValueTreeObjectWithArrayUnitTest valueTreeObjectWithArrayUnitTest;
 
-#include "hmnz_AutomationUnitTest.h"
-
-static AutomationUnitTest automationUnitTest;
-
 #endif

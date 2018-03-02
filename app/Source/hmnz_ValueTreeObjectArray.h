@@ -69,7 +69,7 @@ public:
         return (object != nullptr) ? parent.indexOf (object->getState()) : -1;
     }
 
-    ObjectType* const objectWithState (const ValueTree& state) const noexcept
+    ObjectType* objectWithState (const ValueTree& state) const noexcept
     {
         const ScopedLockType sl (arrayLock);
         for (ObjectType* object : objects)
@@ -116,32 +116,32 @@ public:
         return objects.size();
     }
 
-    ObjectType* const operator[] (int index) const noexcept
+    ObjectType* operator[] (int index) const noexcept
     {
         const ScopedLockType sl (arrayLock);
         return objects[index];
     }
 
-    ObjectType* const getFirst() const noexcept
+    ObjectType* getFirst() const noexcept
     {
         const ScopedLockType sl (arrayLock);
         return objects.getFirst();
     }
 
-    ObjectType* const getLast() const noexcept
+    ObjectType* getLast() const noexcept
     {
         const ScopedLockType sl (arrayLock);
         return objects.getLast();
     }
 
-    jdr::OwnedArrayForwardIteratorConst<ObjectType> begin() const noexcept
+    jdr::ArrayForwardIteratorConst<ObjectType*> begin() const noexcept
     {
-        return jdr::OwnedArrayForwardIteratorConst<ObjectType>::begin (objects);
+        return jdr::ArrayForwardIteratorConst<ObjectType*>::begin (objects);
     }
 
-    jdr::OwnedArrayForwardIteratorConst<ObjectType> end() const noexcept
+    jdr::ArrayForwardIteratorConst<ObjectType*> end() const noexcept
     {
-        return jdr::OwnedArrayForwardIteratorConst<ObjectType>::end (objects);
+        return jdr::ArrayForwardIteratorConst<ObjectType*>::end (objects);
     }
 
     int compareElements (ObjectType* first, ObjectType* second) const noexcept
@@ -176,7 +176,7 @@ protected:
     virtual void objectOrderChanged() {}
 
 private:
-    OwnedArray<ObjectType> objects;
+    Array<ObjectType*> objects;
     ValueTree parent;
     UndoManager* undoManager;
     CriticalSectionType arrayLock;

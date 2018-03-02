@@ -51,23 +51,12 @@
       </GROUP>
       <GROUP id="{113B8590-9FBD-441F-5100-C595C8B99F47}" name="Time">
         <FILE id="lvaPMG" name="hmnz_Tempo.h" compile="0" resource="0" file="Source/hmnz_Tempo.h"/>
-        <FILE id="gcHKse" name="hmnz_TempoFunction.h" compile="0" resource="0"
-              file="Source/hmnz_TempoFunction.h"/>
-        <FILE id="nH42H5" name="hmnz_TempoMap.h" compile="0" resource="0" file="Source/hmnz_TempoMap.h"/>
         <FILE id="gSpiKt" name="hmnz_TimeSignature.h" compile="0" resource="0"
               file="Source/hmnz_TimeSignature.h"/>
         <FILE id="pKfzEv" name="hmnz_Transport.cpp" compile="1" resource="0"
               file="Source/hmnz_Transport.cpp"/>
         <FILE id="AMG9hy" name="hmnz_Transport.h" compile="0" resource="0"
               file="Source/hmnz_Transport.h"/>
-      </GROUP>
-      <GROUP id="{0AD15C76-B24F-7CDD-B838-AD65C83CF3F8}" name="Automation">
-        <FILE id="FEJaCc" name="hmnz_Automation.h" compile="0" resource="0"
-              file="Source/hmnz_Automation.h"/>
-        <FILE id="BO2kwJ" name="hmnz_AutomationMarker.h" compile="0" resource="0"
-              file="Source/hmnz_AutomationMarker.h"/>
-        <FILE id="kG4SKm" name="hmnz_AutomationUnitTest.h" compile="0" resource="0"
-              file="Source/hmnz_AutomationUnitTest.h"/>
       </GROUP>
       <GROUP id="{CB34FF74-B8E8-4910-98F6-F9FC3C3EB8FB}" name="Utility">
         <FILE id="Yw865x" name="hmnz_ArrayIterator.h" compile="0" resource="0"

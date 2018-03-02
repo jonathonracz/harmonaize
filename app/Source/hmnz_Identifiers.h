@@ -17,6 +17,7 @@ namespace IDs
 #define DECLARE_ID(name) const Identifier name (#name);
 
     DECLARE_ID (Test)
+    DECLARE_ID (TestWithArray)
 
     DECLARE_ID (Edit)
     namespace EditProps
@@ -47,16 +48,24 @@ namespace IDs
     DECLARE_ID (MasterTrack)
 
     DECLARE_ID (Tempo)
+    namespace TempoProps
+    {
+        DECLARE_ID (BeatsPerMinute)
+    }
 
     DECLARE_ID (TimeSignature)
-
-    DECLARE_ID (TimeSigNumerator)
-    DECLARE_ID (TimeSigDenominator)
+    namespace TimeSignatureProps
+    {
+        DECLARE_ID (Numerator)
+        DECLARE_ID (Denominator)
+    }
 
     DECLARE_ID (KeySignature)
-
-    DECLARE_ID (KeySigNumberOfSharpsOrFlats)
-    DECLARE_ID (KeySigIsMinor)
+    namespace KeySignatureProps
+    {
+        DECLARE_ID (NumberOfSharpsOrFlats)
+        DECLARE_ID (IsMinor)
+    }
 
     DECLARE_ID (Track)
     namespace TrackProps
@@ -96,7 +105,6 @@ namespace IDs
     DECLARE_ID (MidiMessageSequenceModel)
     namespace MidiMessageSequenceModelProps
     {
-        
     }
 
     DECLARE_ID (NoteList)
@@ -108,15 +116,6 @@ namespace IDs
         DECLARE_ID (Length)
         DECLARE_ID (Velocity)
         DECLARE_ID (Value)
-    }
-
-    DECLARE_ID (Automation)
-    DECLARE_ID (AutomationMarker)
-    namespace AutomationMarkerProps
-    {
-        DECLARE_ID (Time)
-        DECLARE_ID (Value)
-        DECLARE_ID (Type)
     }
 
 #undef DECLARE_ID

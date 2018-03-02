@@ -61,9 +61,7 @@
 		2DFE307B5C63AB94496CE421 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_PreferencesView.cpp"; path = "../../Source/hmnz_PreferencesView.cpp"; sourceTree = "SOURCE_ROOT"; };
 		2EFBC99B09E569171A40766C = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_gui_basics"; path = "../../../harmonaize/external/JUCE/modules/juce_gui_basics"; sourceTree = "SOURCE_ROOT"; };
 		35AE501C34CFD20C625A7FFA = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ValueTreeObjectArray.h"; path = "../../Source/hmnz_ValueTreeObjectArray.h"; sourceTree = "SOURCE_ROOT"; };
-		36F940F9C2BA15C385C8E9FA = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_Automation.h"; path = "../../Source/hmnz_Automation.h"; sourceTree = "SOURCE_ROOT"; };
 		384252337C9D31C2989D98BB = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "include_juce_core.mm"; path = "../../JuceLibraryCode/include_juce_core.mm"; sourceTree = "SOURCE_ROOT"; };
-		3D2CC76656D4AA196293327B = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_TempoMap.h"; path = "../../Source/hmnz_TempoMap.h"; sourceTree = "SOURCE_ROOT"; };
 		3EC8195091B15D99E049A8CE = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		40BC0E938573723A19DD36FA = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_EditView.h"; path = "../../Source/hmnz_EditView.h"; sourceTree = "SOURCE_ROOT"; };
 		42197ED6F8462F134982395E = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "include_juce_events.mm"; path = "../../JuceLibraryCode/include_juce_events.mm"; sourceTree = "SOURCE_ROOT"; };
@@ -92,7 +90,6 @@
 		884BC0999DC8A43549CD7A4E = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_audio_utils"; path = "../../../harmonaize/external/JUCE/modules/juce_audio_utils"; sourceTree = "SOURCE_ROOT"; };
 		8C126220B8456629268B727A = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_data_structures"; path = "../../../harmonaize/external/JUCE/modules/juce_data_structures"; sourceTree = "SOURCE_ROOT"; };
 		8D0A44853497795D2D1B5E05 = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = harmonaize.app; sourceTree = "BUILT_PRODUCTS_DIR"; };
-		8EBF3D02DC1F0295763B3C32 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_TempoFunction.h"; path = "../../Source/hmnz_TempoFunction.h"; sourceTree = "SOURCE_ROOT"; };
 		8F4675BD91E6E03800FCF753 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_TrackArray.cpp"; path = "../../Source/hmnz_TrackArray.cpp"; sourceTree = "SOURCE_ROOT"; };
 		90A2E4A79EB082631A19729F = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
 		9448C70A6167CE623D2376D8 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_Clip.h"; path = "../../Source/hmnz_Clip.h"; sourceTree = "SOURCE_ROOT"; };
@@ -118,7 +115,6 @@
 		C0C6A0A45DF7ACEAFC0E8E6A = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_MidiMessageModel.h"; path = "../../Source/hmnz_MidiMessageModel.h"; sourceTree = "SOURCE_ROOT"; };
 		C409C08200C0343959C0F44C = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_TimeSignature.h"; path = "../../Source/hmnz_TimeSignature.h"; sourceTree = "SOURCE_ROOT"; };
 		C4F041FC23A1FDBB2E66985B = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_TransportView.cpp"; path = "../../Source/hmnz_TransportView.cpp"; sourceTree = "SOURCE_ROOT"; };
-		C82E82534AB2FBC1EA05DED6 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_AutomationUnitTest.h"; path = "../../Source/hmnz_AutomationUnitTest.h"; sourceTree = "SOURCE_ROOT"; };
 		CBEB95FA83D087A8B57EA828 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_EditWindow.h"; path = "../../Source/hmnz_EditWindow.h"; sourceTree = "SOURCE_ROOT"; };
 		D4CAF0BC7924CC2C271780D6 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppConfig.h; path = ../../JuceLibraryCode/AppConfig.h; sourceTree = "SOURCE_ROOT"; };
 		D8702852799D16FC6CC3A0E3 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_Edit.cpp"; path = "../../Source/hmnz_Edit.cpp"; sourceTree = "SOURCE_ROOT"; };
@@ -127,7 +123,6 @@
 		E12F8A0935E712C262B02545 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "include_juce_audio_devices.mm"; path = "../../JuceLibraryCode/include_juce_audio_devices.mm"; sourceTree = "SOURCE_ROOT"; };
 		E1432AFA3855B46F8CB5A793 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ValueTreeObjectArrayUnitTest.h"; path = "../../Source/hmnz_ValueTreeObjectArrayUnitTest.h"; sourceTree = "SOURCE_ROOT"; };
 		E560944A48DF6846E3D6383A = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		E65806223D80BF1335B2AC91 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_AutomationMarker.h"; path = "../../Source/hmnz_AutomationMarker.h"; sourceTree = "SOURCE_ROOT"; };
 		EA648E02D3B4E0E1CF7E5F2D = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_UnitTests.cpp"; path = "../../Source/hmnz_UnitTests.cpp"; sourceTree = "SOURCE_ROOT"; };
 		F5DF2BECF47984C41EEEA16D = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_EditWindow.cpp"; path = "../../Source/hmnz_EditWindow.cpp"; sourceTree = "SOURCE_ROOT"; };
 		F674213C270691896B366B60 = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-App.plist"; path = "Info-App.plist"; sourceTree = "SOURCE_ROOT"; };
@@ -162,15 +157,9 @@
 					A37EBAB2D13932B00555F1A4, ); name = Arrangement; sourceTree = "<group>"; };
 		12E8BBE8911128216D0E905B = {isa = PBXGroup; children = (
 					63ECFE5DAA76D7B16CEA736E,
-					8EBF3D02DC1F0295763B3C32,
-					3D2CC76656D4AA196293327B,
 					C409C08200C0343959C0F44C,
 					525FBD5208C354D1978AAEFE,
 					2AF1DD3255E4C10A530DD869, ); name = Time; sourceTree = "<group>"; };
-		4AA8BCAD39D8B26B6F66B3BC = {isa = PBXGroup; children = (
-					36F940F9C2BA15C385C8E9FA,
-					E65806223D80BF1335B2AC91,
-					C82E82534AB2FBC1EA05DED6, ); name = Automation; sourceTree = "<group>"; };
 		AC3BBC9987D7D17A87E38334 = {isa = PBXGroup; children = (
 					AC56ACA56BE9A30C13A4DFA4,
 					9759EEC252C27D71DE2BD98C,
@@ -188,7 +177,6 @@
 		2047F3BFFB2BE3AF145A4C05 = {isa = PBXGroup; children = (
 					A26602A26CFEF6E226D392E6,
 					12E8BBE8911128216D0E905B,
-					4AA8BCAD39D8B26B6F66B3BC,
 					AC3BBC9987D7D17A87E38334,
 					2B1B1F427C26EAA21D3F4CEC, ); name = Model; sourceTree = "<group>"; };
 		C5713C19A35BB95E11306DEB = {isa = PBXGroup; children = (

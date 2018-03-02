@@ -24,6 +24,9 @@ public:
             : ValueTreeObject (v, um)
         {
         }
+
+    private:
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TestValueTreeObject)
     };
 
     ValueTreeObjectUnitTest()
@@ -37,8 +40,6 @@ public:
 
         ValueTree defaultState = TestValueTreeObject<double>::createDefaultState();
         UndoManager defaultUm;
-        {
-            TestValueTreeObject<double> object (defaultState, &defaultUm);
-        }
+        TestValueTreeObject<double> object (defaultState, &defaultUm);
     }
 };

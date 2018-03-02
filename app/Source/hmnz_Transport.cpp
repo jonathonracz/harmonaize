@@ -186,7 +186,7 @@ void Transport::valueTreePropertyChanged (ValueTree& tree, const Identifier& ide
         }
         else if (identifier == playHeadTempo.getPropertyID())
         {
-            edit->masterTrack.tempo.automation.getFirst()->value = tree[playHeadTempo.getPropertyID()];
+            edit->masterTrack.tempo.beatsPerMinute = tree[playHeadTempo.getPropertyID()];
         }
         else if (identifier == playHeadKeySigNumSharpsOrFlats.getPropertyID())
         {
