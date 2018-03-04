@@ -30,10 +30,10 @@ void EditView::setEdit (Edit* _edit)
 
     if (edit)
     {
-        transportView.setTransport (&edit->transport);
+        transportView.setEdit (edit);
         edit->getState().addListener (this);
         keyboard = std::unique_ptr<MidiKeyboardComponent> (new MidiKeyboardComponent (
-                edit->transport.getMidiKeyboardState(), MidiKeyboardComponent::Orientation::horizontalKeyboard));
+                edit->getMidiKeyboardState(), MidiKeyboardComponent::Orientation::horizontalKeyboard));
         addAndMakeVisible (*keyboard);
         keyboard->setKeyWidth(53);
         keyboard->setLowestVisibleKey(60);

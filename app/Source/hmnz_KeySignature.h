@@ -15,7 +15,14 @@
 class KeySignature  : public ValueTreeObject<IDs::KeySignature>
 {
 public:
-    KeySignature(const ValueTree& v, UndoManager* um)
+    struct Snapshot
+    {
+        int numSharpsOrFlats;
+        bool isMinor;
+        double snapshotTime;
+    };
+
+    KeySignature (const ValueTree& v, UndoManager* um)
         : ValueTreeObject (v, um),
           numSharpsOrFlats (getState(), IDs::KeySignatureProps::NumberOfSharpsOrFlats, getUndoManager(), 0),
           isMinor (getState(), IDs::KeySignatureProps::IsMinor, getUndoManager(), false)
@@ -133,6 +140,44 @@ public:
         return std::make_pair (numSharpsOrFlats, isMinor);
     }
 
-    CachedValue<int> numSharpsOrFlats;
-    CachedValue<bool> isMinor;
+    Snapshot getKeySignatureAtTime (double time) const noexcept
+    {
+        Snapshot ret;
+        ret.numSharpsOrFlats = numSharpsOrFlats.get().getRelaxed();
+        ret.isMinor = isMinor.get().getRelaxed();
+        std::atomic_thread_fence (std::memory_order_acquire);
+        ret.snapshotTime = time;
+        return ret;
+    }
+
+    void setKeySignatureAtTime (Snapshot keySignature) noexcept
+    {
+        std::atomic_thread_fence (std::memory_order_acquire);
+        numSharpsOrFlats.get().setRelaxed (keySignature.numSharpsOrFlats);
+        isMinor.get().setRelaxed (keySignature.isMinor);
+    }
+
+    int getNumSharpsOrFlatsAtTime (double time) const noexcept
+    {
+        return numSharpsOrFlats.get();
+    }
+
+    void setNumSharpsOrFlatsAtTime (int newNumSharpsOrFlats, double time) noexcept
+    {
+        return numSharpsOrFlats.setValue (newNumSharpsOrFlats, getUndoManager());
+    }
+
+    int getIsMinorAtTime (double time) const noexcept
+    {
+        return isMinor.get();
+    }
+
+    void setIsMinorAtTime (int newIsMinor, double time) noexcept
+    {
+        return isMinor.setValue (newIsMinor, getUndoManager());
+    }
+
+private:
+    CachedValue<SPSCAtomicWrapper<int>> numSharpsOrFlats;
+    CachedValue<SPSCAtomicWrapper<bool>> isMinor;
 };

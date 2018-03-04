@@ -11,11 +11,12 @@
 #include "hmnz_Edit.h"
 #include "hmnz_Application.h"
 
-Edit::Edit (const ValueTree& v)
-    : ValueTreeObject<IDs::Edit> (v, &undoManager),
+Edit::Edit (const ValueTree& v, bool useUndoManager)
+    : ValueTreeObject<IDs::Edit> (v, useUndoManager ? new UndoManager : nullptr),
       masterTrack (getState().getOrCreateChildWithName (MasterTrack::identifier, nullptr), getUndoManager(), this),
-      transport (getState().getOrCreateChildWithName (Transport::identifier, nullptr), getUndoManager(), this),
-      tracks (this)
+      transport (getState().getOrCreateChildWithName (Transport::identifier, nullptr)),
+      tracks (this),
+      undoManager (getUndoManager())
 {
     // TODO: Validate the ValueTree data model, display an error if
     // something unexpected occurs, etc...
@@ -33,7 +34,7 @@ Edit::~Edit()
 MidiFile Edit::exportToMidi() const noexcept
 {
     MidiFile ret;
-    ret.setTicksPerQuarterNote (static_cast<int> (transport.pulsesPerQuarterNote.get()));
+    ret.setTicksPerQuarterNote (static_cast<int> (Transport::pulsesPerQuarterNote));
     MidiMessageSequence trackEvents = masterTrack.createMetaEventsSequence();
     convertTimestampsFromBeatsToTicks (trackEvents);
     ret.addTrack (trackEvents);
@@ -74,6 +75,7 @@ void Edit::importFromMidi (const MidiFile& midiFile, int trackOffset, double tim
 
 void Edit::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
+    keyboardState.reset();
     masterTrack.prepareToPlay (samplesPerBlockExpected, sampleRate);
     for (Track* track : tracks)
     {
@@ -83,6 +85,7 @@ void Edit::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 
 void Edit::releaseResources()
 {
+    keyboardState.reset();
     masterTrack.releaseResources();
     const TrackArray::ScopedLockType sl (tracks.getLock());
     for (Track* track : tracks)
@@ -92,13 +95,14 @@ void Edit::releaseResources()
 }
 
 void Edit::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
-        const MidiBuffer& incomingMidiBuffer,
-        const AudioPlayHead::CurrentPositionInfo& positionInfo)
+        MidiBuffer& incomingMidiBuffer,
+        PlaybackEngine& playbackSource)
 {
+    keyboardState.processNextMidiBuffer (incomingMidiBuffer, 0, audioBuffer.getNumSamples(), true);
     const TrackArray::ScopedLockType sl (tracks.getLock());
     for (Track* track : tracks)
     {
-        track->getNextAudioBlockWithInputs (audioBuffer, incomingMidiBuffer, positionInfo);
+        track->getNextAudioBlockWithInputs (audioBuffer, incomingMidiBuffer, playbackSource);
     }
 }
 
@@ -106,7 +110,7 @@ void Edit::convertTimestampsFromBeatsToTicks (MidiMessageSequence& sequence) con
 {
     for (MidiMessageSequence::MidiEventHolder* event : sequence)
     {
-        double newTimestamp = event->message.getTimeStamp() * transport.pulsesPerQuarterNote.get();
+        double newTimestamp = event->message.getTimeStamp() * Transport::pulsesPerQuarterNote;
         event->message.setTimeStamp (newTimestamp);
     }
 }

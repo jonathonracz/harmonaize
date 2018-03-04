@@ -68,6 +68,11 @@ struct SPSCAtomicWrapper
         return value.load (std::memory_order_relaxed);
     }
 
+    void setRelaxed (Type newValue) noexcept
+    {
+        value.store (newValue, std::memory_order_relaxed);
+    }
+
     std::atomic<Type> value { Type() };
 };
 

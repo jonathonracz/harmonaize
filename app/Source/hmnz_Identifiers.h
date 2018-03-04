@@ -36,13 +36,9 @@ namespace IDs
         DECLARE_ID (PlayHeadKeySigNumSharpsOrFlats)
         DECLARE_ID (PlayHeadKeySigIsMinor)
 
-        DECLARE_ID (LoopStartBeat)
-        DECLARE_ID (LoopEndBeat)
-        DECLARE_ID (LoopEnabled)
         DECLARE_ID (RecordEnabled)
         DECLARE_ID (PlayState)
         DECLARE_ID (SampleRate)
-        DECLARE_ID (PulsesPerQuarterNote)
     }
 
     DECLARE_ID (MasterTrack)

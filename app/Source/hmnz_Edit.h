@@ -16,35 +16,44 @@
 #include "hmnz_Transport.h"
 #include "hmnz_Track.h"
 #include "hmnz_CacheValueWrappers.h"
-#include "hmnz_PositionedAudioMidiSource.h"
+#include "hmnz_PlaybackEngine.h"
 
 /**
     Represents an active edit (also known as a project).
 */
 class Edit  : public ValueTreeObject<IDs::Edit>,
-              public PositionedAudioMidiSource
+              public PlaybackEngine::PlaybackTarget
 {
 public:
-    Edit (const ValueTree& v);
+    Edit (const ValueTree& v, bool useUndoManager = true);
     ~Edit();
 
     // AudioSource methods
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
-    void getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
-        const MidiBuffer& incomingMidiBuffer,
-        const AudioPlayHead::CurrentPositionInfo& positionInfo) override;
+    void getNextAudioBlockWithInputs (
+        AudioBuffer<float>& audioBuffer,
+        MidiBuffer& incomingMidiBuffer,
+        PlaybackEngine& playbackSource) override;
 
     MidiFile exportToMidi() const noexcept;
     void importFromMidi (const MidiFile& midiFile, int trackOffset, double timeOffset) noexcept;
+
+    std::mutex* getPlaybackLock () const noexcept { return playbackLock; }
+    void setPlaybackLock (std::mutex* _playbackLock) noexcept { playbackLock = _playbackLock; }
+
+    MidiKeyboardState& getMidiKeyboardState() noexcept { return keyboardState; }
 
     MasterTrack masterTrack;
     Transport transport;
     TrackArray tracks;
 
 private:
-    UndoManager undoManager;
+    std::unique_ptr<UndoManager> undoManager;
     jcf::ValueTreeDebugger stateDebugger;
+    std::mutex* playbackLock;
+
+    MidiKeyboardState keyboardState;
 
     void convertTimestampsFromBeatsToTicks (MidiMessageSequence& sequence) const noexcept;
 

@@ -9,7 +9,6 @@
 */
 
 #include "hmnz_Track.h"
-#include "hmnz_Edit.h"
 #include "hmnz_Application.h"
 
 Track::Track (const ValueTree& v, UndoManager* um, Edit* const _edit)
@@ -52,20 +51,28 @@ void Track::releaseResources()
 }
 
 void Track::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
-                                  const MidiBuffer& incomingMidiBuffer,
-                                  const AudioPlayHead::CurrentPositionInfo& positionInfo)
+                                  MidiBuffer& incomingMidiBuffer,
+                                  PlaybackEngine& playbackSource)
 {
     midiBuffer = incomingMidiBuffer;
 
-    if (positionInfo.isPlaying)
+    AudioPlayHead::CurrentPositionInfo currentPosition;
+    bool result = playbackSource.getCurrentPosition (currentPosition);
+    jassert (result);
+
+    if (currentPosition.isPlaying)
     {
         auto beatForSample = [&](int64 sample) -> double {
-            return edit->masterTrack.tempo.beat (sample / edit->transport.getActiveSampleRate());
+            return edit->masterTrack.tempo.beat (sample / playbackSource.getActiveSampleRate());
         };
 
         auto sampleForBeat = [&](double beat) -> int64 {
-            return static_cast<int64> (edit->masterTrack.tempo.time (beat) * edit->transport.getActiveSampleRate());
+            return static_cast<int64> (edit->masterTrack.tempo.time (beat) * playbackSource.getActiveSampleRate());
         };
+
+        AudioPlayHead::CurrentPositionInfo positionInfo;
+        bool result = playbackSource.getCurrentPosition (positionInfo);
+        jassert (result);
 
         // Pull MIDI data for this frame from the active sequence.
         double startBeat = beatForSample (positionInfo.timeInSamples);
@@ -83,7 +90,7 @@ void Track::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
         if (positionInfo.isRecording )//&& recordArmed.get())
         {
             RecordedMidiMessage newRecordedMessage;
-            newRecordedMessage.recordSessionID = edit->transport.getActiveRecordOperationID();
+            newRecordedMessage.recordSessionID = playbackSource.getRecordOperationID();
 
             MidiBuffer::Iterator midiBufferIt (incomingMidiBuffer);
             MidiMessage incomingMessage;
@@ -125,8 +132,9 @@ void Track::updateMidiReadCache() noexcept
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
     MidiMessageSequence newReadCache = getMidiMessageSequence();
 
+    if (edit->getPlaybackLock())
     {
-        std::lock_guard<std::mutex> (edit->transport.getCallbackLock());
+        std::lock_guard<std::mutex> (*edit->getPlaybackLock());
         midiReadCache.swapWith (newReadCache);
     }
 }

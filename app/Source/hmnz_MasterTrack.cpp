@@ -30,8 +30,10 @@ MidiMessageSequence MasterTrack::createMetaEventsSequence() const noexcept
     };
 
     ret.addEvent (MidiMessage::tempoMetaEvent (microsecondsPerBeat (tempo.tempoAtTime (0.0))));
-    ret.addEvent (MidiMessage::timeSignatureMetaEvent (timeSignature.numerator.get(), timeSignature.denominator.get()));
-    ret.addEvent (MidiMessage::keySignatureMetaEvent (keySignature.numSharpsOrFlats.get(), keySignature.isMinor.get()));
+    TimeSignature::Snapshot timeSig = timeSignature.getTimeSignatureAtTime (0.0);
+    ret.addEvent (MidiMessage::timeSignatureMetaEvent (timeSig.numerator, timeSig.denominator));
+    KeySignature::Snapshot keySig = keySignature.getKeySignatureAtTime (0.0);
+    ret.addEvent (MidiMessage::keySignatureMetaEvent (keySig.numSharpsOrFlats, keySig.isMinor));
 
     return ret;
 }
