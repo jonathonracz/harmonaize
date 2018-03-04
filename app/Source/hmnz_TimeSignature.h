@@ -16,6 +16,39 @@
 class TimeSignature : public ValueTreeObject<IDs::TimeSignature>
 {
 public:
+    struct Snapshot
+    {
+        double barInTermsOfBeat (double beat) const noexcept
+        {
+            return (beat - startBeat) / numerator;
+        }
+
+        int barForBeat (double beat) const noexcept
+        {
+            return static_cast<int> (barInTermsOfBeat (beat));
+        }
+
+        double beatInBar (double beat) const noexcept
+        {
+            return std::fmod (beat - startBeat, numerator);
+        }
+
+        double quarterNotesPerBeat() const noexcept
+        {
+            return 4.0 / static_cast<double> (denominator);
+        }
+
+        double beatForStartOfLastBarOfBeat (double beat) const noexcept
+        {
+            return beat - startBeat - std::fmod (beat, numerator);
+        }
+
+        int numerator;
+        int denominator;
+        double startBeat;
+        double snapshotTime;
+    };
+
     TimeSignature (const ValueTree& v, UndoManager* um)
         : ValueTreeObject (v, um),
           numerator (getState(), IDs::TimeSignatureProps::Numerator, getUndoManager(), 4),
@@ -23,32 +56,45 @@ public:
     {
     }
 
-    double barInTermsOfBeat (double beat) const noexcept
+    int getNumeratorAtTime (double time) const noexcept
     {
-        double currNumerator = numerator.get();
-        return beat / currNumerator;
+        return numerator.get();
     }
 
-    int barForBeat (double beat) const noexcept
+    void setNumeratorAtTime (int newNumerator, double time) noexcept
     {
-        return static_cast<int> (barInTermsOfBeat (beat));
+        return numerator.setValue (newNumerator, getUndoManager());
     }
 
-    double beatInBar (double beat) const noexcept
+    int getDenominatorAtTime (double time) const noexcept
     {
-        return std::fmod (beat, numerator.get());
+        return denominator.get();
     }
 
-    double quarterNotesPerBeat() const noexcept
+    void setDenominatorAtTime (int newDenominator, double time) noexcept
     {
-        return 4.0 / denominator.get();
+        return denominator.setValue (newDenominator, getUndoManager());
     }
 
-    double beatForStartOfLastBarOfBeat (double beat) const noexcept
+    Snapshot getTimeSignatureAtTime (double time) const noexcept
     {
-        return beat - std::fmod (beat, numerator.get());
+        Snapshot ret;
+        ret.numerator = numerator.get().getRelaxed();
+        ret.denominator = denominator.get().getRelaxed();
+        ret.startBeat = 0.0;
+        std::atomic_thread_fence (std::memory_order_acquire);
+        ret.snapshotTime = time;
+        return ret;
     }
 
-    CachedValue<int> numerator;
-    CachedValue<int> denominator;
+    void setTimeSignature (Snapshot timeSignature) noexcept
+    {
+        std::atomic_thread_fence (std::memory_order_release);
+        numerator.get().setRelaxed (timeSignature.numerator);
+        denominator.get().setRelaxed (timeSignature.denominator);
+    }
+
+private:
+    CachedValue<SPSCAtomicWrapper<int>> numerator;
+    CachedValue<SPSCAtomicWrapper<int>> denominator;
 };

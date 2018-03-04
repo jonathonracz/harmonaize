@@ -13,14 +13,15 @@
 #include "hmnz_ValueTreeObject.h"
 #include "hmnz_VariantConverters.h"
 #include "hmnz_ClipList.h"
-#include "hmnz_PositionedAudioMidiSource.h"
+#include "hmnz_PlaybackEngine.h"
 #include "hmnz_CacheValueWrappers.h"
+#include "hmnz_PlaybackEngine.h"
 #include "External/readerwriterqueue/readerwriterqueue.h"
 
 class Edit;
 
 class Track : public ValueTreeObject<IDs::Track>,
-              public PositionedAudioMidiSource,
+              public PlaybackEngine::PlaybackTarget,
               public AsyncUpdater
 {
 public:
@@ -29,8 +30,8 @@ public:
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
     void getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
-        const MidiBuffer& incomingMidiBuffer,
-        const AudioPlayHead::CurrentPositionInfo& positionInfo) override;
+        MidiBuffer& incomingMidiBuffer,
+        PlaybackEngine& playbackSource) override;
 
     MidiMessageSequence getMidiMessageSequence() const noexcept;
     void addMidiMessageSequenceAsClip (double start, double length, const MidiMessageSequence& sequence) noexcept;
