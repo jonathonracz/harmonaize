@@ -11,14 +11,17 @@
 #pragma once
 
 #include "JuceHeader.h"
+#include "hmnz_GenericValueTreeObjectArray.h"
 
 class Edit;
+class Track;
 
 class PlaybackEngine    : public AudioSource,
                           public AudioPlayHead,
                           public ChangeListener,
                           public AsyncUpdater,
-                          public ValueTree::Listener
+                          public ValueTree::Listener,
+                          public ValueTreeObjectArray<Track, CriticalSection>::Listener
 {
 public:
     struct PlaybackTarget
@@ -70,6 +73,7 @@ private:
     AudioSourcePlayer output;
     std::mutex callbackLock;
     std::atomic<CurrentPositionInfo> currentPositionInfo;
+    std::atomic<bool> playHeadPositionChanged = { false };
 
     int activeSamplesPerBlockExpected = 0;
     double activeSampleRate = 0.0;
@@ -88,8 +92,10 @@ private:
     void handleAsyncUpdate() noexcept override;
 
     void valueTreePropertyChanged (ValueTree& tree, const Identifier& identifier) noexcept override;
-    void valueTreeChildAdded (ValueTree&, ValueTree&) noexcept override;
+    void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
     void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
     void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
     void valueTreeParentChanged (ValueTree&) override {}
+
+    void objectAdded (Track* track, ValueTreeObjectArray<Track, CriticalSection>* array) noexcept override;
 };

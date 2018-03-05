@@ -68,7 +68,7 @@ public:
         double bpm = beatsPerMinute.get();
         Snapshot ret;
         ret.time = time;
-        ret.beat = timeForBeat (time, bpm);
+        ret.beat = beatForTime (time, bpm);
         ret.bpm = bpm;
         return ret;
     }

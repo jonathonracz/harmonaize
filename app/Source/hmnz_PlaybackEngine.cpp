@@ -36,6 +36,7 @@ void PlaybackEngine::setEdit (Edit* _edit) noexcept
     {
         edit->getState().removeListener (this);
         edit->setPlaybackLock (nullptr);
+        edit->tracks.removeListener (this);
     }
 
     {
@@ -48,6 +49,7 @@ void PlaybackEngine::setEdit (Edit* _edit) noexcept
         output.setSource (nullptr);
         output.setSource (this);
         edit->setPlaybackLock (&callbackLock);
+        edit->tracks.addListener (this);
         edit->getState().addListener (this);
     }
 }
@@ -69,11 +71,7 @@ void PlaybackEngine::transportRecord (bool shouldStartRecording) noexcept
 {
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
     if (edit)
-    {
         edit->transport.recordEnabled = shouldStartRecording;
-        if (shouldStartRecording)
-            recordOperationID.fetch_add (1, std::memory_order_release);
-    }
 }
 
 void PlaybackEngine::transportRewind() noexcept
@@ -84,6 +82,7 @@ void PlaybackEngine::transportRewind() noexcept
 void PlaybackEngine::setPositionSample (int64 sample) noexcept
 {
     readPosition.store (sample, std::memory_order_release);
+    playHeadPositionChanged.store (true, std::memory_order_release);
 }
 
 void PlaybackEngine::setPositionSecond (double second) noexcept
@@ -145,6 +144,7 @@ void PlaybackEngine::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFi
     newPositionInfo.ppqPositionOfLastBarStart = timeSignature.barInTermsOfBeat (tempo.beat);
     newPositionInfo.frameRate = AudioPlayHead::FrameRateType::fpsUnknown;
     newPositionInfo.isPlaying = static_cast<int> (edit->transport.playState.get()) == static_cast<int> (Transport::State::playing);
+    newPositionInfo.isRecording = edit->transport.recordEnabled.get();
     newPositionInfo.ppqLoopStart = 0.0;
     newPositionInfo.ppqLoopEnd = std::numeric_limits<double>::max();
     newPositionInfo.isLooping = false;
@@ -154,6 +154,12 @@ void PlaybackEngine::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFi
 
     MidiBuffer incomingMidi;
     midiMessageCollector.removeNextBlockOfMessages (incomingMidi, bufferToFill.numSamples);
+
+    {
+        bool trueVal = true;
+        if (playHeadPositionChanged.compare_exchange_strong (trueVal, false, std::memory_order_acq_rel))
+            incomingMidi.addEvent (MidiMessage::allNotesOff (0), 0);
+    }
 
     AudioBuffer<float> usableBufferSubset (bufferToFill.buffer->getArrayOfWritePointers(), bufferToFill.buffer->getNumChannels(), bufferToFill.startSample, bufferToFill.numSamples);
     edit->getNextAudioBlockWithInputs (usableBufferSubset, incomingMidi, *this);
@@ -214,6 +220,11 @@ void PlaybackEngine::valueTreePropertyChanged (ValueTree& tree, const Identifier
             setPositionBeat (beat);
             tree.setPropertyExcludingListener (this, transport.playHeadTime.getPropertyID(), edit->masterTrack.tempo.time (beat), nullptr);
         }
+        else if (identifier == transport.recordEnabled.getPropertyID())
+        {
+            if (transport.recordEnabled.get())
+                recordOperationID.fetch_add (1, std::memory_order_release);
+        }
         else if (identifier == transport.playHeadTimeSigNumerator.getPropertyID())
         {
             edit->masterTrack.timeSignature.setNumeratorAtTime (transport.playHeadTimeSigNumerator, transport.playHeadTime);
@@ -237,14 +248,8 @@ void PlaybackEngine::valueTreePropertyChanged (ValueTree& tree, const Identifier
     }
 }
 
-void PlaybackEngine::valueTreeChildAdded (ValueTree& parentTree, ValueTree& childWhichHasBeenAdded) noexcept
+void PlaybackEngine::objectAdded (Track* track, ValueTreeObjectArray<Track, CriticalSection>* array) noexcept
 {
-    jassert (edit);
-    if (parentTree == edit->getState() && childWhichHasBeenAdded.getType() == Track::identifier)
-    {
-        const std::lock_guard<std::mutex> lock (getCallbackLock());
-        Track* newTrack = edit->tracks.objectWithState (childWhichHasBeenAdded);
-        jassert (newTrack);
-        newTrack->prepareToPlay (getActiveSamplesPerBlockExpected(), getActiveSampleRate());
-    }
+    const std::lock_guard<std::mutex> lock (getCallbackLock());
+    track->prepareToPlay (getActiveSamplesPerBlockExpected(), getActiveSampleRate());
 }
