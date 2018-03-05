@@ -41,6 +41,13 @@ namespace IDs
         DECLARE_ID (SampleRate)
     }
 
+    DECLARE_ID (ArrangementViewModel)
+    namespace ArrangementViewModelProps
+    {
+        DECLARE_ID (TimeStart)
+        DECLARE_ID (TimeEnd)
+    }
+
     DECLARE_ID (MasterTrack)
 
     DECLARE_ID (Tempo)

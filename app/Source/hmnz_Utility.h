@@ -64,4 +64,28 @@ inline int getIndexOfImmediateChildWithName (const ValueTree& parent, const Iden
     return -1;
 }
 
+template<class Type, Type (*function)(Type)>
+inline Type toNearestInterval (Type value, Type interval) noexcept
+{
+    return function (value / interval) * interval;
+}
+
+template<class Type>
+inline Type floorToNearestInterval (Type value, Type interval) noexcept
+{
+    return toNearestInterval<Type, std::floor> (value, interval);
+}
+
+template<class Type>
+inline Type ceilToNearestInterval (Type value, Type interval) noexcept
+{
+    return toNearestInterval<Type, std::ceil> (value, interval);
+}
+
+template<class Type>
+inline Type roundToNearestInterval (Type value, Type interval) noexcept
+{
+    return toNearestInterval<Type, std::round> (value, interval);
+}
+
 }

@@ -17,6 +17,7 @@
 #include "hmnz_Track.h"
 #include "hmnz_CacheValueWrappers.h"
 #include "hmnz_PlaybackEngine.h"
+#include "hmnz_ArrangementViewModel.h"
 
 /**
     Represents an active edit (also known as a project).
@@ -46,6 +47,7 @@ public:
 
     MasterTrack masterTrack;
     Transport transport;
+    ArrangementViewModel arrangementViewModel;
     TrackList trackList;
 
 private:

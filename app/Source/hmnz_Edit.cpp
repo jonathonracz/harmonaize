@@ -15,6 +15,7 @@ Edit::Edit (const ValueTree& v, bool useUndoManager)
     : ValueTreeObject<IDs::Edit> (v, useUndoManager ? new UndoManager : nullptr),
       masterTrack (getState().getOrCreateChildWithName (MasterTrack::identifier, nullptr), getUndoManager(), this),
       transport (getState().getOrCreateChildWithName (Transport::identifier, nullptr)),
+      arrangementViewModel (getState().getOrCreateChildWithName (ArrangementViewModel::identifier, nullptr)),
       trackList (getState().getOrCreateChildWithName (TrackList::identifier, nullptr), getUndoManager(), this),
       undoManager (getUndoManager())
 {
