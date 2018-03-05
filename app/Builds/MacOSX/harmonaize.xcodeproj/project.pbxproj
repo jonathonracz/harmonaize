@@ -52,6 +52,7 @@
 		113BB3F244B850B76157F955 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ValueTreeObjectUnitTest.h"; path = "../../Source/hmnz_ValueTreeObjectUnitTest.h"; sourceTree = "SOURCE_ROOT"; };
 		16B39511A8A792C9643C92A8 = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_graphics"; path = "../../../harmonaize/external/JUCE/modules/juce_graphics"; sourceTree = "SOURCE_ROOT"; };
 		18861274A888DEE2378E1D98 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeader.h; path = ../../JuceLibraryCode/JuceHeader.h; sourceTree = "SOURCE_ROOT"; };
+		1B0A6265A2479022D62709A0 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_TrackList.h"; path = "../../Source/hmnz_TrackList.h"; sourceTree = "SOURCE_ROOT"; };
 		1B49D14D80F35EE611D6CDBC = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ClipList.h"; path = "../../Source/hmnz_ClipList.h"; sourceTree = "SOURCE_ROOT"; };
 		2302EBA6E18D82262E58C465 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_Application.cpp"; path = "../../Source/hmnz_Application.cpp"; sourceTree = "SOURCE_ROOT"; };
 		261542B6055C7771714D0895 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_VariantConverters.h"; path = "../../Source/hmnz_VariantConverters.h"; sourceTree = "SOURCE_ROOT"; };
@@ -156,7 +157,8 @@
 					62A572A1CC890C4548466AF2,
 					B7D6E90874DF1DD80E3DEAD0,
 					8F4675BD91E6E03800FCF753,
-					A37EBAB2D13932B00555F1A4, ); name = Arrangement; sourceTree = "<group>"; };
+					A37EBAB2D13932B00555F1A4,
+					1B0A6265A2479022D62709A0, ); name = Arrangement; sourceTree = "<group>"; };
 		12E8BBE8911128216D0E905B = {isa = PBXGroup; children = (
 					63ECFE5DAA76D7B16CEA736E,
 					C409C08200C0343959C0F44C,

@@ -15,14 +15,14 @@ Edit::Edit (const ValueTree& v, bool useUndoManager)
     : ValueTreeObject<IDs::Edit> (v, useUndoManager ? new UndoManager : nullptr),
       masterTrack (getState().getOrCreateChildWithName (MasterTrack::identifier, nullptr), getUndoManager(), this),
       transport (getState().getOrCreateChildWithName (Transport::identifier, nullptr)),
-      tracks (this),
+      trackList (getState().getOrCreateChildWithName (TrackList::identifier, nullptr), getUndoManager(), this),
       undoManager (getUndoManager())
 {
     // TODO: Validate the ValueTree data model, display an error if
     // something unexpected occurs, etc...
     getState().addListener (this);
-    if (tracks.size() == 0)
-        tracks.insertStateAtObjectIndex (Track::createDefaultState(), -1);
+    if (trackList.tracks.size() == 0)
+        trackList.tracks.insertStateAtObjectIndex (Track::createDefaultState(), -1);
 
     stateDebugger.setSource (getState());
 }
@@ -38,7 +38,7 @@ MidiFile Edit::exportToMidi() const noexcept
     MidiMessageSequence trackEvents = masterTrack.createMetaEventsSequence();
     convertTimestampsFromBeatsToTicks (trackEvents);
     ret.addTrack (trackEvents);
-    for (Track* track : tracks)
+    for (Track* track : trackList.tracks)
     {
         trackEvents = track->getMidiMessageSequence();
         convertTimestampsFromBeatsToTicks (trackEvents);
@@ -53,7 +53,7 @@ void Edit::importFromMidi (const MidiFile& midiFile, int trackOffset, double tim
     jassert (midiFile.getTimeFormat() > 0); // Only support PPQ.
 
     double length = midiFile.getLastTimestamp() / midiFile.getTimeFormat();
-    while (midiFile.getNumTracks() + trackOffset > tracks.size())
+    while (midiFile.getNumTracks() + trackOffset > trackList.tracks.size())
         getState().addChild (Track::createDefaultState(), -1, getUndoManager());
 
     for (int i = 0; i < midiFile.getNumTracks(); ++i)
@@ -65,7 +65,7 @@ void Edit::importFromMidi (const MidiFile& midiFile, int trackOffset, double tim
         }
 
         int destinationTrack = std::max (0, i + trackOffset);
-        Track* importTargetTrack = tracks[destinationTrack];
+        Track* importTargetTrack = trackList.tracks[destinationTrack];
         if (importTargetTrack)
             importTargetTrack->addMidiMessageSequenceAsClip (timeOffset, length, trackSequence);
         else
@@ -77,7 +77,7 @@ void Edit::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
     keyboardState.reset();
     masterTrack.prepareToPlay (samplesPerBlockExpected, sampleRate);
-    for (Track* track : tracks)
+    for (Track* track : trackList.tracks)
     {
         track->prepareToPlay (samplesPerBlockExpected, sampleRate);
     }
@@ -87,8 +87,8 @@ void Edit::releaseResources()
 {
     keyboardState.reset();
     masterTrack.releaseResources();
-    const TrackArray::ScopedLockType sl (tracks.getLock());
-    for (Track* track : tracks)
+    const TrackArray::ScopedLockType sl (trackList.tracks.getLock());
+    for (Track* track : trackList.tracks)
     {
         track->releaseResources();
     }
@@ -99,8 +99,8 @@ void Edit::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
         PlaybackEngine& playbackSource)
 {
     keyboardState.processNextMidiBuffer (incomingMidiBuffer, 0, audioBuffer.getNumSamples(), true);
-    const TrackArray::ScopedLockType sl (tracks.getLock());
-    for (Track* track : tracks)
+    const TrackArray::ScopedLockType sl (trackList.tracks.getLock());
+    for (Track* track : trackList.tracks)
     {
         track->getNextAudioBlockWithInputs (audioBuffer, incomingMidiBuffer, playbackSource);
     }

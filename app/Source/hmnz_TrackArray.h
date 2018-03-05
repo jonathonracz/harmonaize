@@ -16,10 +16,9 @@
 class TrackArray    : public ValueTreeObjectArray<Track, CriticalSection>
 {
 public:
-    TrackArray (Edit* const edit);
+    TrackArray (const ValueTree& v, UndoManager* um, Edit* edit);
 
 private:
     Edit* const edit;
-
     Track* createNewObject (const ValueTree& v, UndoManager* um) override;
 };

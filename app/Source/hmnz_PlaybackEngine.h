@@ -81,6 +81,7 @@ private:
 
     // MIDI bits
     MidiMessageCollector midiMessageCollector;
+    MidiBuffer midiStopBuffer;
 
     // AudioSource overrides
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) noexcept override;

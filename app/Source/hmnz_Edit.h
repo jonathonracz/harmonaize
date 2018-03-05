@@ -11,7 +11,7 @@
 #pragma once
 
 #include "hmnz_ValueTreeObject.h"
-#include "hmnz_TrackArray.h"
+#include "hmnz_TrackList.h"
 #include "hmnz_MasterTrack.h"
 #include "hmnz_Transport.h"
 #include "hmnz_Track.h"
@@ -46,7 +46,7 @@ public:
 
     MasterTrack masterTrack;
     Transport transport;
-    TrackArray tracks;
+    TrackList trackList;
 
 private:
     std::unique_ptr<UndoManager> undoManager;

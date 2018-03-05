@@ -50,6 +50,8 @@
               file="Source/hmnz_TrackArray.cpp"/>
         <FILE id="lnkPt3" name="hmnz_TrackArray.h" compile="0" resource="0"
               file="Source/hmnz_TrackArray.h"/>
+        <FILE id="Wry2bl" name="hmnz_TrackList.h" compile="0" resource="0"
+              file="Source/hmnz_TrackList.h"/>
       </GROUP>
       <GROUP id="{113B8590-9FBD-441F-5100-C595C8B99F47}" name="Time">
         <FILE id="lvaPMG" name="hmnz_Tempo.h" compile="0" resource="0" file="Source/hmnz_Tempo.h"/>
