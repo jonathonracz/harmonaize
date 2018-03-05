@@ -15,6 +15,9 @@ PlaybackEngine::PlaybackEngine()
 {
     HarmonaizeApplication::getDeviceManager().addChangeListener (this);
     HarmonaizeApplication::getDeviceManager().addAudioCallback (&output);
+
+    for (int i = 1; i <= 16; ++i)
+        midiStopBuffer.addEvent (MidiMessage::allSoundOff (i), 0);
 }
 
 PlaybackEngine::~PlaybackEngine()
@@ -36,7 +39,7 @@ void PlaybackEngine::setEdit (Edit* _edit) noexcept
     {
         edit->getState().removeListener (this);
         edit->setPlaybackLock (nullptr);
-        edit->tracks.removeListener (this);
+        edit->trackList.tracks.removeListener (this);
     }
 
     {
@@ -49,7 +52,7 @@ void PlaybackEngine::setEdit (Edit* _edit) noexcept
         output.setSource (nullptr);
         output.setSource (this);
         edit->setPlaybackLock (&callbackLock);
-        edit->tracks.addListener (this);
+        edit->trackList.tracks.addListener (this);
         edit->getState().addListener (this);
     }
 }
@@ -158,7 +161,7 @@ void PlaybackEngine::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFi
     {
         bool trueVal = true;
         if (playHeadPositionChanged.compare_exchange_strong (trueVal, false, std::memory_order_acq_rel))
-            incomingMidi.addEvent (MidiMessage::allNotesOff (0), 0);
+            incomingMidi.addEvents (midiStopBuffer, 0, midiStopBuffer.getNumEvents(), 0);
     }
 
     AudioBuffer<float> usableBufferSubset (bufferToFill.buffer->getArrayOfWritePointers(), bufferToFill.buffer->getNumChannels(), bufferToFill.startSample, bufferToFill.numSamples);

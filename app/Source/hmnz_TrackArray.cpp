@@ -11,9 +11,8 @@
 #include "hmnz_TrackArray.h"
 #include "hmnz_Edit.h"
 
-TrackArray::TrackArray (Edit* const _edit)
-    : ValueTreeObjectArray (_edit->getState(), _edit->getUndoManager()),
-      edit (_edit)
+TrackArray::TrackArray (const ValueTree& v, UndoManager* um, Edit* _edit)
+    : ValueTreeObjectArray (v, um), edit (_edit)
 {
     addObjects();
 }

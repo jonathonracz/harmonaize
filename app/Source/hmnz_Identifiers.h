@@ -63,6 +63,8 @@ namespace IDs
         DECLARE_ID (IsMinor)
     }
 
+    DECLARE_ID (TrackList)
+
     DECLARE_ID (Track)
     namespace TrackProps
     {
