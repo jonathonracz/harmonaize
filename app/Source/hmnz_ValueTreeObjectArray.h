@@ -21,6 +21,14 @@ template<class ObjectType, class CriticalSectionType = DummyCriticalSection>
 class ValueTreeObjectArray   : public ValueTree::Listener
 {
 public:
+    struct Listener
+    {
+        virtual ~Listener() = default;
+        virtual void objectAdded (ObjectType* object, ValueTreeObjectArray<ObjectType, CriticalSectionType>* array) {}
+        virtual void objectRemoved (ObjectType* object, ValueTreeObjectArray<ObjectType, CriticalSectionType>* array) {}
+        virtual void objectOrderChanged (ValueTreeObjectArray<ObjectType, CriticalSectionType>* array) {}
+    };
+
     ValueTreeObjectArray (const ValueTree& parentTree, UndoManager* um)
         : parent (parentTree), undoManager (um)
     {
@@ -32,6 +40,16 @@ public:
         const ScopedLockType sl (arrayLock);
         while (objects.size() > 0)
             deleteObject (objects.removeAndReturn (objects.size() - 1));
+    }
+
+    void addListener (Listener* listener) noexcept
+    {
+        listeners.add (listener);
+    }
+
+    void removeListener (Listener* listener) noexcept
+    {
+        listeners.remove (listener);
     }
 
     ValueTree& getParent() const
@@ -171,15 +189,12 @@ protected:
     virtual ObjectType* createNewObject (const ValueTree& v, UndoManager* um) = 0;
     virtual void deleteObject (ObjectType* object) { delete object; }
 
-    virtual void newObjectAdded (ObjectType*) {}
-    virtual void objectRemoved (ObjectType*) {}
-    virtual void objectOrderChanged() {}
-
 private:
     Array<ObjectType*> objects;
     ValueTree parent;
     UndoManager* undoManager;
     CriticalSectionType arrayLock;
+    ListenerList<Listener> listeners;
 
     bool isSuitableType (const ValueTree& v) const noexcept
     {
@@ -222,7 +237,7 @@ private:
             }
 
             jassert (addedObject);
-            newObjectAdded (addedObject);
+            listeners.call (&Listener::objectAdded, addedObject, this);
         }
     }
 
@@ -241,7 +256,7 @@ private:
                     o = objects.removeAndReturn (oldIndex);
                 }
 
-                objectRemoved (o);
+                listeners.call (&Listener::objectRemoved, o, this);
                 deleteObject (o);
             }
         }
@@ -256,7 +271,7 @@ private:
                 sortArray();
             }
 
-            objectOrderChanged();
+            listeners.call (&Listener::objectOrderChanged, this);
         }
     }
 
