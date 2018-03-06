@@ -2,7 +2,7 @@
 # Adam Heins
 
 class ChordProg():
-	def __init__(self, tonic, filename, tempo, groove):
+	def __init__(self, FileAttributes, filename):
 		self.keyMap = {
 		 	 'C': 0, 
 			 'C#': 1, 'Db': 1,
@@ -38,11 +38,11 @@ class ChordProg():
                               'd8':11, 'P8':12}
 
 		self.majorScale = ['M2', 'M3', 'P4', 'P5', 'M6', 'M7', 'P8']
-		self.tonic = tonic
+		self.tonic = FileAttributes['tonic']
 		self.filename = filename
 		self.counter = 1
-		self.tempo = tempo
-		self.groove = groove
+		self.tempo = FileAttributes['tempo']
+		self.groove = FileAttributes['groove']
 
 
 	def intervalJump(self, interval):
