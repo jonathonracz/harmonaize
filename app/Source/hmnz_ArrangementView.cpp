@@ -41,6 +41,9 @@ void ArrangementView::paint (Graphics& g) noexcept
     if (!edit)
         return;
 
+    int beatBarHeight = 28;
+    int arrangementHeight = getHeight() - beatBarHeight;
+
     ArrangementViewModel& model = edit->arrangementViewModel;
     NormalisableRange<double> remapper (model.timeStart, model.timeEnd);
     const double minimumLineSpacing = 14.0; // Arbitrary - controls how close lines can get before the grid size increases
@@ -61,13 +64,41 @@ void ArrangementView::paint (Graphics& g) noexcept
         }
     }
 
-    double beatValue = Utility::ceilToNearestInterval (remapper.start, linesPerBeat);
+    DBG ("linesPerBeat: " << linesPerBeat);
+    double beatValue = Utility::floorToNearestInterval (remapper.start, linesPerBeat);
     while (beatValue <= remapper.end)
     {
-        Colour color = (edit->masterTrack.timeSignature.beatInBar (beatValue) > 0.0) ? Colours::grey : Colours::white;
+        TimeSignature& timeSignature = edit->masterTrack.timeSignature;
+        const double beatsInBar = timeSignature.getNumeratorAtBeat (beatValue);
+        const double bar = timeSignature.barForBeat (beatValue);
+        const double beat = std::floor (timeSignature.beatInBar (beatValue));
+        const double subBeat = std::fmod (beatValue, 1.0);
+
+        String beatText = String (bar + 1);
+        if (linesPerBeat <= 1)
+            beatText += "." + String (beat + 1);
+        if (linesPerBeat <= 0.0625)
+            beatText += "." + String ((timeSignature.getDenominatorAtBeat (beatValue) * subBeat) + 1);
+
+        bool drawText = false;
+        if ((linesPerBeat > 2.0 && std::fmod (bar, 2.0) == 0.0) || // Draw every other measure marker when linesPerBeat > 2.0
+            (linesPerBeat <= 2.0 && beat == 0.0 && subBeat == 0.0) || // Always draw measure markers
+            (linesPerBeat <= 1.0 && beat == beatsInBar / 2.0 && subBeat == 0) ||
+            (linesPerBeat <= 0.25 && subBeat == 0) ||
+            (linesPerBeat <= 0.0625 && subBeat == 0.5) ||
+            (linesPerBeat <= 0.015625 && std::fmod (subBeat, 0.25) == 0.0))
+            drawText = true;
+
+        Colour color = (beat == 0.0 && subBeat == 0.0) ? Colours::white : Colours::grey;
         g.setColour (color);
+
         int xPos = xPosForBeat (beatValue);
-        g.fillRect (Rectangle<int> (xPos, 0, 1, getHeight()));
+        if (drawText)
+        {
+            g.drawText (beatText, Rectangle<int> (xPos, 0, getWidth(), beatBarHeight), Justification::Flags::centredLeft, false);
+            g.fillRect (Rectangle<int> (xPos, static_cast<int> (beatBarHeight * 0.75), 1, static_cast<int> (beatBarHeight * 0.25)));
+        }
+        g.fillRect (Rectangle<int> (xPos, beatBarHeight, 1, arrangementHeight));
         beatValue += linesPerBeat;
     }
 
@@ -107,10 +138,11 @@ void ArrangementView::mouseMagnify (const MouseEvent& event, float scaleFactor)
     if (!edit)
         return;
 
+    scaleFactor = 1.0f / scaleFactor; // Invert the scale.
     ArrangementViewModel& model = edit->arrangementViewModel;
     NormalisableRange<double> remapper (model.timeStart, model.timeEnd, 1.0f);
-    // 1.2 factor: this is an arbitrary number to increase responsiveness of magnifying
-    const double magnifyIncrease = 1.05;
+    // Factor: this is an arbitrary number to change the responsiveness of magnifying.
+    const double magnifyIncrease = 1.0;
     double newAmountOfTimeToAdd = remapper.getRange().getLength() * scaleFactor * (scaleFactor >= 1 ? magnifyIncrease : 1.0f / magnifyIncrease) - remapper.getRange().getLength();
     Point<float> relativeMousePosition = event.getEventRelativeTo (this).position / Point<float> (getWidth(), getHeight());
     double newStart = std::max (model.timeStart.get() - (newAmountOfTimeToAdd * relativeMousePosition.x), 0.0);

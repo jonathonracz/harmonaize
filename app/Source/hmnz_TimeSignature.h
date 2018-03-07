@@ -56,22 +56,22 @@ public:
     {
     }
 
-    int getNumeratorAtBeat (double time) const noexcept
+    int getNumeratorAtBeat (double beat) const noexcept
     {
         return numerator.get();
     }
 
-    void setNumeratorAtBeat (int newNumerator, double time) noexcept
+    void setNumeratorAtBeat (int newNumerator, double beat) noexcept
     {
         return numerator.setValue (newNumerator, getUndoManager());
     }
 
-    int getDenominatorAtBeat (double time) const noexcept
+    int getDenominatorAtBeat (double beat) const noexcept
     {
         return denominator.get();
     }
 
-    void setDenominatorAtBeat (int newDenominator, double time) noexcept
+    void setDenominatorAtBeat (int newDenominator, double beat) noexcept
     {
         return denominator.setValue (newDenominator, getUndoManager());
     }
@@ -91,9 +91,9 @@ public:
         return std::fmod (beat, numerator.get());
     }
 
-    double quarterNotesPerBeat() const noexcept
+    double quarterNotesPerBeat (double beat) const noexcept
     {
-        return 4.0 / static_cast<double> (denominator.get());
+        return 4.0 / getDenominatorAtBeat (beat);
     }
 
     double beatForStartOfLastBarOfBeat (double beat) const noexcept
