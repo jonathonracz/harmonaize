@@ -27,6 +27,8 @@ protected:
     virtual void editChanged (Edit* newEdit) noexcept {}
     NormalisableRange<double> getBeatRemapper() const noexcept;
     int getXPosForBeat (double beat) const noexcept;
+    double getBeatForXPos (int xPos) const noexcept;
+    double getLinesPerBeatForMinimumLineSpacing (int minimumLineSpacing) const noexcept;
 
 private:
     WeakReference<Edit> edit;
