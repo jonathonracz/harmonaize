@@ -22,23 +22,8 @@ void ArrangementViewTimeline::paint (Graphics& g) noexcept
 
     ArrangementViewModel& model = getEdit()->arrangementViewModel;
     NormalisableRange<double> remapper = getBeatRemapper();
-    const double minimumLineSpacing = 14.0; // Arbitrary - controls how close lines can get before the grid size increases
-    double linesPerBeat = 1.0;
-
-    {
-        double beatPixelDelta = getWidth() / remapper.getRange().getLength();
-        while (beatPixelDelta >= minimumLineSpacing * 2.0 && linesPerBeat >= 1.0 / Transport::pulsesPerQuarterNote)
-        {
-            beatPixelDelta /= 2.0;
-            linesPerBeat = std::max (linesPerBeat / 2.0, 1.0 / Transport::pulsesPerQuarterNote);
-        }
-
-        while (beatPixelDelta < minimumLineSpacing)
-        {
-            beatPixelDelta *= 2.0;
-            linesPerBeat *= 2.0;
-        }
-    }
+    const int minimumLineSpacing = 14.0; // Arbitrary - controls how close lines can get before the grid size increases
+    double linesPerBeat = getLinesPerBeatForMinimumLineSpacing (minimumLineSpacing);
 
     double beatValue = Utility::floorToNearestInterval (remapper.start, linesPerBeat);
     while (beatValue <= remapper.end)

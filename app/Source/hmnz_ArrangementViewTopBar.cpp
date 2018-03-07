@@ -19,22 +19,7 @@ void ArrangementViewTopBar::paint (Graphics& g) noexcept
     ArrangementViewModel& model = getEdit()->arrangementViewModel;
     NormalisableRange<double> remapper (model.timeStart, model.timeEnd);
     const double minimumLineSpacing = 14.0; // Arbitrary - controls how close lines can get before the grid size increases
-    double linesPerBeat = 1.0;
-
-    {
-        double beatPixelDelta = getWidth() / remapper.getRange().getLength();
-        while (beatPixelDelta >= minimumLineSpacing * 2.0 && linesPerBeat >= 1.0 / Transport::pulsesPerQuarterNote)
-        {
-            beatPixelDelta /= 2.0;
-            linesPerBeat = std::max (linesPerBeat / 2.0, 1.0 / Transport::pulsesPerQuarterNote);
-        }
-
-        while (beatPixelDelta < minimumLineSpacing)
-        {
-            beatPixelDelta *= 2.0;
-            linesPerBeat *= 2.0;
-        }
-    }
+    double linesPerBeat = getLinesPerBeatForMinimumLineSpacing (minimumLineSpacing);
 
     double beatValue = Utility::floorToNearestInterval (remapper.start, linesPerBeat);
     while (beatValue <= remapper.end)
@@ -82,4 +67,21 @@ void ArrangementViewTopBar::paint (Graphics& g) noexcept
         g.fillRect (lastPaintedPlayHeadBounds);
     }
      */
+}
+
+void ArrangementViewTopBar::mouseDown (const MouseEvent& event) noexcept
+{
+    if (!getEdit())
+        return;
+
+    getEdit()->transport.playHeadBeat = getBeatForXPos (static_cast<int> (event.position.x));
+}
+
+void ArrangementViewTopBar::mouseDrag (const MouseEvent& event) noexcept
+{
+    if (!getEdit())
+        return;
+
+    int position = std::max (std::min (getWidth(), static_cast<int> (event.position.x)), 0);
+    getEdit()->transport.playHeadBeat = getBeatForXPos (position);
 }

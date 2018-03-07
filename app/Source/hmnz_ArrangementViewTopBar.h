@@ -19,6 +19,8 @@ public:
 
 private:
     void paint (Graphics&) noexcept override;
+    void mouseDown (const MouseEvent&) noexcept override;
+    void mouseDrag (const MouseEvent&) noexcept override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override {}
     void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
