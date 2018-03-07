@@ -10,26 +10,21 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include "hmnz_ArrangementViewTopBar.h"
+#include "hmnz_ArrangementViewTimeline.h"
 
-class Edit;
-
-class ArrangementView   : public Component,
-                          public ValueTree::Listener
+class ArrangementView   : public ArrangementViewComponent
 {
 public:
-    ArrangementView() {}
-
-    void setEdit (Edit* edit);
+    ArrangementView();
 
 private:
-    WeakReference<Edit> edit;
-    Rectangle<int> lastPaintedPlayHeadBounds;
+    ArrangementViewTopBar topBar;
+    ArrangementViewTimeline timeline;
 
-    int xPosForBeat (double beat) const noexcept;
+    void editChanged (Edit* newEdit) noexcept override;
 
     void resized() noexcept override;
-    void paint (Graphics&) noexcept override;
     void mouseWheelMove (const MouseEvent&, const MouseWheelDetails&) override;
     void mouseMagnify (const MouseEvent&, float) override;
 
