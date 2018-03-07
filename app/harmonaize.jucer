@@ -16,6 +16,18 @@
             file="Source/hmnz_ArrangementView.cpp"/>
       <FILE id="E8saIS" name="hmnz_ArrangementView.h" compile="0" resource="0"
             file="Source/hmnz_ArrangementView.h"/>
+      <FILE id="WYKWjA" name="hmnz_ArrangementViewComponent.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewComponent.cpp"/>
+      <FILE id="Usmz7j" name="hmnz_ArrangementViewComponent.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewComponent.h"/>
+      <FILE id="zcctXj" name="hmnz_ArrangementViewTimeline.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewTimeline.cpp"/>
+      <FILE id="Tn717Q" name="hmnz_ArrangementViewTimeline.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewTimeline.h"/>
+      <FILE id="UZFkgn" name="hmnz_ArrangementViewTopBar.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewTopBar.cpp"/>
+      <FILE id="F8JqNN" name="hmnz_ArrangementViewTopBar.h" compile="0" resource="0"
+            file="Source/hmnz_ArrangementViewTopBar.h"/>
       <FILE id="IlADi2" name="hmnz_EditView.cpp" compile="1" resource="0"
             file="Source/hmnz_EditView.cpp"/>
       <FILE id="uFs8Cd" name="hmnz_EditView.h" compile="0" resource="0" file="Source/hmnz_EditView.h"/>
