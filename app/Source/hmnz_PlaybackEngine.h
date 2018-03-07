@@ -83,7 +83,8 @@ private:
     MidiMessageCollector midiMessageCollector;
     MidiBuffer midiStopBuffer;
 
-    // AudioSource overrides
+    CurrentPositionInfo updatePositionInfo() noexcept;
+
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) noexcept override;
     void releaseResources() noexcept override;
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) noexcept override;

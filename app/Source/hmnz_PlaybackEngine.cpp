@@ -54,6 +54,7 @@ void PlaybackEngine::setEdit (Edit* _edit) noexcept
         edit->setPlaybackLock (&callbackLock);
         edit->trackList.tracks.addListener (this);
         edit->getState().addListener (this);
+        updatePositionInfo();
     }
 }
 
@@ -98,6 +99,37 @@ void PlaybackEngine::setPositionBeat (double beat) noexcept
     setPositionSecond (edit->masterTrack.tempo.time (beat));
 }
 
+PlaybackEngine::CurrentPositionInfo PlaybackEngine::updatePositionInfo() noexcept
+{
+    CurrentPositionInfo newPositionInfo;
+    int64 currentReadPosition = readPosition.load (std::memory_order_acquire);
+    double currentTimePosition = currentReadPosition / activeSampleRate;
+    Tempo::Snapshot tempo = edit->masterTrack.tempo.snapshotAtTime (currentTimePosition);
+    TimeSignature::Snapshot timeSignature = edit->masterTrack.timeSignature.getTimeSignatureAtBeat (tempo.beat);
+    KeySignature::Snapshot keySignature = edit->masterTrack.keySignature.getKeySignatureAtTime (tempo.beat);
+
+    newPositionInfo.bpm = tempo.bpm;
+    newPositionInfo.timeSigNumerator = timeSignature.numerator;
+    newPositionInfo.timeSigDenominator = timeSignature.denominator;
+    newPositionInfo.timeInSamples = currentReadPosition;
+    newPositionInfo.timeInSeconds = currentTimePosition;
+    newPositionInfo.editOriginTime = 0.0;
+    newPositionInfo.ppqPosition = tempo.beat * Transport::pulsesPerQuarterNote * timeSignature.quarterNotesPerBeat();
+    newPositionInfo.ppqPositionOfLastBarStart = timeSignature.barInTermsOfBeat (tempo.beat);
+    newPositionInfo.frameRate = AudioPlayHead::FrameRateType::fpsUnknown;
+    newPositionInfo.isPlaying = static_cast<int> (edit->transport.playState.get()) == static_cast<int> (Transport::State::playing);
+    newPositionInfo.isRecording = edit->transport.recordEnabled.get();
+    newPositionInfo.ppqLoopStart = 0.0;
+    newPositionInfo.ppqLoopEnd = std::numeric_limits<double>::max();
+    newPositionInfo.isLooping = false;
+    newPositionInfo.timeInBeats = tempo.beat;
+    newPositionInfo.keySigNumSharpsOrFlats = keySignature.numSharpsOrFlats;
+    newPositionInfo.keySigIsMinor = keySignature.isMinor;
+
+    currentPositionInfo.store (newPositionInfo, std::memory_order_release);
+    return newPositionInfo;
+}
+
 template<class Type>
 static void setTransportPropertyValue (PlaybackEngine* engine, const CachedValue<Type>& property, Type value) noexcept
 {
@@ -130,30 +162,7 @@ void PlaybackEngine::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFi
     if (!edit)
         return;
 
-    int64 currentReadPosition = readPosition.load (std::memory_order_acquire);
-    double currentTimePosition = currentReadPosition / activeSampleRate;
-    Tempo::Snapshot tempo = edit->masterTrack.tempo.snapshotAtTime (currentTimePosition);
-    TimeSignature::Snapshot timeSignature = edit->masterTrack.timeSignature.getTimeSignatureAtTime (tempo.beat);
-    KeySignature::Snapshot keySignature = edit->masterTrack.keySignature.getKeySignatureAtTime (tempo.beat);
-
-    CurrentPositionInfo newPositionInfo;
-    newPositionInfo.bpm = tempo.bpm;
-    newPositionInfo.timeSigNumerator = timeSignature.numerator;
-    newPositionInfo.timeSigDenominator = timeSignature.denominator;
-    newPositionInfo.timeInSamples = currentReadPosition;
-    newPositionInfo.timeInSeconds = currentTimePosition;
-    newPositionInfo.editOriginTime = 0.0;
-    newPositionInfo.ppqPosition = tempo.beat * Transport::pulsesPerQuarterNote * timeSignature.quarterNotesPerBeat();
-    newPositionInfo.ppqPositionOfLastBarStart = timeSignature.barInTermsOfBeat (tempo.beat);
-    newPositionInfo.frameRate = AudioPlayHead::FrameRateType::fpsUnknown;
-    newPositionInfo.isPlaying = static_cast<int> (edit->transport.playState.get()) == static_cast<int> (Transport::State::playing);
-    newPositionInfo.isRecording = edit->transport.recordEnabled.get();
-    newPositionInfo.ppqLoopStart = 0.0;
-    newPositionInfo.ppqLoopEnd = std::numeric_limits<double>::max();
-    newPositionInfo.isLooping = false;
-    newPositionInfo.timeInBeats = tempo.beat;
-    newPositionInfo.keySigNumSharpsOrFlats = keySignature.numSharpsOrFlats;
-    newPositionInfo.keySigIsMinor = keySignature.isMinor;
+    CurrentPositionInfo newPositionInfo = updatePositionInfo();
 
     MidiBuffer incomingMidi;
     midiMessageCollector.removeNextBlockOfMessages (incomingMidi, bufferToFill.numSamples);
@@ -170,7 +179,6 @@ void PlaybackEngine::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFi
     if (newPositionInfo.isPlaying)
         readPosition.fetch_add (bufferToFill.numSamples, std::memory_order_acq_rel);
 
-    currentPositionInfo.store (newPositionInfo, std::memory_order_release);
     triggerAsyncUpdate();
 }
 
@@ -230,11 +238,11 @@ void PlaybackEngine::valueTreePropertyChanged (ValueTree& tree, const Identifier
         }
         else if (identifier == transport.playHeadTimeSigNumerator.getPropertyID())
         {
-            edit->masterTrack.timeSignature.setNumeratorAtTime (transport.playHeadTimeSigNumerator, transport.playHeadTime);
+            edit->masterTrack.timeSignature.setNumeratorAtBeat (transport.playHeadTimeSigNumerator, transport.playHeadTime);
         }
         else if (identifier == transport.playHeadTimeSigDenominator.getPropertyID())
         {
-            edit->masterTrack.timeSignature.setDenominatorAtTime (transport.playHeadTimeSigDenominator, transport.playHeadTime);
+            edit->masterTrack.timeSignature.setDenominatorAtBeat (transport.playHeadTimeSigDenominator, transport.playHeadTime);
         }
         else if (identifier == transport.playHeadTempo.getPropertyID())
         {

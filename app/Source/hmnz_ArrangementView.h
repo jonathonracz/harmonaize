@@ -24,9 +24,14 @@ public:
 
 private:
     WeakReference<Edit> edit;
+    Rectangle<int> lastPaintedPlayHeadBounds;
+
+    int xPosForBeat (double beat) const noexcept;
 
     void resized() noexcept override;
     void paint (Graphics&) noexcept override;
+    void mouseWheelMove (const MouseEvent&, const MouseWheelDetails&) override;
+    void mouseMagnify (const MouseEvent&, float) override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) noexcept override;
     void valueTreeChildAdded (ValueTree&, ValueTree&) override {}

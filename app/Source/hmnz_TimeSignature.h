@@ -23,9 +23,9 @@ public:
             return (beat - startBeat) / numerator;
         }
 
-        int barForBeat (double beat) const noexcept
+        double barForBeat (double beat) const noexcept
         {
-            return static_cast<int> (barInTermsOfBeat (beat));
+            return std::floor (barInTermsOfBeat (beat));
         }
 
         double beatInBar (double beat) const noexcept
@@ -43,10 +43,10 @@ public:
             return beat - startBeat - std::fmod (beat, numerator);
         }
 
-        int numerator;
-        int denominator;
-        double startBeat;
-        double snapshotTime;
+        const int numerator;
+        const int denominator;
+        const double startBeat;
+        const double snapshotTime;
     };
 
     TimeSignature (const ValueTree& v, UndoManager* um)
@@ -56,34 +56,60 @@ public:
     {
     }
 
-    int getNumeratorAtTime (double time) const noexcept
+    int getNumeratorAtBeat (double time) const noexcept
     {
         return numerator.get();
     }
 
-    void setNumeratorAtTime (int newNumerator, double time) noexcept
+    void setNumeratorAtBeat (int newNumerator, double time) noexcept
     {
         return numerator.setValue (newNumerator, getUndoManager());
     }
 
-    int getDenominatorAtTime (double time) const noexcept
+    int getDenominatorAtBeat (double time) const noexcept
     {
         return denominator.get();
     }
 
-    void setDenominatorAtTime (int newDenominator, double time) noexcept
+    void setDenominatorAtBeat (int newDenominator, double time) noexcept
     {
         return denominator.setValue (newDenominator, getUndoManager());
     }
 
-    Snapshot getTimeSignatureAtTime (double time) const noexcept
+    double barInTermsOfBeat (double beat) const noexcept
     {
-        Snapshot ret;
-        ret.numerator = numerator.get().getRelaxed();
-        ret.denominator = denominator.get().getRelaxed();
-        ret.startBeat = 0.0;
+        return beat / numerator.get();
+    }
+
+    double barForBeat (double beat) const noexcept
+    {
+        return std::floor (barInTermsOfBeat (beat));
+    }
+
+    double beatInBar (double beat) const noexcept
+    {
+        return std::fmod (beat, numerator.get());
+    }
+
+    double quarterNotesPerBeat() const noexcept
+    {
+        return 4.0 / static_cast<double> (denominator.get());
+    }
+
+    double beatForStartOfLastBarOfBeat (double beat) const noexcept
+    {
+        return beat - std::fmod (beat, numerator.get());
+    }
+
+    Snapshot getTimeSignatureAtBeat (double beat) const noexcept
+    {
+        Snapshot ret {
+            numerator.get().getRelaxed(),
+            denominator.get().getRelaxed(),
+            0.0,
+            beat
+        };
         std::atomic_thread_fence (std::memory_order_acquire);
-        ret.snapshotTime = time;
         return ret;
     }
 
