@@ -22,7 +22,7 @@ private:
     ArrangementViewTopBar topBar;
     ArrangementViewTimeline timeline;
 
-    void editChanged (Edit* newEdit) noexcept override;
+    void editChanged () noexcept override;
 
     void resized() noexcept override;
     void mouseWheelMove (const MouseEvent&, const MouseWheelDetails&) override;

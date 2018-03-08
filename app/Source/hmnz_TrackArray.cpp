@@ -12,7 +12,7 @@
 #include "hmnz_Edit.h"
 
 TrackArray::TrackArray (const ValueTree& v, UndoManager* um, Edit* _edit)
-    : ValueTreeObjectArray (v, um), edit (_edit)
+    : HomogeneousValueTreeObjectArray (v, um), edit (_edit)
 {
     addObjects();
 }

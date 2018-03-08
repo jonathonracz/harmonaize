@@ -26,7 +26,7 @@ void ArrangementViewComponent::setEdit (Edit* _edit) noexcept
     if (edit)
         edit->getState().addListener (this);
 
-    editChanged (edit);
+    editChanged();
 }
 
 NormalisableRange<double> ArrangementViewComponent::getBeatRemapper() const noexcept

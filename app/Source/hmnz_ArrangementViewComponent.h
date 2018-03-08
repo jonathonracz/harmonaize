@@ -24,7 +24,7 @@ public:
     void setEdit (Edit* edit) noexcept;
 
 protected:
-    virtual void editChanged (Edit* newEdit) noexcept {}
+    virtual void editChanged () noexcept {}
     NormalisableRange<double> getBeatRemapper() const noexcept;
     int getXPosForBeat (double beat) const noexcept;
     double getBeatForXPos (int xPos) const noexcept;

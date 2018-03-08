@@ -18,10 +18,10 @@ ArrangementView::ArrangementView()
     addAndMakeVisible (timeline);
 }
 
-void ArrangementView::editChanged (Edit* newEdit) noexcept
+void ArrangementView::editChanged () noexcept
 {
-    topBar.setEdit (newEdit);
-    timeline.setEdit (newEdit);
+    topBar.setEdit (getEdit());
+    timeline.setEdit (getEdit());
 }
 
 void ArrangementView::resized() noexcept

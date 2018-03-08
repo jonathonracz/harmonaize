@@ -28,6 +28,14 @@
             resource="0" file="Source/hmnz_ArrangementViewTopBar.cpp"/>
       <FILE id="F8JqNN" name="hmnz_ArrangementViewTopBar.h" compile="0" resource="0"
             file="Source/hmnz_ArrangementViewTopBar.h"/>
+      <FILE id="lwuglm" name="hmnz_ArrangementViewTrackHeader.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewTrackHeader.cpp"/>
+      <FILE id="peIslz" name="hmnz_ArrangementViewTrackHeader.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewTrackHeader.h"/>
+      <FILE id="OnX6G4" name="hmnz_ArrangementViewTrackList.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewTrackList.cpp"/>
+      <FILE id="pUDjAR" name="hmnz_ArrangementViewTrackList.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewTrackList.h"/>
       <FILE id="IlADi2" name="hmnz_EditView.cpp" compile="1" resource="0"
             file="Source/hmnz_EditView.cpp"/>
       <FILE id="uFs8Cd" name="hmnz_EditView.h" compile="0" resource="0" file="Source/hmnz_EditView.h"/>
@@ -85,8 +93,10 @@
               file="Source/hmnz_ArrayIterator.h"/>
         <FILE id="j8omJZ" name="hmnz_CacheValueWrappers.h" compile="0" resource="0"
               file="Source/hmnz_CacheValueWrappers.h"/>
-        <FILE id="fwuAvT" name="hmnz_GenericValueTreeObjectArray.h" compile="0"
-              resource="0" file="Source/hmnz_GenericValueTreeObjectArray.h"/>
+        <FILE id="uyynVd" name="hmnz_HomogeneousValueTreeObjectArray.h" compile="0"
+              resource="0" file="Source/hmnz_HomogeneousValueTreeObjectArray.h"/>
+        <FILE id="Xt4wld" name="hmnz_NonHomogeneousValueTreeObjectArray.h"
+              compile="0" resource="0" file="Source/hmnz_NonHomogeneousValueTreeObjectArray.h"/>
         <FILE id="cZvLFc" name="hmnz_UnitTests.cpp" compile="1" resource="0"
               file="Source/hmnz_UnitTests.cpp"/>
         <FILE id="xkySKO" name="hmnz_Utility.h" compile="0" resource="0" file="Source/hmnz_Utility.h"/>

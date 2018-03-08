@@ -259,7 +259,7 @@ void PlaybackEngine::valueTreePropertyChanged (ValueTree& tree, const Identifier
     }
 }
 
-void PlaybackEngine::objectAdded (Track* track, ValueTreeObjectArray<Track, CriticalSection>* array) noexcept
+void PlaybackEngine::objectAdded (Track* track, int, HomogeneousValueTreeObjectArray<Track, CriticalSection>*) noexcept
 {
     const std::lock_guard<std::mutex> lock (getCallbackLock());
     track->prepareToPlay (getActiveSamplesPerBlockExpected(), getActiveSampleRate());

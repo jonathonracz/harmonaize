@@ -10,37 +10,25 @@
 
 #pragma once
 
-#include "JuceHeader.h"
-#include "hmnz_ArrayIterator.h"
+#include "hmnz_ValueTreeObjectArray.h"
 
 /**
     Generic homogeneous list of ValueTreeObject-backed objects. Originally based
     on code by David Rowland (drowaudio).
 */
 template<typename ObjectType, typename CriticalSectionType = DummyCriticalSection>
-class HomogeneousValueTreeObjectArray   : public ValueTree::Listener
+class HomogeneousValueTreeObjectArray   : public ValueTreeObjectArray<ObjectType, CriticalSectionType>
 {
 public:
     struct Listener
     {
         virtual ~Listener() = default;
-        virtual void objectAdded (ObjectType*, int) {}
-        virtual void objectRemoved (ObjectType*, int) {}
-        virtual void objectOrderChanged (ObjectType*, int, int) {}
+        virtual void objectAdded (ObjectType*, int, HomogeneousValueTreeObjectArray<ObjectType, CriticalSectionType>*) {}
+        virtual void objectRemoved (ObjectType*, int, HomogeneousValueTreeObjectArray<ObjectType, CriticalSectionType>*) {}
+        virtual void objectOrderChanged (ObjectType*, int, int, HomogeneousValueTreeObjectArray<ObjectType, CriticalSectionType>*) {}
     };
 
-    HomogeneousValueTreeObjectArray (const ValueTree& parentTree, UndoManager* um)
-        : parent (parentTree), undoManager (um)
-    {
-        parent.addListener (this);
-    }
-
-    virtual ~HomogeneousValueTreeObjectArray()
-    {
-        parent.removeListener (this);
-        deleteAllObjects();
-        jassert (objects.size() == 0); // must call freeObjects() in the subclass destructor!
-    }
+    using ValueTreeObjectArray<ObjectType, CriticalSectionType>::ValueTreeObjectArray;
 
     void addListener (Listener* listener) noexcept
     {
@@ -52,136 +40,27 @@ public:
         listeners.remove (listener);
     }
 
-    ValueTree& getParent() const
-    {
-        return parent;
-    }
-
-    UndoManager* getUndoManager() const
-    {
-        return undoManager;
-    }
-
-    bool isChildTree (const ValueTree& v) const
-    {
-        return v.getParent() == parent;
-    }
-
-    int indexOf (ObjectType* obj) const noexcept
-    {
-        const ScopedLockType sl (arrayLock);
-        return objects.indexOf (obj);
-    }
-
-    int indexOf (const ValueTree& state) const noexcept
-    {
-        return parent.indexOf (state);
-    }
-
-    ObjectType* objectWithState (const ValueTree& state) const noexcept
-    {
-        const ScopedLockType sl (arrayLock);
-        for (ObjectType* object : objects)
-        {
-            if (object->getState() == state)
-                return object;
-        }
-
-        return nullptr;
-    }
-
-    void addState (const ValueTree& v) noexcept
-    {
-        insertState (v, -1);
-    }
-
-    void insertState (const ValueTree& v, int index) noexcept
-    {
-        parent.addChild (v, index, undoManager);
-    }
-
-    void removeObject (ObjectType* object) noexcept
-    {
-        parent.removeChild (object->getState(), undoManager);
-    }
-
-    int size() const noexcept
-    {
-        const ScopedLockType sl (arrayLock);
-        return objects.size();
-    }
-
-    ObjectType* operator[] (int index) const noexcept
-    {
-        const ScopedLockType sl (arrayLock);
-        return objects[index];
-    }
-
-    ObjectType* getFirst() const noexcept
-    {
-        const ScopedLockType sl (arrayLock);
-        return objects.getFirst();
-    }
-
-    ObjectType* getLast() const noexcept
-    {
-        const ScopedLockType sl (arrayLock);
-        return objects.getLast();
-    }
-
-    jdr::ArrayForwardIteratorConst<ObjectType*> begin() const noexcept
-    {
-        return jdr::ArrayForwardIteratorConst<ObjectType*>::begin (objects);
-    }
-
-    jdr::ArrayForwardIteratorConst<ObjectType*> end() const noexcept
-    {
-        return jdr::ArrayForwardIteratorConst<ObjectType*>::end (objects);
-    }
-
     using ScopedLockType = typename CriticalSectionType::ScopedLockType;
 
-protected:
-    // call in the sub-class when being created
-    void rebuildObjects() noexcept
-    {
-        deleteAllObjects();
-        jassert (objects.size() == 0);
-        for (const auto& v : parent)
-        {
-            jassert (isSuitableType (v));
-            if (ObjectType* newObject = createNewObject (v))
-                objects.add (newObject);
-        }
-    }
-
-    virtual bool isSuitableType (const ValueTree&) const = 0;
-    virtual ObjectType* createNewObject (const ValueTree&) = 0;
-    virtual void deleteObject (ObjectType* object) { delete object; }
-
 private:
-    Array<ObjectType*> objects;
-    ValueTree parent;
-    UndoManager* undoManager;
-    CriticalSectionType arrayLock;
     ListenerList<Listener> listeners;
 
     void valueTreeChildAdded (ValueTree&, ValueTree& tree) override
     {
-        if (isChildTree (tree))
+        if (this->isChildTree (tree))
         {
-            const int index = parent.indexOf (tree);
+            const int index = this->parent.indexOf (tree);
             (void) index;
             jassert (index >= 0);
 
-            if (ObjectType* newObject = createNewObject (tree))
+            if (ObjectType* newObject = this->createNewObject (tree, this->undoManager))
             {
                 {
-                    const ScopedLockType sl (arrayLock);
-                    objects.insert (index, newObject);
+                    const ScopedLockType sl (this->arrayLock);
+                    this->objects.insert (index, newObject);
                 }
 
-                listeners.call (&Listener::objectAdded, newObject, index);
+                listeners.call (&Listener::objectAdded, newObject, index, this);
             }
             else
                 jassertfalse;
@@ -190,49 +69,54 @@ private:
 
     void valueTreeChildRemoved (ValueTree& exParent, ValueTree& tree, int indexRemovedFrom) override
     {
-        if (parent == exParent)
+        if (this->parent == exParent)
         {
-            jassert (isSuitableType (tree));
+            jassert (this->isSuitableType (tree));
             ObjectType* o;
 
             {
-                const ScopedLockType sl (arrayLock);
-                o = objects.removeAndReturn (indexRemovedFrom);
+                const ScopedLockType sl (this->arrayLock);
+                o = this->objects.removeAndReturn (indexRemovedFrom);
             }
 
-            listeners.call (&Listener::objectRemoved, o, indexRemovedFrom);
-            deleteObject (o);
+            listeners.call (&Listener::objectRemoved, o, indexRemovedFrom, this);
+            this->deleteObject (o);
         }
     }
 
     void valueTreeChildOrderChanged (ValueTree& tree, int oldIndex, int newIndex) override
     {
-        if (tree == parent)
+        if (tree == this->parent)
         {
             {
-                const ScopedLockType sl (arrayLock);
-                objects.move (oldIndex, newIndex);
+                const ScopedLockType sl (this->arrayLock);
+                this->objects.move (oldIndex, newIndex);
             }
 
-            listeners.call (&Listener::objectOrderChanged, objects[newIndex], oldIndex, newIndex);
+            listeners.call (&Listener::objectOrderChanged, this->objects[newIndex], oldIndex, newIndex, this);
         }
     }
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override {}
     void valueTreeParentChanged (ValueTree&) override {}
-    void valueTreeRedirected (ValueTree&) override { rebuildObjects(); } // may need to add handling if this is hit
-
-    void deleteAllObjects() noexcept
-    {
-        const ScopedLockType sl (arrayLock);
-        while (objects.size() > 0)
-            deleteObject (objects.removeAndReturn (objects.size() - 1));
-    }
-
-    bool isChildTree (ValueTree& v) const noexcept
-    {
-        return isSuitableType (v) && v.getParent() == parent;
-    }
+    void valueTreeRedirected (ValueTree&) override { jassertfalse; } // may need to add handling if this is hit
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HomogeneousValueTreeObjectArray)
+};
+
+template<class ObjectType, class CriticalSectionType = DummyCriticalSection>
+class GenericHomogeneousValueTreeObjectArray    : public HomogeneousValueTreeObjectArray<ObjectType, CriticalSectionType>
+{
+public:
+    GenericHomogeneousValueTreeObjectArray (const ValueTree& parentTree, UndoManager* um)
+        : HomogeneousValueTreeObjectArray<ObjectType, CriticalSectionType> (parentTree, um)
+    {
+        this->addObjects();
+    }
+
+private:
+    ObjectType* createNewObject (const ValueTree& v, UndoManager* um) override
+    {
+        return new ObjectType (v, um);
+    }
 };

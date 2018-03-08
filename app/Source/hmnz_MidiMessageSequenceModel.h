@@ -11,8 +11,8 @@
 #pragma once
 
 #include "hmnz_MidiMessageModel.h"
-#include "hmnz_GenericValueTreeObjectArray.h"
 #include "hmnz_ArrayIterator.h"
+#include "hmnz_HomogeneousValueTreeObjectArray.h"
 
 class MidiMessageSequenceModel  : public ValueTreeObject<IDs::MidiMessageSequenceModel>
 {
@@ -148,7 +148,7 @@ public:
             addEvent (message);
     }
 
-    GenericValueTreeObjectArray<MidiMessageModel> midiMessages;
+    GenericHomogeneousValueTreeObjectArray<MidiMessageModel> midiMessages;
 
 private:
     struct MessageSortComparator

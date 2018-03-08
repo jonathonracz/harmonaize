@@ -39,6 +39,7 @@ public:
     CachedValue<String> name;
     CachedValue<Colour> color;
     CachedValue<Identifier> type;
+    CachedValue<MinMaxConstrainerWrapper<int, 8, 64>> height;
     CachedValue<SPSCAtomicWrapper<bool>> recordArmed;
 
     Edit* const edit;
