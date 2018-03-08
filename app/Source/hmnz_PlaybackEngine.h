@@ -11,7 +11,7 @@
 #pragma once
 
 #include "JuceHeader.h"
-#include "hmnz_GenericValueTreeObjectArray.h"
+#include "hmnz_HomogeneousValueTreeObjectArray.h"
 
 class Edit;
 class Track;
@@ -21,7 +21,7 @@ class PlaybackEngine    : public AudioSource,
                           public ChangeListener,
                           public AsyncUpdater,
                           public ValueTree::Listener,
-                          public ValueTreeObjectArray<Track, CriticalSection>::Listener
+                          public GenericHomogeneousValueTreeObjectArray<Track, CriticalSection>::Listener
 {
 public:
     struct PlaybackTarget
@@ -99,5 +99,5 @@ private:
     void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
     void valueTreeParentChanged (ValueTree&) override {}
 
-    void objectAdded (Track* track, ValueTreeObjectArray<Track, CriticalSection>* array) noexcept override;
+    void objectAdded (Track* track, int, HomogeneousValueTreeObjectArray<Track, CriticalSection>*) noexcept override;
 };

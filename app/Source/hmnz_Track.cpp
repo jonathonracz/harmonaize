@@ -16,6 +16,7 @@ Track::Track (const ValueTree& v, UndoManager* um, Edit* const _edit)
       name (getState(), IDs::TrackProps::Name, getUndoManager(), "New Track"),
       color (getState(), IDs::TrackProps::Color, getUndoManager(), Utility::randomColor()),
       type (getState(), IDs::TrackProps::Type, getUndoManager(), IDs::TrackProps::Types::Midi),
+      height (getState(), IDs::TrackProps::Height, nullptr, 16),
       recordArmed (getState(), IDs::TrackProps::RecordArmed, nullptr, false),
       edit (_edit),
       clipList (getState().getOrCreateChildWithName (IDs::ClipList, nullptr), getUndoManager())

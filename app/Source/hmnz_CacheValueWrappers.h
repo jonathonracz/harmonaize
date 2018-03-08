@@ -19,8 +19,6 @@
 template<typename Type>
 struct SPSCAtomicWrapper
 {
-    SPSCAtomicWrapper() = default;
-
     template<typename OtherType>
     SPSCAtomicWrapper (const OtherType& other)
     {
@@ -88,11 +86,18 @@ struct DefaultConstrainer
     }
 };
 
+template<typename Type, Type min, Type max>
+struct MinMaxConstrainer
+{
+    static Type constrain (const Type& value)
+    {
+        return std::min (std::max (min, value), max);
+    }
+};
+
 template<typename Type, class Constrainer = DefaultConstrainer<Type>>
 struct ConstrainerWrapper
 {
-    ConstrainerWrapper() = default;
-
     template<typename OtherType>
     ConstrainerWrapper (const OtherType& other)
     {
@@ -127,3 +132,6 @@ struct ConstrainerWrapper
 
     Type value = Type();
 };
+
+template<typename Type, Type min, Type max>
+using MinMaxConstrainerWrapper = ConstrainerWrapper<Type, MinMaxConstrainer<Type, min, max>>;

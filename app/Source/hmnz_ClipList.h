@@ -11,7 +11,7 @@
 #pragma once
 
 #include "hmnz_ValueTreeObject.h"
-#include "hmnz_GenericValueTreeObjectArray.h"
+#include "hmnz_HomogeneousValueTreeObjectArray.h"
 #include "hmnz_Clip.h"
 
 class ClipList  : public ValueTreeObject<IDs::ClipList>
@@ -42,7 +42,7 @@ public:
         return nullptr;
     }
 
-    GenericValueTreeObjectArray<Clip> clips;
+    GenericHomogeneousValueTreeObjectArray<Clip> clips;
 
 private:
     void valueTreePropertyChanged (ValueTree& treeChanged, const Identifier& property) override

@@ -11,9 +11,9 @@
 #pragma once
 
 #include "hmnz_Track.h"
-#include "hmnz_ValueTreeObjectArray.h"
+#include "hmnz_HomogeneousValueTreeObjectArray.h"
 
-class TrackArray    : public ValueTreeObjectArray<Track, CriticalSection>
+class TrackArray    : public HomogeneousValueTreeObjectArray<Track, CriticalSection>
 {
 public:
     TrackArray (const ValueTree& v, UndoManager* um, Edit* edit);
