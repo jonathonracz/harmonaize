@@ -50,13 +50,12 @@ def getMidiInfo(FileAttributes, messages):
 	note_counts = {}
 
 	tempo = FileAttributes['tempo']
-	time_sig_numerator = FileAttributes['time_signature'][0]
 	current_beat = 0
 
 	for message in messages:
 		if message.type == 'note_on':
 
-			beat_value = round((message.time * tempo / 1000 / 60) * time_sig_numerator) / time_sig_numerator
+			beat_value = round((message.time * tempo / 1000 / 60) * 12) / 12
 			current_beat += beat_value
 			note = MODDED_NOTES[message.note % 12]
 			if current_beat not in beat_map:
