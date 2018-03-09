@@ -24,11 +24,17 @@ public:
     void setEdit (Edit* edit) noexcept;
 
 protected:
-    virtual void editChanged () noexcept {}
+    virtual void editChanged (Edit* oldEdit) noexcept {}
     NormalisableRange<double> getBeatRemapper() const noexcept;
     int getXPosForBeat (double beat) const noexcept;
     double getBeatForXPos (int xPos) const noexcept;
     double getLinesPerBeatForMinimumLineSpacing (int minimumLineSpacing) const noexcept;
+
+    void valueTreePropertyChanged (ValueTree&, const Identifier&) override {}
+    void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
+    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
+    void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
+    void valueTreeParentChanged (ValueTree&) override {}
 
 private:
     WeakReference<Edit> edit;

@@ -16,7 +16,7 @@ ArrangementViewTrackHeader::ArrangementViewTrackHeader (Track* _track)
 {
 }
 
-void ArrangementViewTrackHeader::editChanged () noexcept
+void ArrangementViewTrackHeader::paint (Graphics& g) noexcept
 {
-    jassertfalse; // This object should have been cleaned up beforehand!
+    g.fillAll (track->color);
 }

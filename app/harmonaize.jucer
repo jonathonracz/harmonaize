@@ -32,10 +32,18 @@
             resource="0" file="Source/hmnz_ArrangementViewTrackHeader.cpp"/>
       <FILE id="peIslz" name="hmnz_ArrangementViewTrackHeader.h" compile="0"
             resource="0" file="Source/hmnz_ArrangementViewTrackHeader.h"/>
-      <FILE id="OnX6G4" name="hmnz_ArrangementViewTrackList.cpp" compile="1"
-            resource="0" file="Source/hmnz_ArrangementViewTrackList.cpp"/>
-      <FILE id="pUDjAR" name="hmnz_ArrangementViewTrackList.h" compile="0"
-            resource="0" file="Source/hmnz_ArrangementViewTrackList.h"/>
+      <FILE id="OnX6G4" name="hmnz_ArrangementViewTrackHeaderList.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewTrackHeaderList.cpp"/>
+      <FILE id="pUDjAR" name="hmnz_ArrangementViewTrackHeaderList.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewTrackHeaderList.h"/>
+      <FILE id="OaE9nD" name="hmnz_ArrangementViewTrackLane.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewTrackLane.cpp"/>
+      <FILE id="XrZiPI" name="hmnz_ArrangementViewTrackLane.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewTrackLane.h"/>
+      <FILE id="KS1BQB" name="hmnz_ArrangementViewTrackLaneList.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewTrackLaneList.cpp"/>
+      <FILE id="QlKwMC" name="hmnz_ArrangementViewTrackLaneList.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewTrackLaneList.h"/>
       <FILE id="IlADi2" name="hmnz_EditView.cpp" compile="1" resource="0"
             file="Source/hmnz_EditView.cpp"/>
       <FILE id="uFs8Cd" name="hmnz_EditView.h" compile="0" resource="0" file="Source/hmnz_EditView.h"/>
