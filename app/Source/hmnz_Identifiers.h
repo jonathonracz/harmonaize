@@ -46,6 +46,8 @@ namespace IDs
     {
         DECLARE_ID (TimeStart)
         DECLARE_ID (TimeEnd)
+        DECLARE_ID (HeaderWidth)
+        DECLARE_ID (ScrollPosition)
     }
 
     DECLARE_ID (MasterTrack)

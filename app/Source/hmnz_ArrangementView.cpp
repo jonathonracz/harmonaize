@@ -16,19 +16,41 @@ ArrangementView::ArrangementView()
 {
     addAndMakeVisible (topBar);
     addAndMakeVisible (timeline);
+    addAndMakeVisible (headerList);
 }
 
-void ArrangementView::editChanged () noexcept
+void ArrangementView::editChanged (Edit* oldEdit) noexcept
 {
     topBar.setEdit (getEdit());
     timeline.setEdit (getEdit());
+    headerList.setEdit (getEdit());
 }
 
 void ArrangementView::resized() noexcept
 {
     const int topBarHeight = 28;
-    topBar.setBounds (0, 0, getWidth(), topBarHeight);
-    timeline.setBounds (0, topBarHeight, getWidth(), getHeight() - topBarHeight);
+    if (!getEdit())
+        return;
+
+    ArrangementViewModel& model = getEdit()->arrangementViewModel;
+
+    FlexBox layout;
+    layout.flexDirection = FlexBox::Direction::row;
+
+    FlexBox timelineGroup;
+    timelineGroup.flexDirection = FlexBox::Direction::column;
+    timelineGroup.items.add (FlexItem (topBar).withHeight (topBarHeight));
+    timelineGroup.items.add (FlexItem (timeline).withFlex (1.0f));
+
+    FlexBox header;
+    header.flexDirection = FlexBox::Direction::column;
+    header.items.add (FlexItem().withHeight (topBarHeight));
+    header.items.add (FlexItem (headerList).withFlex (1.0f));
+
+    layout.items.add (FlexItem (timelineGroup).withFlex (1.0f));
+    layout.items.add (FlexItem (header).withWidth (model.headerWidth.get()));
+
+    layout.performLayout (getLocalBounds());
 }
 
 void ArrangementView::mouseWheelMove (const MouseEvent& event, const MouseWheelDetails& wheel)
@@ -50,6 +72,12 @@ void ArrangementView::mouseWheelMove (const MouseEvent& event, const MouseWheelD
         model.timeStart = model.timeStart.get() + timeToMove;
         model.timeEnd = model.timeEnd.get() + timeToMove;
     }
+
+    // Magic number is an arbitrary factor to increase scrolling speed
+    float verticalScrollDelta = 20.0f * (wheel.isReversed ? -wheel.deltaY : wheel.deltaY);
+    verticalScrollAccumulator += verticalScrollDelta;
+    verticalScrollAccumulator = std::max (0.0, verticalScrollAccumulator);
+    model.scrollPosition = static_cast<int> (verticalScrollAccumulator);
 }
 
 void ArrangementView::mouseMagnify (const MouseEvent& event, float scaleFactor)
