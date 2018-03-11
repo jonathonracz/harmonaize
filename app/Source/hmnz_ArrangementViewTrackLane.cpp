@@ -11,11 +11,31 @@
 #include "hmnz_ArrangementViewTrackLane.h"
 #include "hmnz_ArrangementViewTrackLaneClip.h"
 #include "hmnz_Track.h"
+#include "hmnz_ArrangementViewModel.h"
+#include "hmnz_Edit.h"
 
 ArrangementViewTrackLane::ArrangementViewTrackLane (Track* _track)
     : track (_track)
 {
+    jassert (track);
     track->clipList.clips.addListener (this);
+    track->getState().addListener (this);
+
+    for (int i = 0; i < track->clipList.clips.size(); ++i)
+        objectAdded (track->clipList.clips[i], i, &(track->clipList.clips));
+}
+
+ArrangementViewTrackLane::~ArrangementViewTrackLane()
+{
+    if (getEdit())
+        getEdit()->arrangementViewModel.getState().removeListener (this);
+
+    track->getState().removeListener (this);
+}
+
+void ArrangementViewTrackLane::editChanged (Edit* oldEdit) noexcept
+{
+    getEdit()->arrangementViewModel.getState().addListener (this);
 }
 
 ArrangementViewTrackLaneClip* ArrangementViewTrackLane::getChildForClip (Clip* clip) noexcept
@@ -34,7 +54,6 @@ ArrangementViewTrackLaneClip* ArrangementViewTrackLane::getChildForClip (Clip* c
 
 void ArrangementViewTrackLane::paint (Graphics& g) noexcept
 {
-    Array<Clip*> clipsToDraw = track->clipList.getClipsForInterval (getBeatForXPos (0), getBeatForXPos (getWidth()));
     g.fillAll (track->color);
 }
 
@@ -48,4 +67,18 @@ void ArrangementViewTrackLane::objectRemoved (Clip* clip, int, HomogeneousValueT
     ArrangementViewTrackLaneClip* childToRemove = getChildForClip (clip);
     jassert (childToRemove);
     removeChildComponent (childToRemove);
+}
+
+void ArrangementViewTrackLane::valueTreePropertyChanged (ValueTree&, const Identifier& property)
+{
+    if (property == track->height.getPropertyID())
+    {
+        for (Component* child : getChildren())
+        {
+            if (ArrangementViewTrackLaneClip* clip = dynamic_cast<ArrangementViewTrackLaneClip*> (child))
+            {
+                clip->setBounds (clip->getBounds().withHeight (track->height.get()));
+            }
+        }
+    }
 }

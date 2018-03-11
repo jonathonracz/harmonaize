@@ -43,15 +43,16 @@ void ArrangementViewTrackLaneList::resized() noexcept
 
 void ArrangementViewTrackLaneList::objectAdded (Track* track, int insertionIndex, HomogeneousValueTreeObjectArray<Track, CriticalSection>*)
 {
-    ArrangementViewTrackLane* newHeader = new ArrangementViewTrackLane (track);
-    lanes.add (newHeader);
-    addAndMakeVisible (newHeader);
+    ArrangementViewTrackLane* newLane = new ArrangementViewTrackLane (track);
+    lanes.add (newLane);
+    addAndMakeVisible (newLane);
 }
 
 void ArrangementViewTrackLaneList::objectRemoved (Track* track, int indexRemovedFrom, HomogeneousValueTreeObjectArray<Track, CriticalSection>*)
 {
     jassert (lanes[indexRemovedFrom]->getRepresentedTrack() == track);
-    delete lanes.removeAndReturn (indexRemovedFrom);
+    removeChildComponent (lanes[indexRemovedFrom]);
+    lanes.remove (indexRemovedFrom);
 }
 
 void ArrangementViewTrackLaneList::objectOrderChanged (Track* track, int oldIndex, int newIndex, HomogeneousValueTreeObjectArray<Track, CriticalSection>*)
