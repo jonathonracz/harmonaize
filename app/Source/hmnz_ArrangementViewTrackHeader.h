@@ -25,6 +25,7 @@ private:
     Track* track;
 
     void paint (Graphics&) noexcept override;
+    jcf::AdvancedLeakDetector leakDetector;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementViewTrackHeader)
 };

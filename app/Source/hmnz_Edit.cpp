@@ -12,7 +12,7 @@
 #include "hmnz_Application.h"
 
 Edit::Edit (const ValueTree& v, bool useUndoManager)
-    : ValueTreeObject<IDs::Edit> (v, useUndoManager ? new UndoManager : nullptr),
+    : ValueTreeObject<IDs::Edit> (v, useUndoManager ? new UndoManager() : nullptr),
       masterTrack (getState().getOrCreateChildWithName (MasterTrack::identifier, nullptr), getUndoManager(), this),
       transport (getState().getOrCreateChildWithName (Transport::identifier, nullptr)),
       arrangementViewModel (getState().getOrCreateChildWithName (ArrangementViewModel::identifier, nullptr)),

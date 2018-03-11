@@ -20,7 +20,7 @@ class ArrangementViewTrackLaneList  : public ArrangementViewComponent,
 public:
 
 private:
-    Array<ArrangementViewTrackLane*> lanes;
+    OwnedArray<ArrangementViewTrackLane> lanes;
 
     void editChanged (Edit*) noexcept override;
 

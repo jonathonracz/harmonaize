@@ -18,10 +18,21 @@ EditWindow::EditWindow()
 {
     setUsingNativeTitleBar (true);
     setResizeLimits(800, 600, std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
-    currentEdit = std::unique_ptr<Edit> (new Edit (Edit::createDefaultState()));
-    playbackEngine.setEdit (currentEdit.get());
     setContentOwned (new EditView(), false);
-    static_cast<EditView*> (getContentComponent())->setEdit (currentEdit.get());
     centreWithSize (getWidth(), getHeight());
     setVisible (true);
+
+    setEdit (new Edit (Edit::createDefaultState()));
+}
+
+EditWindow::~EditWindow()
+{
+    setEdit (nullptr);
+}
+
+void EditWindow::setEdit (Edit* edit) noexcept
+{
+    currentEdit = std::unique_ptr<Edit> (edit);
+    playbackEngine.setEdit (nullptr);
+    static_cast<EditView*> (getContentComponent())->setEdit (nullptr);
 }

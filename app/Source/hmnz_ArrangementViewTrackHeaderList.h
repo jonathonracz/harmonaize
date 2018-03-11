@@ -20,7 +20,7 @@ class ArrangementViewTrackHeaderList    : public ArrangementViewComponent,
 public:
 
 private:
-    Array<ArrangementViewTrackHeader*> headers;
+    OwnedArray<ArrangementViewTrackHeader> headers;
 
     void editChanged (Edit*) noexcept override;
 

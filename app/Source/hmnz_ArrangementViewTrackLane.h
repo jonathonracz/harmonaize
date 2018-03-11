@@ -22,6 +22,7 @@ class ArrangementViewTrackLane  : public ArrangementViewComponent,
 {
 public:
     ArrangementViewTrackLane (Track* track);
+    ~ArrangementViewTrackLane();
 
     Track* getRepresentedTrack() const noexcept { return track; }
 
@@ -30,10 +31,14 @@ private:
 
     ArrangementViewTrackLaneClip* getChildForClip (Clip* clip) noexcept;
 
+    void editChanged (Edit* oldEdit) noexcept override;
+
     void paint (Graphics&) noexcept override;
 
     void objectAdded (Clip*, int, HomogeneousValueTreeObjectArray<Clip>*) override;
     void objectRemoved (Clip*, int, HomogeneousValueTreeObjectArray<Clip>*) override;
+
+    void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementViewTrackLane)
 };

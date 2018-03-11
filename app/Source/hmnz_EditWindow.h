@@ -18,6 +18,9 @@ class EditWindow    : public DocumentWindow
 {
 public:
     EditWindow();
+    ~EditWindow();
+
+    void setEdit (Edit* edit) noexcept;
 
 private:
     PlaybackEngine playbackEngine;

@@ -51,7 +51,8 @@ void ArrangementViewTrackHeaderList::objectAdded (Track* track, int insertionInd
 void ArrangementViewTrackHeaderList::objectRemoved (Track* track, int indexRemovedFrom, HomogeneousValueTreeObjectArray<Track, CriticalSection>*)
 {
     jassert (headers[indexRemovedFrom]->getRepresentedTrack() == track);
-    delete headers.removeAndReturn (indexRemovedFrom);
+    removeChildComponent (headers[indexRemovedFrom]);
+    headers.remove (indexRemovedFrom);
 }
 
 void ArrangementViewTrackHeaderList::objectOrderChanged (Track* track, int oldIndex, int newIndex, HomogeneousValueTreeObjectArray<Track, CriticalSection>*)

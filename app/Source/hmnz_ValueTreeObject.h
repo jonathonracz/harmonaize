@@ -66,6 +66,7 @@ protected:
 private:
     ValueTree state;
     UndoManager* undoManager;
+    jcf::AdvancedLeakDetector advancedLeakDetector;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ValueTreeObject)
 };
