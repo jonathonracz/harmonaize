@@ -19,7 +19,7 @@ Track::Track (const ValueTree& v, UndoManager* um, Edit* const _edit)
       height (getState(), IDs::TrackProps::Height, nullptr, 16),
       recordArmed (getState(), IDs::TrackProps::RecordArmed, nullptr, false),
       edit (_edit),
-      clipList (getState().getOrCreateChildWithName (IDs::ClipList, nullptr), getUndoManager())
+      clipList (getState().getOrCreateChildWithName (IDs::ClipList, nullptr), getUndoManager(), this)
 {
     // May not entirely prevent allocation in the audio callback, but it will
     // at least provide a good starting point. 2048 is what's used internally

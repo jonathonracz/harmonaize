@@ -11,6 +11,7 @@
 #pragma once
 
 #include "hmnz_ValueTreeObject.h"
+#include "hmnz_VariantConverters.h"
 
 class MidiMessageModel  : public ValueTreeObject<IDs::MidiMessageModel>
 {

@@ -40,7 +40,7 @@ public:
     MidiFile exportToMidi() const noexcept;
     void importFromMidi (const MidiFile& midiFile, int trackOffset, double timeOffset) noexcept;
 
-    std::mutex* getPlaybackLock () const noexcept { return playbackLock; }
+    std::mutex* getPlaybackLock() const noexcept { return playbackLock; }
     void setPlaybackLock (std::mutex* _playbackLock) noexcept { playbackLock = _playbackLock; }
 
     MidiKeyboardState& getMidiKeyboardState() noexcept { return keyboardState; }

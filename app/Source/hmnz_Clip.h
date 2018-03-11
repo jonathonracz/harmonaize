@@ -11,89 +11,32 @@
 #pragma once
 
 #include "hmnz_ValueTreeObject.h"
-#include "hmnz_MidiMessageModel.h"
 #include "hmnz_MidiMessageSequenceModel.h"
-#include "hmnz_VariantConverters.h"
+
+class Track;
 
 class Clip  : public ValueTreeObject<IDs::Clip>
 {
 public:
-    Clip (const ValueTree& v, UndoManager* um)
-        : ValueTreeObject (v, um),
-          start (getState(), IDs::ClipProps::Start, getUndoManager(), std::numeric_limits<double>::lowest()),
-          length (getState(), IDs::ClipProps::Length, getUndoManager(), 0.0),
-          color (getState(), IDs::ClipProps::Color, getUndoManager(), Colours::green),
-          type (getState(), IDs::TrackProps::Type, getUndoManager(), IDs::ClipProps::Types::Midi),
-          midiMessageSequenceModel (getState().getOrCreateChildWithName (MidiMessageSequenceModel::identifier, nullptr), getUndoManager())
-    {
-    }
+    Clip (const ValueTree& v, UndoManager* um, Track* track);
 
-    MidiMessageSequence getMidiMessageSequence (double timeDelta = 0.0) const noexcept
-    {
-        return getPartialMidiMessageSequence (std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), timeDelta);
-    }
+    MidiMessageSequence getMidiMessageSequence (double timeDelta = 0.0) const noexcept;
 
-    MidiMessageSequence getPartialMidiMessageSequence (double rangeStart, double rangeEnd, double timeDelta = 0.0) const noexcept
-    {
-        return midiMessageSequenceModel.getPartialMidiMessageSequence (rangeStart, rangeEnd, timeDelta + start);
-    }
+    MidiMessageSequence getPartialMidiMessageSequence (double rangeStart, double rangeEnd, double timeDelta = 0.0) const noexcept;
 
-    void setMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0, bool resizeToFit = true) noexcept
-    {
-        if (resizeToFit)
-        {
-            adjustBoundsToFitMessageTimestamp (sequence.getStartTime());
-            adjustBoundsToFitMessageTimestamp (sequence.getEndTime());
-        }
+    void setMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0, bool resizeToFit = true) noexcept;
 
-        midiMessageSequenceModel.setMidiMessageSequence (sequence, -start + timeDelta);
-    }
+    void addMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0, bool resizeToFit = true) noexcept;
 
-    void addMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0, bool resizeToFit = true) noexcept
-    {
-        if (resizeToFit)
-        {
-            adjustBoundsToFitMessageTimestamp (sequence.getStartTime());
-            adjustBoundsToFitMessageTimestamp (sequence.getEndTime());
-        }
+    void addEvent (const MidiMessage& message, double timeDelta = 0.0, bool resizeToFit = true) noexcept;
 
-        midiMessageSequenceModel.addMidiMessageSequence (sequence, -start + timeDelta);
-    }
+    void setStartTimeKeepingEndTime (double newStartTime) noexcept;
 
-    void addEvent (const MidiMessage& message, double timeDelta = 0.0, bool resizeToFit = true) noexcept
-    {
-        if (resizeToFit)
-            adjustBoundsToFitMessageTimestamp (message.getTimeStamp() + timeDelta);
+    static Identifier defaultClipTypeForTrackType (const Identifier& trackType);
 
-        midiMessageSequenceModel.addEvent (MidiMessage (message, message.getTimeStamp() - start + timeDelta));
-    }
+    static ValueTree createState (double start, double length, const Identifier& type, const Colour& color);
 
-    void setStartTimeKeepingEndTime (double newStartTime) noexcept
-    {
-        double startDelta = start - newStartTime;
-        start = newStartTime;
-        length = length + startDelta;
-        midiMessageSequenceModel.addTimeToMessages (startDelta);
-    }
-
-    static ValueTree createState (double start, double length, const Identifier& type, const Colour& color)
-    {
-        ValueTree ret (createDefaultState());
-        ret.setProperty (IDs::ClipProps::Start, start, nullptr);
-        ret.setProperty (IDs::ClipProps::Length, length, nullptr);
-        ret.setProperty (IDs::ClipProps::Color, VariantConverter<Colour>::toVar (color), nullptr);
-        ret.setProperty (IDs::ClipProps::Type, VariantConverter<Identifier>::toVar (type), nullptr);
-        return ret;
-    }
-
-    static ValueTree createState (double start, double length, const MidiMessageSequence& sequence, const Colour& color)
-    {
-        ValueTree ret = createState(start, length, IDs::ClipProps::Types::Midi, color);
-        Clip clipObject (ret, nullptr);
-        clipObject.setMidiMessageSequence (sequence, 0.0, true);
-
-        return ret;
-    }
+    static ValueTree createState (double start, double length, const MidiMessageSequence& sequence, const Colour& color);
 
     CachedValue<double> start;
     CachedValue<double> length;
@@ -101,15 +44,10 @@ public:
     CachedValue<Identifier> type;
 
 private:
+    Track* track;
     MidiMessageSequenceModel midiMessageSequenceModel;
 
-    void adjustBoundsToFitMessageTimestamp (double timestamp) noexcept
-    {
-        if (timestamp < start)
-            setStartTimeKeepingEndTime (timestamp);
-        else if (timestamp > start + length)
-            length = timestamp + length;
-    }
+    void adjustBoundsToFitMessageTimestamp (double timestamp) noexcept;
 
     JUCE_DECLARE_WEAK_REFERENCEABLE (Clip)
 };
