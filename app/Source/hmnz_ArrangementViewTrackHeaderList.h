@@ -12,7 +12,7 @@
 
 #include "hmnz_ArrangementViewComponent.h"
 #include "hmnz_ArrangementViewTrackHeader.h"
-#include "hmnz_TrackList.h"
+#include "hmnz_HomogeneousValueTreeObjectArray.h"
 
 class ArrangementViewTrackHeaderList    : public ArrangementViewComponent,
                                           public HomogeneousValueTreeObjectArray<Track, CriticalSection>::Listener

@@ -20,10 +20,14 @@
             resource="0" file="Source/hmnz_ArrangementViewComponent.cpp"/>
       <FILE id="Usmz7j" name="hmnz_ArrangementViewComponent.h" compile="0"
             resource="0" file="Source/hmnz_ArrangementViewComponent.h"/>
-      <FILE id="zcctXj" name="hmnz_ArrangementViewTimeline.cpp" compile="1"
+      <FILE id="Zn9QTm" name="hmnz_ArrangementViewTimeline.cpp" compile="1"
             resource="0" file="Source/hmnz_ArrangementViewTimeline.cpp"/>
-      <FILE id="Tn717Q" name="hmnz_ArrangementViewTimeline.h" compile="0"
+      <FILE id="hj5PLa" name="hmnz_ArrangementViewTimeline.h" compile="0"
             resource="0" file="Source/hmnz_ArrangementViewTimeline.h"/>
+      <FILE id="zcctXj" name="hmnz_ArrangementViewTimelineGrid.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewTimelineGrid.cpp"/>
+      <FILE id="Tn717Q" name="hmnz_ArrangementViewTimelineGrid.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewTimelineGrid.h"/>
       <FILE id="UZFkgn" name="hmnz_ArrangementViewTopBar.cpp" compile="1"
             resource="0" file="Source/hmnz_ArrangementViewTopBar.cpp"/>
       <FILE id="F8JqNN" name="hmnz_ArrangementViewTopBar.h" compile="0" resource="0"
@@ -40,6 +44,10 @@
             resource="0" file="Source/hmnz_ArrangementViewTrackLane.cpp"/>
       <FILE id="XrZiPI" name="hmnz_ArrangementViewTrackLane.h" compile="0"
             resource="0" file="Source/hmnz_ArrangementViewTrackLane.h"/>
+      <FILE id="DgSl9h" name="hmnz_ArrangementViewTrackLaneClip.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewTrackLaneClip.cpp"/>
+      <FILE id="BrCGHC" name="hmnz_ArrangementViewTrackLaneClip.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewTrackLaneClip.h"/>
       <FILE id="KS1BQB" name="hmnz_ArrangementViewTrackLaneList.cpp" compile="1"
             resource="0" file="Source/hmnz_ArrangementViewTrackLaneList.cpp"/>
       <FILE id="QlKwMC" name="hmnz_ArrangementViewTrackLaneList.h" compile="0"
@@ -64,7 +72,12 @@
       <GROUP id="{F1611D00-5B76-00F5-E54F-78CD868347B4}" name="Arrangement">
         <FILE id="QVyG9G" name="hmnz_ArrangementViewModel.h" compile="0" resource="0"
               file="Source/hmnz_ArrangementViewModel.h"/>
+        <FILE id="UH7Pnh" name="hmnz_Clip.cpp" compile="1" resource="0" file="Source/hmnz_Clip.cpp"/>
         <FILE id="XA4JeV" name="hmnz_Clip.h" compile="0" resource="0" file="Source/hmnz_Clip.h"/>
+        <FILE id="vqcWSG" name="hmnz_ClipArray.cpp" compile="1" resource="0"
+              file="Source/hmnz_ClipArray.cpp"/>
+        <FILE id="oNewaF" name="hmnz_ClipArray.h" compile="0" resource="0"
+              file="Source/hmnz_ClipArray.h"/>
         <FILE id="Vv50Er" name="hmnz_ClipList.h" compile="0" resource="0" file="Source/hmnz_ClipList.h"/>
         <FILE id="Ay8orM" name="hmnz_Edit.cpp" compile="1" resource="0" file="Source/hmnz_Edit.cpp"/>
         <FILE id="YdnPis" name="hmnz_Edit.h" compile="0" resource="0" file="Source/hmnz_Edit.h"/>

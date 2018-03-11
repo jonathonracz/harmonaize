@@ -20,6 +20,5 @@ TrackArray::TrackArray (const ValueTree& v, UndoManager* um, Edit* _edit)
 Track* TrackArray::createNewObject (const ValueTree& v, UndoManager* um)
 {
     jassert (um == edit->getUndoManager());
-    Track* newTrack = new Track (v, um, edit);
-    return newTrack;
+    return new Track (v, um, edit);
 }
