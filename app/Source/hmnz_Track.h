@@ -46,6 +46,7 @@ public:
     ClipList clipList;
 
 private:
+    std::atomic<bool> isPrepared = { false };
     AudioBuffer<float> audioBuffer;
     MidiBuffer midiBuffer;
 

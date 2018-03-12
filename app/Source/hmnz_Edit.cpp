@@ -53,7 +53,7 @@ void Edit::importFromMidi (const MidiFile& midiFile, int trackOffset, double tim
 
     double length = midiFile.getLastTimestamp() / midiFile.getTimeFormat();
     while (midiFile.getNumTracks() + trackOffset > trackList.tracks.size())
-        getState().addChild (Track::createDefaultState(), -1, getUndoManager());
+        trackList.getState().addChild (Track::createDefaultState(), -1, getUndoManager());
 
     for (int i = 0; i < midiFile.getNumTracks(); ++i)
     {
