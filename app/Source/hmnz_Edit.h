@@ -52,7 +52,6 @@ public:
 
 private:
     std::unique_ptr<UndoManager> undoManager;
-    jcf::ValueTreeDebugger stateDebugger;
     std::mutex* playbackLock;
 
     MidiKeyboardState keyboardState;

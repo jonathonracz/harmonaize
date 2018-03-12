@@ -32,7 +32,17 @@ EditWindow::~EditWindow()
 
 void EditWindow::setEdit (Edit* edit) noexcept
 {
-    currentEdit = std::unique_ptr<Edit> (edit);
-    playbackEngine.setEdit (nullptr);
-    static_cast<EditView*> (getContentComponent())->setEdit (nullptr);
+    if (currentEdit.get())
+    {
+        static_cast<EditView*> (getContentComponent())->setEdit (nullptr);
+        playbackEngine.setEdit (edit);
+    }
+
+    if (edit)
+    {
+        currentEdit = std::unique_ptr<Edit> (edit);
+        editDebugger.setSource (currentEdit.get()->getState());
+        playbackEngine.setEdit (currentEdit.get());
+        static_cast<EditView*> (getContentComponent())->setEdit (currentEdit.get());
+    }
 }
