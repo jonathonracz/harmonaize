@@ -24,8 +24,6 @@ Edit::Edit (const ValueTree& v, bool useUndoManager)
     getState().addListener (this);
     if (trackList.tracks.size() == 0)
         trackList.tracks.insertStateAtObjectIndex (Track::createDefaultState(), -1);
-
-    stateDebugger.setSource (getState());
 }
 
 Edit::~Edit()

@@ -24,6 +24,7 @@ public:
         {
             ValueTree internallyAddedState = ValueTreeObjectUnitTest::TestValueTreeObject<Type>::createDefaultState();
             array.addState (internallyAddedState);
+            getState().addListener (array.getFirst());
         }
 
     private:

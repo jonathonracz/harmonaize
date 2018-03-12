@@ -25,6 +25,7 @@ public:
 private:
     PlaybackEngine playbackEngine;
     std::unique_ptr<Edit> currentEdit;
+    jcf::ValueTreeDebugger editDebugger;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditWindow)
 };

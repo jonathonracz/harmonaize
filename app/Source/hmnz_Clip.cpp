@@ -89,6 +89,8 @@ Identifier Clip::defaultClipTypeForTrackType (const Identifier& trackType)
 {
     if (trackType == IDs::TrackProps::Types::Midi)
         return IDs::ClipProps::Types::Midi;
+
+    return Identifier();
 }
 
 ValueTree Clip::createState (double start, double length, const MidiMessageSequence& sequence, const Colour& color)

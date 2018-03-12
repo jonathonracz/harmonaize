@@ -16,7 +16,7 @@
     A run-time class which represents an abstract ValueTree node.
 */
 template<const Identifier& identifierType>
-class ValueTreeObject : protected ValueTree::Listener
+class ValueTreeObject : public ValueTree::Listener
 {
 public:
     ValueTreeObject (const ValueTree& v, UndoManager* um)
@@ -66,7 +66,7 @@ protected:
 private:
     ValueTree state;
     UndoManager* undoManager;
-    jcf::AdvancedLeakDetector advancedLeakDetector;
 
+    JUCE_DECLARE_WEAK_REFERENCEABLE (ValueTreeObject)
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ValueTreeObject)
 };
