@@ -45,6 +45,7 @@ void Track::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
     midiWriteBackQueue = moodycamel::ReaderWriterQueue<RecordedMidiMessage> (static_cast<size_t> (sampleRate)); // Buffer 1 second of messages
     audioBuffer.setSize (2, samplesPerBlockExpected); // TODO: Hardcoded number of channels.
     synthesizer.setCurrentPlaybackSampleRate (sampleRate);
+    isPrepared.store (true, std::memory_order_release);
 }
 
 void Track::releaseResources()
@@ -55,6 +56,9 @@ void Track::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
                                   MidiBuffer& incomingMidiBuffer,
                                   PlaybackEngine& playbackSource)
 {
+    if (!isPrepared.load (std::memory_order_acquire))
+        return;
+
     midiBuffer = incomingMidiBuffer;
 
     AudioPlayHead::CurrentPositionInfo currentPosition;
