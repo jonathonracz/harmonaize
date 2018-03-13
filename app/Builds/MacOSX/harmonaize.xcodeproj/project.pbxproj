@@ -42,6 +42,7 @@
 		5A425423972B8EB5569F1BD1 = {isa = PBXBuildFile; fileRef = 8F4675BD91E6E03800FCF753; };
 		0581211AFC1651C1B8DFB1AA = {isa = PBXBuildFile; fileRef = 525FBD5208C354D1978AAEFE; };
 		7406A4FA569463DFD7E0D99E = {isa = PBXBuildFile; fileRef = EA648E02D3B4E0E1CF7E5F2D; };
+		4D350ED6B82984F9C76038F3 = {isa = PBXBuildFile; fileRef = 8C12789EAB8AA1433C68B99E; };
 		B0C1AF5005DD3A70C838673E = {isa = PBXBuildFile; fileRef = 2302EBA6E18D82262E58C465; };
 		087A3CB911DE995E0874AA25 = {isa = PBXBuildFile; fileRef = 57E71AED0C1D7C90E8C0DED1; };
 		45C436649BC7529D4B099F02 = {isa = PBXBuildFile; fileRef = 83EF2D07C132F43150507553; };
@@ -115,6 +116,7 @@
 		883B2F18B9A5AA215AC43CFC = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_audio_processors"; path = "../../../harmonaize/external/JUCE/modules/juce_audio_processors"; sourceTree = "SOURCE_ROOT"; };
 		884BC0999DC8A43549CD7A4E = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_audio_utils"; path = "../../../harmonaize/external/JUCE/modules/juce_audio_utils"; sourceTree = "SOURCE_ROOT"; };
 		8C126220B8456629268B727A = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_data_structures"; path = "../../../harmonaize/external/JUCE/modules/juce_data_structures"; sourceTree = "SOURCE_ROOT"; };
+		8C12789EAB8AA1433C68B99E = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_Identifiers.cpp"; path = "../../Source/hmnz_Identifiers.cpp"; sourceTree = "SOURCE_ROOT"; };
 		8D0A44853497795D2D1B5E05 = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = harmonaize.app; sourceTree = "BUILT_PRODUCTS_DIR"; };
 		8E5DB5F5574FBB23AF4AF696 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_ArrangementViewComponent.cpp"; path = "../../Source/hmnz_ArrangementViewComponent.cpp"; sourceTree = "SOURCE_ROOT"; };
 		8F4675BD91E6E03800FCF753 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_TrackArray.cpp"; path = "../../Source/hmnz_TrackArray.cpp"; sourceTree = "SOURCE_ROOT"; };
@@ -243,6 +245,7 @@
 					A26602A26CFEF6E226D392E6,
 					12E8BBE8911128216D0E905B,
 					AC3BBC9987D7D17A87E38334,
+					8C12789EAB8AA1433C68B99E,
 					2B1B1F427C26EAA21D3F4CEC, ); name = Model; sourceTree = "<group>"; };
 		C5713C19A35BB95E11306DEB = {isa = PBXGroup; children = (
 					E9E9988EA9E6F7911788636C,
@@ -479,6 +482,7 @@
 					5A425423972B8EB5569F1BD1,
 					0581211AFC1651C1B8DFB1AA,
 					7406A4FA569463DFD7E0D99E,
+					4D350ED6B82984F9C76038F3,
 					B0C1AF5005DD3A70C838673E,
 					087A3CB911DE995E0874AA25,
 					45C436649BC7529D4B099F02,

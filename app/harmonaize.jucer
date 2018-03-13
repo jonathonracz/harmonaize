@@ -138,6 +138,8 @@
         <FILE id="oGqJ3e" name="hmnz_VariantConverters.h" compile="0" resource="0"
               file="Source/hmnz_VariantConverters.h"/>
       </GROUP>
+      <FILE id="dMedUN" name="hmnz_Identifiers.cpp" compile="1" resource="0"
+            file="Source/hmnz_Identifiers.cpp"/>
       <FILE id="InvRfR" name="hmnz_Identifiers.h" compile="0" resource="0"
             file="Source/hmnz_Identifiers.h"/>
     </GROUP>
