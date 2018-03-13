@@ -19,6 +19,8 @@ public:
     ClipArray (const ValueTree& v, UndoManager* um, Track* track);
 
 private:
-    Track* const track;
+    WeakReference<Track> track;
     Clip* createNewObject (const ValueTree& v, UndoManager* um) override;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ClipArray)
 };

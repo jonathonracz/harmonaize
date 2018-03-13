@@ -20,12 +20,12 @@ public:
     ArrangementViewTrackLaneClip (Clip* clip);
     ~ArrangementViewTrackLaneClip();
 
-    Clip* getRepresentedClip() const noexcept { return clip; }
+    Clip* getRepresentedClip() const { return clip; }
 
 private:
     Clip* clip;
 
-    void paint (Graphics&) noexcept override;
+    void paint (Graphics&) override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
 

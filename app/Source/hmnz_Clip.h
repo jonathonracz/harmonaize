@@ -20,17 +20,17 @@ class Clip  : public ValueTreeObject<IDs::Clip>
 public:
     Clip (const ValueTree& v, UndoManager* um, Track* track);
 
-    MidiMessageSequence getMidiMessageSequence (double timeDelta = 0.0) const noexcept;
+    MidiMessageSequence getMidiMessageSequence (double timeDelta = 0.0) const;
 
-    MidiMessageSequence getPartialMidiMessageSequence (double rangeStart, double rangeEnd, double timeDelta = 0.0) const noexcept;
+    MidiMessageSequence getPartialMidiMessageSequence (double rangeStart, double rangeEnd, double timeDelta = 0.0) const;
 
-    void setMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0, bool resizeToFit = true) noexcept;
+    void setMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0, bool resizeToFit = true);
 
-    void addMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0, bool resizeToFit = true) noexcept;
+    void addMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0, bool resizeToFit = true);
 
-    void addEvent (const MidiMessage& message, double timeDelta = 0.0, bool resizeToFit = true) noexcept;
+    void addEvent (const MidiMessage& message, double timeDelta = 0.0, bool resizeToFit = true);
 
-    void setStartTimeKeepingEndTime (double newStartTime) noexcept;
+    void setStartTimeKeepingEndTime (double newStartTime);
 
     static Identifier defaultClipTypeForTrackType (const Identifier& trackType);
 
@@ -44,10 +44,11 @@ public:
     CachedValue<Identifier> type;
 
 private:
-    Track* track;
+    WeakReference<Track> track;
     MidiMessageSequenceModel midiMessageSequenceModel;
 
-    void adjustBoundsToFitMessageTimestamp (double timestamp) noexcept;
+    void adjustBoundsToFitMessageTimestamp (double timestamp);
 
     JUCE_DECLARE_WEAK_REFERENCEABLE (Clip)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Clip)
 };

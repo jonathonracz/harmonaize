@@ -28,17 +28,18 @@ ArrangementViewTrackLane::ArrangementViewTrackLane (Track* _track)
 ArrangementViewTrackLane::~ArrangementViewTrackLane()
 {
     if (getEdit())
+    {
         getEdit()->arrangementViewModel.getState().removeListener (this);
-
-    track->getState().removeListener (this);
+        track->getState().removeListener (this);
+    }
 }
 
-void ArrangementViewTrackLane::editChanged (Edit* oldEdit) noexcept
+void ArrangementViewTrackLane::editChanged (Edit* oldEdit)
 {
     getEdit()->arrangementViewModel.getState().addListener (this);
 }
 
-ArrangementViewTrackLaneClip* ArrangementViewTrackLane::getChildForClip (Clip* clip) noexcept
+ArrangementViewTrackLaneClip* ArrangementViewTrackLane::getChildForClip (Clip* clip)
 {
     for (Component* comp : getChildren())
     {
@@ -52,7 +53,7 @@ ArrangementViewTrackLaneClip* ArrangementViewTrackLane::getChildForClip (Clip* c
     return nullptr;
 }
 
-void ArrangementViewTrackLane::paint (Graphics& g) noexcept
+void ArrangementViewTrackLane::paint (Graphics& g)
 {
     g.fillAll (track->color);
 }

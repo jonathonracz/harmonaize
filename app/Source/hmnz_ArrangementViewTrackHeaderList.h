@@ -18,17 +18,20 @@ class ArrangementViewTrackHeaderList    : public ArrangementViewComponent,
                                           public HomogeneousValueTreeObjectArray<Track, CriticalSection>::Listener
 {
 public:
+    ArrangementViewTrackHeaderList() = default;
 
 private:
     OwnedArray<ArrangementViewTrackHeader> headers;
 
-    void editChanged (Edit*) noexcept override;
+    void editChanged (Edit*) override;
 
-    void resized() noexcept override;
+    void resized() override;
 
     void objectAdded (Track*, int, HomogeneousValueTreeObjectArray<Track, CriticalSection>*) override;
     void objectRemoved (Track*, int, HomogeneousValueTreeObjectArray<Track, CriticalSection>*) override;
     void objectOrderChanged (Track*, int, int, HomogeneousValueTreeObjectArray<Track, CriticalSection>*) override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementViewTrackHeaderList)
 };

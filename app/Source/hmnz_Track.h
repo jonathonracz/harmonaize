@@ -22,10 +22,11 @@ class Edit;
 
 class Track : public ValueTreeObject<IDs::Track>,
               public PlaybackEngine::PlaybackTarget,
-              public AsyncUpdater
+              public AsyncUpdater,
+              public ValueTree::Listener
 {
 public:
-    Track (const ValueTree& v, UndoManager* um, Edit* const edit);
+    Track (const ValueTree& v, UndoManager* um, Edit* edit);
 
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
@@ -33,8 +34,8 @@ public:
         MidiBuffer& incomingMidiBuffer,
         PlaybackEngine& playbackSource) override;
 
-    MidiMessageSequence getMidiMessageSequence() const noexcept;
-    void addMidiMessageSequenceAsClip (double start, double length, const MidiMessageSequence& sequence) noexcept;
+    MidiMessageSequence getMidiMessageSequence() const;
+    void addMidiMessageSequenceAsClip (double start, double length, const MidiMessageSequence& sequence);
 
     CachedValue<String> name;
     CachedValue<Colour> color;
@@ -42,7 +43,7 @@ public:
     CachedValue<MinMaxConstrainerWrapper<int, 8, 64>> height;
     CachedValue<SPSCAtomicWrapper<bool>> recordArmed;
 
-    Edit* const edit;
+    WeakReference<Edit> edit;
     ClipList clipList;
 
 private:
@@ -63,12 +64,17 @@ private:
 
     sfzero::Synth synthesizer;
 
-    void updateMidiReadCache() noexcept;
-    void flushMidiWriteBackQueue() noexcept;
+    void updateMidiReadCache();
+    void flushMidiWriteBackQueue();
 
     void handleAsyncUpdate() override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
     void valueTreeChildAdded (ValueTree&, ValueTree&) override;
     void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override;
+    void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
+    void valueTreeParentChanged (ValueTree&) override {}
+
+    JUCE_DECLARE_WEAK_REFERENCEABLE (Track)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Track)
 };

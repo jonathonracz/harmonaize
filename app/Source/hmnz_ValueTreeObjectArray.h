@@ -50,13 +50,13 @@ public:
         return isSuitableType (v) && v.getParent() == parent;
     }
 
-    int indexOf (ObjectType* obj) const noexcept
+    int indexOf (ObjectType* obj) const
     {
         const ScopedLockType sl (arrayLock);
         return objects.indexOf (obj);
     }
 
-    int indexOfStateInObjects (const ValueTree& v) const noexcept
+    int indexOfStateInObjects (const ValueTree& v) const
     {
         for (int i = 0; i < objects.size(); ++i)
             if (objects.getUnchecked (i)->getState() == v)
@@ -65,12 +65,12 @@ public:
         return -1;
     }
 
-    int indexOfObjectInState (ObjectType* object) const noexcept
+    int indexOfObjectInState (ObjectType* object) const
     {
         return (object != nullptr) ? parent.indexOf (object->getState()) : -1;
     }
 
-    ObjectType* objectWithState (const ValueTree& state) const noexcept
+    ObjectType* objectWithState (const ValueTree& state) const
     {
         const ScopedLockType sl (arrayLock);
         for (ObjectType* object : objects)
@@ -82,17 +82,17 @@ public:
         return nullptr;
     }
 
-    void addState (const ValueTree& v) noexcept
+    void addState (const ValueTree& v)
     {
         insertState (v, -1);
     }
 
-    void insertState (const ValueTree& v, int index) noexcept
+    void insertState (const ValueTree& v, int index)
     {
         parent.addChild (v, index, undoManager);
     }
 
-    void insertStateAtObjectIndex (const ValueTree& v, int index) noexcept
+    void insertStateAtObjectIndex (const ValueTree& v, int index)
     {
         const ScopedLockType sl (arrayLock);
         jassert (index <= objects.size());
@@ -106,46 +106,46 @@ public:
         insertState (v, stateIndex);
     }
 
-    void removeObject (ObjectType* object) noexcept
+    void removeObject (ObjectType* object)
     {
         parent.removeChild (object->getState(), undoManager);
     }
 
-    int size() const noexcept
+    int size() const
     {
         const ScopedLockType sl (arrayLock);
         return objects.size();
     }
 
-    ObjectType* operator[] (int index) const noexcept
+    ObjectType* operator[] (int index) const
     {
         const ScopedLockType sl (arrayLock);
         return objects[index];
     }
 
-    ObjectType* getFirst() const noexcept
+    ObjectType* getFirst() const
     {
         const ScopedLockType sl (arrayLock);
         return objects.getFirst();
     }
 
-    ObjectType* getLast() const noexcept
+    ObjectType* getLast() const
     {
         const ScopedLockType sl (arrayLock);
         return objects.getLast();
     }
 
-    jdr::ArrayForwardIteratorConst<ObjectType*> begin() const noexcept
+    jdr::ArrayForwardIteratorConst<WeakReference<ObjectType>> begin() const
     {
-        return jdr::ArrayForwardIteratorConst<ObjectType*>::begin (objects);
+        return jdr::ArrayForwardIteratorConst<WeakReference<ObjectType>>::begin (objects);
     }
 
-    jdr::ArrayForwardIteratorConst<ObjectType*> end() const noexcept
+    jdr::ArrayForwardIteratorConst<WeakReference<ObjectType>> end() const
     {
-        return jdr::ArrayForwardIteratorConst<ObjectType*>::end (objects);
+        return jdr::ArrayForwardIteratorConst<WeakReference<ObjectType>>::end (objects);
     }
 
-    const CriticalSectionType& getLock() const noexcept
+    const CriticalSectionType& getLock() const
     {
         return arrayLock;
     }
@@ -153,13 +153,13 @@ public:
     using ScopedLockType = typename CriticalSectionType::ScopedLockType;
 
 protected:
-    Array<ObjectType*> objects;
+    Array<WeakReference<ObjectType>> objects;
     ValueTree parent;
     UndoManager* undoManager;
     CriticalSectionType arrayLock;
 
     // Call this in your derived constructor.
-    void addObjects() noexcept
+    void addObjects()
     {
         for (const auto& v : parent)
             if (isSuitableType (v))
@@ -167,7 +167,7 @@ protected:
                     objects.add (newObject);
     }
 
-    bool isSuitableType (const ValueTree& v) const noexcept
+    bool isSuitableType (const ValueTree& v) const
     {
         return ObjectType::identifier == v.getType();
     }

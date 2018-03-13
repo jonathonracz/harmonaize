@@ -23,7 +23,7 @@ ArrangementViewTrackLaneClip::~ArrangementViewTrackLaneClip()
     clip->getState().removeListener (this);
 }
 
-void ArrangementViewTrackLaneClip::paint (Graphics&) noexcept
+void ArrangementViewTrackLaneClip::paint (Graphics&)
 {
 }
 

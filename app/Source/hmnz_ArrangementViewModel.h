@@ -13,7 +13,8 @@
 #include "hmnz_ValueTreeObject.h"
 #include "hmnz_CacheValueWrappers.h"
 
-class ArrangementViewModel  : public ValueTreeObject<IDs::ArrangementViewModel>
+class ArrangementViewModel  : public ValueTreeObject<IDs::ArrangementViewModel>,
+                              public ValueTree::Listener
 {
 public:
     ArrangementViewModel (const ValueTree& v)
@@ -31,8 +32,15 @@ public:
     CachedValue<MinMaxConstrainerWrapper<int, 0, std::numeric_limits<int>::max()>> scrollPosition;
 
 private:
-    void valueTreePropertyChanged (ValueTree& tree, const Identifier& property) noexcept override
+    void valueTreePropertyChanged (ValueTree& tree, const Identifier& property) override
     {
         jassert (timeStart < timeEnd);
     }
+
+    void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
+    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
+    void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
+    void valueTreeParentChanged (ValueTree&) override {}
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementViewModel)
 };

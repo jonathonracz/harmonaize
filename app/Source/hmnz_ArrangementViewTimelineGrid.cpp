@@ -11,11 +11,11 @@
 #include "hmnz_ArrangementViewTimelineGrid.h"
 #include "hmnz_Edit.h"
 
-void ArrangementViewTimelineGrid::resized() noexcept
+void ArrangementViewTimelineGrid::resized()
 {
 }
 
-void ArrangementViewTimelineGrid::paint (Graphics& g) noexcept
+void ArrangementViewTimelineGrid::paint (Graphics& g)
 {
     if (!getEdit())
         return;

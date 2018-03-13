@@ -30,17 +30,17 @@ public:
 
     using ValueTreeObjectArray<ObjectType, CriticalSectionType>::ValueTreeObjectArray;
 
-    void addListener (Listener* listener) noexcept
+    void addListener (Listener* listener)
     {
         listeners.add (listener);
     }
 
-    void removeListener (Listener* listener) noexcept
+    void removeListener (Listener* listener)
     {
         listeners.remove (listener);
     }
 
-    int compareElements (ObjectType* first, ObjectType* second) const noexcept
+    int compareElements (ObjectType* first, ObjectType* second) const
     {
         int index1 = this->parent.indexOf (first->getState());
         int index2 = this->parent.indexOf (second->getState());
@@ -52,7 +52,7 @@ public:
 private:
     ListenerList<Listener> listeners;
 
-    void sortArray() noexcept
+    void sortArray()
     {
         this->objects.sort (*this);
     }
@@ -148,4 +148,6 @@ private:
     {
         return new ObjectType (v, um);
     }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GenericNonHomogeneousValueTreeObjectArray)
 };

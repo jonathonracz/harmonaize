@@ -20,8 +20,8 @@ public:
 private:
     Rectangle<int> lastPaintedPlayHeadBounds;
 
-    void resized() noexcept override;
-    void paint (Graphics&) noexcept override;
+    void resized() override;
+    void paint (Graphics&) override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
 

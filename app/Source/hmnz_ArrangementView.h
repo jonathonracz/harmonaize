@@ -27,13 +27,13 @@ private:
     ArrangementViewTrackHeaderList headerList;
     double verticalScrollAccumulator = 0.0;
 
-    void editChanged (Edit*) noexcept override;
+    void editChanged (Edit*) override;
 
-    void resized() noexcept override;
+    void resized() override;
     void mouseWheelMove (const MouseEvent&, const MouseWheelDetails&) override;
     void mouseMagnify (const MouseEvent&, float) override;
 
-    void valueTreePropertyChanged (ValueTree&, const Identifier&) noexcept override;
+    void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementView)
 };

@@ -22,26 +22,33 @@ EditWindow::EditWindow()
     centreWithSize (getWidth(), getHeight());
     setVisible (true);
 
-    setEdit (new Edit (Edit::createDefaultState()));
+    ValueTree defaultEdit = Edit::createDefaultState();
+    setEdit (defaultEdit);
 }
 
 EditWindow::~EditWindow()
 {
-    setEdit (nullptr);
+    setEdit (ValueTree());
 }
 
-void EditWindow::setEdit (Edit* edit) noexcept
+void EditWindow::setEdit (const ValueTree& edit)
 {
     if (currentEdit.get())
     {
         static_cast<EditView*> (getContentComponent())->setEdit (nullptr);
-        playbackEngine.setEdit (edit);
+        playbackEngine.setEdit (nullptr);
+        ValueTree nullTree;
+        editDebugger.setSource (nullTree);
+        currentEdit.reset();
+        undoManager.reset();
     }
 
-    if (edit)
+    if (edit.getType() == IDs::Edit)
     {
-        currentEdit = std::unique_ptr<Edit> (edit);
-        editDebugger.setSource (currentEdit.get()->getState());
+        undoManager = std::unique_ptr<UndoManager> (new UndoManager);
+        Edit* newEdit = new Edit (edit, undoManager.get());
+        currentEdit = std::unique_ptr<Edit> (newEdit);
+        editDebugger.setSource (currentEdit->getState());
         playbackEngine.setEdit (currentEdit.get());
         static_cast<EditView*> (getContentComponent())->setEdit (currentEdit.get());
     }

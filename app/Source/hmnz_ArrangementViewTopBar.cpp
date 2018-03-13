@@ -11,7 +11,7 @@
 #include "hmnz_ArrangementViewTopBar.h"
 #include "hmnz_Edit.h"
 
-void ArrangementViewTopBar::paint (Graphics& g) noexcept
+void ArrangementViewTopBar::paint (Graphics& g)
 {
     if (!getEdit())
         return;
@@ -69,7 +69,7 @@ void ArrangementViewTopBar::paint (Graphics& g) noexcept
      */
 }
 
-void ArrangementViewTopBar::mouseDown (const MouseEvent& event) noexcept
+void ArrangementViewTopBar::mouseDown (const MouseEvent& event)
 {
     if (!getEdit())
         return;
@@ -77,7 +77,7 @@ void ArrangementViewTopBar::mouseDown (const MouseEvent& event) noexcept
     getEdit()->transport.playHeadBeat = getBeatForXPos (static_cast<int> (event.position.x));
 }
 
-void ArrangementViewTopBar::mouseDrag (const MouseEvent& event) noexcept
+void ArrangementViewTopBar::mouseDrag (const MouseEvent& event)
 {
     if (!getEdit())
         return;

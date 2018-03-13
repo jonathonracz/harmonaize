@@ -30,12 +30,12 @@ public:
 
     using ValueTreeObjectArray<ObjectType, CriticalSectionType>::ValueTreeObjectArray;
 
-    void addListener (Listener* listener) noexcept
+    void addListener (Listener* listener)
     {
         listeners.add (listener);
     }
 
-    void removeListener (Listener* listener) noexcept
+    void removeListener (Listener* listener)
     {
         listeners.remove (listener);
     }
@@ -119,4 +119,6 @@ private:
     {
         return new ObjectType (v, um);
     }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GenericHomogeneousValueTreeObjectArray)
 };

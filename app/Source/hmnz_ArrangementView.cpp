@@ -19,14 +19,14 @@ ArrangementView::ArrangementView()
     addAndMakeVisible (headerList);
 }
 
-void ArrangementView::editChanged (Edit* oldEdit) noexcept
+void ArrangementView::editChanged (Edit* oldEdit)
 {
     topBar.setEdit (getEdit());
     timeline.setEdit (getEdit());
     headerList.setEdit (getEdit());
 }
 
-void ArrangementView::resized() noexcept
+void ArrangementView::resized()
 {
     const int topBarHeight = 28;
     if (!getEdit())
@@ -101,7 +101,7 @@ void ArrangementView::mouseMagnify (const MouseEvent& event, float scaleFactor)
     }
 }
 
-void ArrangementView::valueTreePropertyChanged (ValueTree& tree, const Identifier& property) noexcept
+void ArrangementView::valueTreePropertyChanged (ValueTree& tree, const Identifier& property)
 {
     if (tree == getEdit()->arrangementViewModel.getState())
     {

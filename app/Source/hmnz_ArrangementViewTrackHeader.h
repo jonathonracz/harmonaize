@@ -19,12 +19,12 @@ class ArrangementViewTrackHeader  : public ArrangementViewComponent
 public:
     ArrangementViewTrackHeader (Track* track);
 
-    Track* getRepresentedTrack() const noexcept { return track; }
+    Track* getRepresentedTrack() const { return track; }
 
 private:
-    Track* track;
+    WeakReference<Track> track;
 
-    void paint (Graphics&) noexcept override;
+    void paint (Graphics&) override;
     jcf::AdvancedLeakDetector leakDetector;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementViewTrackHeader)

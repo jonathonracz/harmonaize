@@ -11,7 +11,7 @@
 #include "hmnz_ArrangementViewTrackLaneList.h"
 #include "hmnz_Edit.h"
 
-void ArrangementViewTrackLaneList::editChanged (Edit* oldEdit) noexcept
+void ArrangementViewTrackLaneList::editChanged (Edit* oldEdit)
 {
     if (oldEdit)
         oldEdit->trackList.tracks.removeListener (this);
@@ -29,7 +29,7 @@ void ArrangementViewTrackLaneList::editChanged (Edit* oldEdit) noexcept
     getEdit()->trackList.tracks.addListener (this);
 }
 
-void ArrangementViewTrackLaneList::resized() noexcept
+void ArrangementViewTrackLaneList::resized()
 {
     if (!getEdit())
         return;

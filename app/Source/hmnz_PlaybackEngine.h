@@ -37,28 +37,28 @@ public:
     PlaybackEngine();
     ~PlaybackEngine();
 
-    Edit* getEdit() const noexcept;
-    void setEdit (Edit* edit) noexcept;
+    Edit* getEdit() const;
+    void setEdit (Edit* edit);
 
-    bool canControlTransport() noexcept override { return true; }
+    bool canControlTransport() override { return true; }
 
-    double getActiveSampleRate() const noexcept { return activeSampleRate; }
-    int getActiveSamplesPerBlockExpected() const noexcept { return activeSamplesPerBlockExpected; }
-    uint64 getRecordOperationID() const noexcept { return recordOperationID.load (std::memory_order_acquire); }
+    double getActiveSampleRate() const { return activeSampleRate; }
+    int getActiveSamplesPerBlockExpected() const { return activeSamplesPerBlockExpected; }
+    uint64 getRecordOperationID() const { return recordOperationID.load (std::memory_order_acquire); }
 
     // Note that these should ONLY be called on the audio thread.
-    bool getCurrentPosition (AudioPlayHead::CurrentPositionInfo& result) noexcept override;
+    bool getCurrentPosition (AudioPlayHead::CurrentPositionInfo& result) override;
 
     // These should ONLY be called on the message thread.
-    void transportPlay (bool shouldStartPlaying) noexcept override;
-    void transportRecord (bool shouldStartRecording) noexcept override;
-    void transportRewind() noexcept override;
+    void transportPlay (bool shouldStartPlaying) override;
+    void transportRecord (bool shouldStartRecording) override;
+    void transportRewind() override;
 
-    void setPositionSample (int64 sample) noexcept;
-    void setPositionSecond (double second) noexcept;
-    void setPositionBeat (double beat) noexcept;
+    void setPositionSample (int64 sample);
+    void setPositionSecond (double second);
+    void setPositionBeat (double beat);
 
-    std::mutex& getCallbackLock() noexcept { return callbackLock; }
+    std::mutex& getCallbackLock() { return callbackLock; }
 
 private:
     struct CurrentPositionInfo  : public AudioPlayHead::CurrentPositionInfo
@@ -83,21 +83,21 @@ private:
     MidiMessageCollector midiMessageCollector;
     MidiBuffer midiStopBuffer;
 
-    CurrentPositionInfo updatePositionInfo() noexcept;
+    CurrentPositionInfo updatePositionInfo();
 
-    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) noexcept override;
-    void releaseResources() noexcept override;
-    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) noexcept override;
+    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
+    void releaseResources() override;
+    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
 
-    void changeListenerCallback (ChangeBroadcaster* source) noexcept override;
+    void changeListenerCallback (ChangeBroadcaster* source) override;
 
-    void handleAsyncUpdate() noexcept override;
+    void handleAsyncUpdate() override;
 
-    void valueTreePropertyChanged (ValueTree& tree, const Identifier& identifier) noexcept override;
+    void valueTreePropertyChanged (ValueTree& tree, const Identifier& identifier) override;
     void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
     void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
     void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
     void valueTreeParentChanged (ValueTree&) override {}
 
-    void objectAdded (Track* track, int, HomogeneousValueTreeObjectArray<Track, CriticalSection>*) noexcept override;
+    void objectAdded (Track* track, int, HomogeneousValueTreeObjectArray<Track, CriticalSection>*) override;
 };
