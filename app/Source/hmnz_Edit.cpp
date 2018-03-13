@@ -11,28 +11,24 @@
 #include "hmnz_Edit.h"
 #include "hmnz_Application.h"
 
-Edit::Edit (const ValueTree& v, bool useUndoManager)
-    : ValueTreeObject<IDs::Edit> (v, useUndoManager ? new UndoManager : nullptr),
-      masterTrack (getState().getOrCreateChildWithName (MasterTrack::identifier, nullptr), getUndoManager(), this),
+Edit::Edit (const ValueTree& v, UndoManager* um)
+    : ValueTreeObject<IDs::Edit> (v, um),
+      masterTrack (getState().getOrCreateChildWithName (MasterTrack::identifier, nullptr), getUndoManager()),
       transport (getState().getOrCreateChildWithName (Transport::identifier, nullptr)),
       arrangementViewModel (getState().getOrCreateChildWithName (ArrangementViewModel::identifier, nullptr)),
-      trackList (getState().getOrCreateChildWithName (TrackList::identifier, nullptr), getUndoManager(), this),
-      undoManager (getUndoManager())
+      trackList (getState().getOrCreateChildWithName (TrackList::identifier, nullptr), getUndoManager(), this)
 {
     // TODO: Validate the ValueTree data model, display an error if
     // something unexpected occurs, etc...
-    getState().addListener (this);
     if (trackList.tracks.size() == 0)
         trackList.tracks.insertStateAtObjectIndex (Track::createDefaultState(), -1);
-
-    stateDebugger.setSource (getState());
 }
 
 Edit::~Edit()
 {
 }
 
-MidiFile Edit::exportToMidi() const noexcept
+MidiFile Edit::exportToMidi() const
 {
     MidiFile ret;
     ret.setTicksPerQuarterNote (static_cast<int> (Transport::pulsesPerQuarterNote));
@@ -49,13 +45,13 @@ MidiFile Edit::exportToMidi() const noexcept
     return ret;
 }
 
-void Edit::importFromMidi (const MidiFile& midiFile, int trackOffset, double timeOffset) noexcept
+void Edit::importFromMidi (const MidiFile& midiFile, int trackOffset, double timeOffset)
 {
     jassert (midiFile.getTimeFormat() > 0); // Only support PPQ.
 
     double length = midiFile.getLastTimestamp() / midiFile.getTimeFormat();
     while (midiFile.getNumTracks() + trackOffset > trackList.tracks.size())
-        getState().addChild (Track::createDefaultState(), -1, getUndoManager());
+        trackList.getState().addChild (Track::createDefaultState(), -1, getUndoManager());
 
     for (int i = 0; i < midiFile.getNumTracks(); ++i)
     {
@@ -107,7 +103,7 @@ void Edit::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
     }
 }
 
-void Edit::convertTimestampsFromBeatsToTicks (MidiMessageSequence& sequence) const noexcept
+void Edit::convertTimestampsFromBeatsToTicks (MidiMessageSequence& sequence) const
 {
     for (MidiMessageSequence::MidiEventHolder* event : sequence)
     {

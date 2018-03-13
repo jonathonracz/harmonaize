@@ -52,6 +52,9 @@ void HarmonaizeApplication::initialise (const String& commandLine)
         ComponentPeer::StyleFlags::windowHasMinimiseButton |
         ComponentPeer::StyleFlags::windowHasCloseButton |
         ComponentPeer::StyleFlags::windowHasDropShadow);
+    commandManager.registerAllCommandsForTarget (this);
+    commandManager.registerAllCommandsForTarget (editWindow.get());
+    editWindow->menuItemsChanged();
 }
 
 void HarmonaizeApplication::shutdown()
@@ -62,4 +65,9 @@ void HarmonaizeApplication::shutdown()
 void HarmonaizeApplication::systemRequestedQuit()
 {
     quit();
+}
+
+ApplicationCommandManager& HarmonaizeApplication::getCommandManager()
+{
+    return getApp().commandManager;
 }

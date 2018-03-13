@@ -10,29 +10,30 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include "hmnz_ArrangementViewTopBar.h"
+#include "hmnz_ArrangementViewTimeline.h"
+#include "hmnz_ArrangementViewTrackHeaderList.h"
 
-class Edit;
+class Track;
 
-class ArrangementView   : public Component,
-                          public ValueTree::Listener
+class ArrangementView   : public ArrangementViewComponent
 {
 public:
-    ArrangementView() {}
-
-    void setEdit (Edit* edit);
+    ArrangementView();
 
 private:
-    WeakReference<Edit> edit;
+    ArrangementViewTopBar topBar;
+    ArrangementViewTimeline timeline;
+    ArrangementViewTrackHeaderList headerList;
+    double verticalScrollAccumulator = 0.0;
 
-    void resized() noexcept override;
-    void paint (Graphics&) noexcept override;
+    void editChanged (Edit*) override;
 
-    void valueTreePropertyChanged (ValueTree&, const Identifier&) noexcept override;
-    void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
-    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
-    void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
-    void valueTreeParentChanged (ValueTree&) override {}
+    void resized() override;
+    void mouseWheelMove (const MouseEvent&, const MouseWheelDetails&) override;
+    void mouseMagnify (const MouseEvent&, float) override;
+
+    void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementView)
 };

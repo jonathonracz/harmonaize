@@ -60,8 +60,4 @@ void EditView::resized()
 
 void EditView::paint (Graphics& g)
 {
-    if (edit)
-        g.fillAll (Colours::red);
-    else
-        g.fillAll (Colours::blue);
 }
