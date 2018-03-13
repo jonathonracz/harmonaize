@@ -12,7 +12,7 @@
 
 #include "JuceHeader.h"
 
-class Transport;
+class Edit;
 
 class TransportView : public Component,
                       public ValueTree::Listener,
@@ -24,10 +24,10 @@ class TransportView : public Component,
 public:
     TransportView();
 
-    void setTransport (Transport* transport);
+    void setEdit (Edit* edit);
 
 private:
-    WeakReference<Transport> transport;
+    WeakReference<Edit> edit;
 
     TextButton goToBeginningButton;
     TextButton stopPlayButton;

@@ -16,10 +16,10 @@
     A run-time class which represents an abstract ValueTree node.
 */
 template<const Identifier& identifierType>
-class ValueTreeObject : protected ValueTree::Listener
+class ValueTreeObject
 {
 public:
-    ValueTreeObject (const ValueTree& v, UndoManager* um)
+    explicit ValueTreeObject (const ValueTree& v, UndoManager* um)
         : state (v), undoManager (um)
     {
         jassert (v.isValid());
@@ -28,40 +28,33 @@ public:
 
     virtual ~ValueTreeObject() = default;
 
-    ValueTree& getState() noexcept
+    ValueTree& getState()
     {
         return state;
     }
 
-    UndoManager* getUndoManager() const noexcept
+    UndoManager* getUndoManager() const
     {
         return undoManager;
     }
 
-    void beginNewTransaction (const String& actionName = String()) noexcept
+    void beginNewTransaction (const String& actionName = String())
     {
         if (undoManager)
             undoManager->beginNewTransaction (actionName);
     }
 
-    static ValueTree createDefaultState() noexcept
+    static ValueTree createDefaultState()
     {
         return ValueTree (identifier);
     }
 
-    operator ValueTree() noexcept
+    operator ValueTree()
     {
         return getState();
     }
 
     static constexpr const Identifier& identifier = identifierType;
-
-protected:
-    void valueTreePropertyChanged (ValueTree&, const Identifier&) override {}
-    void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
-    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
-    void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
-    void valueTreeParentChanged (ValueTree&) override {}
 
 private:
     ValueTree state;

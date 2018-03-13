@@ -66,26 +66,32 @@ TransportView::TransportView()
     addAndMakeVisible (keySignatureText);
 }
 
-void TransportView::setTransport (Transport* _transport)
+void TransportView::setEdit (Edit* _edit)
 {
-    if (transport)
-        transport->getState().removeListener (this);
+    if (edit)
+        edit->getState().removeListener (this);
 
-    transport = _transport;
+    edit = _edit;
 
-    if (transport)
+    if (edit)
     {
-        transport->getState().addListener (this);
-        timeLabel.setText (String (transport->playHeadTime), NotificationType::dontSendNotification);
-        beatLabel.setText (String (transport->playHeadBeat), NotificationType::dontSendNotification);
+        edit->getState().addListener (this);
         tempoSlider.setColour (Slider::ColourIds::textBoxOutlineColourId, Colours::transparentWhite);
         tempoSlider.setTextBoxStyle (Slider::TextBoxBelow, 0, 80, 25);
         tempoSlider.setRange (1, 200);
         tempoSlider.setTextValueSuffix (" BPM");
-        timeSignatureLabel.setText (String (transport->playHeadTimeSigNumerator) + "/" + String (transport->playHeadTimeSigDenominator), NotificationType::dontSendNotification);
-        //timeSignatureLabel.setText (String (transport->playPositionTime), NotificationType::dontSendNotification);
         StringArray items = KeySignature::getKeyDescriptions();
         keySignatureComboBox.addItemList (items, 1);
+
+        edit->transport.getState().sendPropertyChangeMessage (edit->transport.playState.getPropertyID());
+        edit->transport.getState().sendPropertyChangeMessage (edit->transport.recordEnabled.getPropertyID());
+        edit->transport.getState().sendPropertyChangeMessage (edit->transport.playHeadTime.getPropertyID());
+        edit->transport.getState().sendPropertyChangeMessage (edit->transport.playHeadBeat.getPropertyID());
+        edit->transport.getState().sendPropertyChangeMessage (edit->transport.playHeadTempo.getPropertyID());
+        edit->transport.getState().sendPropertyChangeMessage (edit->transport.playHeadTimeSigNumerator.getPropertyID());
+        edit->transport.getState().sendPropertyChangeMessage (edit->transport.playHeadTimeSigDenominator.getPropertyID());
+        edit->transport.getState().sendPropertyChangeMessage (edit->transport.playHeadKeySigNumSharpsOrFlats.getPropertyID());
+        edit->transport.getState().sendPropertyChangeMessage (edit->transport.playHeadKeySigIsMinor.getPropertyID());
     }
 }
 
@@ -171,104 +177,99 @@ void TransportView::paint (Graphics& g)
 
 void TransportView::valueTreePropertyChanged (ValueTree& treeChanged, const Identifier& property)
 {
-    jassert (transport && treeChanged == transport->getState());
-    if (property == transport->playState.getPropertyID())
+    if (treeChanged == edit->transport.getState())
     {
-        if (int (treeChanged[property]) == Transport::State::playing)
-            stopPlayButton.setToggleState (true, NotificationType::dontSendNotification);
-        else if (int (treeChanged[property]) == Transport::State::stopped)
-            stopPlayButton.setToggleState (false, NotificationType::dontSendNotification);
-        buttonStateChanged (&stopPlayButton);
-    }
-    else if (property == transport->recordEnabled.getPropertyID())
-    {
-        recordButton.setToggleState (bool (treeChanged[property]), NotificationType::dontSendNotification);
-    }
-    else if (property == transport->playHeadTime.getPropertyID())
-    {
-        timeLabel.setText (String (transport->playHeadTime), NotificationType::dontSendNotification);
-    }
-    else if (property == transport->playHeadBeat.getPropertyID())
-    {
-        beatLabel.setText (String (transport->playHeadBeat), NotificationType::dontSendNotification);
-    }
-    else if (property == transport->playHeadKeySigNumSharpsOrFlats.getPropertyID())
-    {
-        bool minor = transport->playHeadKeySigIsMinor.get();
-        int numSharpsOrFlats = transport->playHeadKeySigNumSharpsOrFlats.get();
-        String desc = KeySignature::createKeyDescription (numSharpsOrFlats, minor);
-        for (int i = 0; i < keySignatureComboBox.getNumItems(); i++) {
-            String val = keySignatureComboBox.getItemText (i);
-            if (val == desc) {
-                keySignatureComboBox.setSelectedItemIndex (i, NotificationType::dontSendNotification);
+        Transport& transport = edit->transport;
+        if (property == transport.playState.getPropertyID())
+        {
+            if (int (treeChanged[property]) == Transport::State::playing)
+                stopPlayButton.setToggleState (true, NotificationType::dontSendNotification);
+            else if (int (treeChanged[property]) == Transport::State::stopped)
+                stopPlayButton.setToggleState (false, NotificationType::dontSendNotification);
+            buttonStateChanged (&stopPlayButton);
+        }
+        else if (property == transport.recordEnabled.getPropertyID())
+        {
+            recordButton.setToggleState (bool (treeChanged[property]), NotificationType::dontSendNotification);
+        }
+        else if (property == transport.playHeadTime.getPropertyID())
+        {
+            timeLabel.setText (String ((int)(transport.playHeadTime * 100.0)/100.0), NotificationType::dontSendNotification);
+        }
+        else if (property == transport.playHeadBeat.getPropertyID())
+        {
+            beatLabel.setText (String ((int)(transport.playHeadBeat * 100.0)/100.0), NotificationType::dontSendNotification);
+        }
+        else if (property == transport.playHeadKeySigNumSharpsOrFlats.getPropertyID())
+        {
+            bool minor = transport.playHeadKeySigIsMinor.get();
+            int numSharpsOrFlats = transport.playHeadKeySigNumSharpsOrFlats.get();
+            String desc = KeySignature::createKeyDescription (numSharpsOrFlats, minor);
+            for (int i = 0; i < keySignatureComboBox.getNumItems(); i++) {
+                String val = keySignatureComboBox.getItemText (i);
+                if (val == desc) {
+                    keySignatureComboBox.setSelectedItemIndex (i, NotificationType::dontSendNotification);
+                }
             }
         }
-    }
-    else if (property == transport->playHeadKeySigIsMinor.getPropertyID())
-    {
-        bool minor = transport->playHeadKeySigIsMinor.get();
-        int numSharpsOrFlats = transport->playHeadKeySigNumSharpsOrFlats.get();
-        String desc = KeySignature::createKeyDescription (numSharpsOrFlats, minor);
-        for (int i = 0; i < keySignatureComboBox.getNumItems(); i++) {
-            String val = keySignatureComboBox.getItemText (i);
-            if (val == desc) {
-                keySignatureComboBox.setSelectedItemIndex (i, NotificationType::dontSendNotification);
+        else if (property == transport.playHeadKeySigIsMinor.getPropertyID())
+        {
+            bool minor = transport.playHeadKeySigIsMinor.get();
+            int numSharpsOrFlats = transport.playHeadKeySigNumSharpsOrFlats.get();
+            String desc = KeySignature::createKeyDescription (numSharpsOrFlats, minor);
+            for (int i = 0; i < keySignatureComboBox.getNumItems(); i++) {
+                String val = keySignatureComboBox.getItemText (i);
+                if (val == desc) {
+                    keySignatureComboBox.setSelectedItemIndex (i, NotificationType::dontSendNotification);
+                }
             }
         }
-    }
-    else if (property == transport->playHeadTempo.getPropertyID())
-    {
-        tempoSlider.setValue (transport->playHeadTempo, NotificationType::dontSendNotification);
+        else if (property == transport.playHeadTempo.getPropertyID())
+        {
+            tempoSlider.setValue (transport.playHeadTempo, NotificationType::dontSendNotification);
+        }
     }
 }
 
 void TransportView::buttonClicked (Button* button)
 {
+    if (!edit)
+        return;
+
+    Transport& transport = edit->transport;
     if (button == &goToBeginningButton)
     {
-        if (transport)
-            transport->playHeadTime = 0.0f;
+        transport.playHeadTime = 0.0f;
     }
     else if (button == &stopPlayButton)
     {
-        if (transport)
-        {
-            transport->transportPlay (button->getToggleState());
-            if (transport->recordEnabled.get())
-            {
-                transport->transportRecord (button->getToggleState());
-            }
-        }
+        transport.playState = button->getToggleState();
+        if (button->getToggleState() == false)
+            transport.recordEnabled = button->getToggleState();
     }
     else if (button == &recordButton)
     {
-        if (transport)
-        {
-            transport->transportRecord (button->getToggleState());
-            transport->transportPlay (button->getToggleState());
-        }
+        transport.recordEnabled = button->getToggleState();
+        transport.playState = button->getToggleState();
     }
     else if (button == &clearButton)
     {
         // TODO: This belongs in some sort of arrangement controller, not transport.
-        if (transport)
+        // TODO: Also, this is stupidly written and hacky
+        int indexToRemove = Utility::getIndexOfImmediateChildWithName (edit->getState(), Track::identifier);
+        while (indexToRemove >= 0)
         {
-            // TODO: Also, this is stupidly written and hacky
-            int indexToRemove = Utility::getIndexOfImmediateChildWithName (transport->edit->getState(), Track::identifier);
-            while (indexToRemove >= 0)
-            {
-                transport->edit->getState().removeChild (indexToRemove, transport->getUndoManager());
-                indexToRemove = Utility::getIndexOfImmediateChildWithName (transport->edit->getState(), Track::identifier);
-            }
-
-            transport->edit->getState().addChild (Track::createDefaultState(), -1, transport->getUndoManager());
+            edit->getState().removeChild (indexToRemove, transport.getUndoManager());
+            indexToRemove = Utility::getIndexOfImmediateChildWithName (edit->getState(), Track::identifier);
         }
+
+        edit->getState().addChild (Track::createDefaultState(), -1, transport.getUndoManager());
     }
     else if (button == &generateAccompanimentButton)
     {
-        MidiFile midiFile = transport->edit->exportToMidi();
+        MidiFile midiFile = edit->exportToMidi();
         midiFile = Interchange::callPython (midiFile);
-        transport->edit->importFromMidi (midiFile, 1, 0.0);
+        edit->importFromMidi (midiFile, 1, 0.0);
     }
 }
 
@@ -285,15 +286,16 @@ void TransportView::buttonStateChanged (Button* button)
 
 void TransportView::comboBoxChanged (ComboBox* comboBox)
 {
+    jassert (edit);
     String val = comboBox->getText();
     std::pair<int, bool> key = KeySignature::createRepresentationFromDescription (val);
-    transport->playHeadKeySigNumSharpsOrFlats = key.first;
-    transport->playHeadKeySigIsMinor = key.second;
+    edit->transport.playHeadKeySigNumSharpsOrFlats = key.first;
+    edit->transport.playHeadKeySigIsMinor = key.second;
 }
 
 void TransportView::sliderValueChanged (Slider* slider)
 {
     int val = slider->getValue();
     slider->setValue (val);
-    transport->playHeadTempo = val;
+    edit->transport.playHeadTempo = val;
 }

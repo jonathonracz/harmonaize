@@ -13,37 +13,41 @@
 #include "hmnz_ValueTreeObject.h"
 #include "hmnz_VariantConverters.h"
 #include "hmnz_ClipList.h"
-#include "hmnz_PositionedAudioMidiSource.h"
+#include "hmnz_PlaybackEngine.h"
 #include "hmnz_CacheValueWrappers.h"
+#include "hmnz_PlaybackEngine.h"
 #include "External/readerwriterqueue/readerwriterqueue.h"
 
 class Edit;
 
 class Track : public ValueTreeObject<IDs::Track>,
-              public PositionedAudioMidiSource,
-              public AsyncUpdater
+              public PlaybackEngine::PlaybackTarget,
+              public AsyncUpdater,
+              public ValueTree::Listener
 {
 public:
-    Track (const ValueTree& v, UndoManager* um, Edit* const edit);
+    Track (const ValueTree& v, UndoManager* um, Edit* edit);
 
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
     void getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
-        const MidiBuffer& incomingMidiBuffer,
-        const AudioPlayHead::CurrentPositionInfo& positionInfo) override;
+        MidiBuffer& incomingMidiBuffer,
+        PlaybackEngine& playbackSource) override;
 
-    MidiMessageSequence getMidiMessageSequence() const noexcept;
-    void addMidiMessageSequenceAsClip (double start, double length, const MidiMessageSequence& sequence) noexcept;
+    MidiMessageSequence getMidiMessageSequence() const;
+    void addMidiMessageSequenceAsClip (double start, double length, const MidiMessageSequence& sequence);
 
     CachedValue<String> name;
     CachedValue<Colour> color;
     CachedValue<Identifier> type;
+    CachedValue<MinMaxConstrainerWrapper<int, 8, 64>> height;
     CachedValue<SPSCAtomicWrapper<bool>> recordArmed;
 
-    Edit* const edit;
+    WeakReference<Edit> edit;
     ClipList clipList;
 
 private:
+    std::atomic<bool> isPrepared = { false };
     AudioBuffer<float> audioBuffer;
     MidiBuffer midiBuffer;
 
@@ -60,12 +64,17 @@ private:
 
     sfzero::Synth synthesizer;
 
-    void updateMidiReadCache() noexcept;
-    void flushMidiWriteBackQueue() noexcept;
+    void updateMidiReadCache();
+    void flushMidiWriteBackQueue();
 
     void handleAsyncUpdate() override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
     void valueTreeChildAdded (ValueTree&, ValueTree&) override;
     void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override;
+    void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
+    void valueTreeParentChanged (ValueTree&) override {}
+
+    JUCE_DECLARE_WEAK_REFERENCEABLE (Track)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Track)
 };

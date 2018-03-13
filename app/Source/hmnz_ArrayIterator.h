@@ -18,12 +18,12 @@ namespace jdr
 template<class Type>
 struct ArrayForwardIteratorConst
 {
-    static ArrayForwardIteratorConst begin (const Array<Type>& a) noexcept
+    static ArrayForwardIteratorConst begin (const Array<Type>& a)
     {
         return ArrayForwardIteratorConst (a, false);
     }
 
-    static ArrayForwardIteratorConst end (const Array<Type>& a) noexcept
+    static ArrayForwardIteratorConst end (const Array<Type>& a)
     {
         return ArrayForwardIteratorConst (a, true);
     }
@@ -34,18 +34,18 @@ struct ArrayForwardIteratorConst
     using pointer = Array<Type>*;
     using iterator_category = std::forward_iterator_tag;
 
-    ArrayForwardIteratorConst& operator++() noexcept
+    ArrayForwardIteratorConst& operator++()
     {
         ++internal;
         return *this;
     }
 
-    bool operator== (const ArrayForwardIteratorConst& other) const noexcept
+    bool operator== (const ArrayForwardIteratorConst& other) const
     {
         return internal == other.internal;
     }
 
-    bool operator!= (const ArrayForwardIteratorConst& other) const noexcept
+    bool operator!= (const ArrayForwardIteratorConst& other) const
     {
         return internal != other.internal;
     }
@@ -63,7 +63,7 @@ struct ArrayForwardIteratorConst
 private:
     Type* internal;
 
-    ArrayForwardIteratorConst (const Array<Type>& a, bool isEnd) noexcept
+    ArrayForwardIteratorConst (const Array<Type>& a, bool isEnd)
         : internal (isEnd ? a.end() : a.begin())
     {
     }
@@ -72,12 +72,12 @@ private:
 template<class Type>
 struct OwnedArrayForwardIteratorConst
 {
-    static OwnedArrayForwardIteratorConst begin (const OwnedArray<Type>& a) noexcept
+    static OwnedArrayForwardIteratorConst begin (const OwnedArray<Type>& a)
     {
         return OwnedArrayForwardIteratorConst (a, false);
     }
 
-    static OwnedArrayForwardIteratorConst end (const OwnedArray<Type>& a) noexcept
+    static OwnedArrayForwardIteratorConst end (const OwnedArray<Type>& a)
     {
         return OwnedArrayForwardIteratorConst (a, true);
     }
@@ -88,18 +88,18 @@ struct OwnedArrayForwardIteratorConst
     using pointer = OwnedArray<Type>*;
     using iterator_category = std::forward_iterator_tag;
 
-    OwnedArrayForwardIteratorConst& operator++() noexcept
+    OwnedArrayForwardIteratorConst& operator++()
     {
         ++internal;
         return *this;
     }
 
-    bool operator== (const OwnedArrayForwardIteratorConst& other) const noexcept
+    bool operator== (const OwnedArrayForwardIteratorConst& other) const
     {
         return internal == other.internal;
     }
 
-    bool operator!= (const OwnedArrayForwardIteratorConst& other) const noexcept
+    bool operator!= (const OwnedArrayForwardIteratorConst& other) const
     {
         return internal != other.internal;
     }
@@ -117,7 +117,7 @@ struct OwnedArrayForwardIteratorConst
 private:
     Type** internal;
 
-    OwnedArrayForwardIteratorConst (const OwnedArray<Type>& a, bool isEnd) noexcept
+    OwnedArrayForwardIteratorConst (const OwnedArray<Type>& a, bool isEnd)
         : internal (isEnd ? a.end() : a.begin())
     {
     }

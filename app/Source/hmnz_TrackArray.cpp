@@ -11,9 +11,8 @@
 #include "hmnz_TrackArray.h"
 #include "hmnz_Edit.h"
 
-TrackArray::TrackArray (Edit* const _edit)
-    : ValueTreeObjectArray (_edit->getState(), _edit->getUndoManager()),
-      edit (_edit)
+TrackArray::TrackArray (const ValueTree& v, UndoManager* um, Edit* _edit)
+    : HomogeneousValueTreeObjectArray (v, um), edit (_edit)
 {
     addObjects();
 }
@@ -21,7 +20,5 @@ TrackArray::TrackArray (Edit* const _edit)
 Track* TrackArray::createNewObject (const ValueTree& v, UndoManager* um)
 {
     jassert (um == edit->getUndoManager());
-    Track* newTrack = new Track (v, um, edit);
-    newTrack->prepareToPlay (edit->transport.getActiveSamplesPerBlockExpected(), edit->transport.getActiveSampleRate());
-    return newTrack;
+    return new Track (v, um, edit);
 }

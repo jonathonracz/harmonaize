@@ -11,8 +11,8 @@
 #pragma once
 
 #include "hmnz_MidiMessageModel.h"
-#include "hmnz_GenericValueTreeObjectArray.h"
 #include "hmnz_ArrayIterator.h"
+#include "hmnz_HomogeneousValueTreeObjectArray.h"
 
 class MidiMessageSequenceModel  : public ValueTreeObject<IDs::MidiMessageSequenceModel>
 {
@@ -22,12 +22,12 @@ public:
     {
     }
 
-    MidiMessageSequence getMidiMessageSequence (double timeDelta = 0.0) const noexcept
+    MidiMessageSequence getMidiMessageSequence (double timeDelta = 0.0) const
     {
         return getPartialMidiMessageSequence (std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), timeDelta);
     }
 
-    MidiMessageSequence getPartialMidiMessageSequence (double rangeStart, double rangeEnd, double timeDelta = 0.0) const noexcept
+    MidiMessageSequence getPartialMidiMessageSequence (double rangeStart, double rangeEnd, double timeDelta = 0.0) const
     {
         auto begin = midiMessages.begin();
         auto end = midiMessages.end();
@@ -42,19 +42,19 @@ public:
         return ret;
     }
 
-    void setMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0) noexcept
+    void setMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0)
     {
         getState().removeAllChildren (getUndoManager());
         addMidiMessageSequence (sequence, timeDelta);
     }
 
-    void addMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0) noexcept
+    void addMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta = 0.0)
     {
         for (MidiMessageSequence::MidiEventHolder* event : sequence)
              addEvent (event->message, timeDelta);
     }
 
-    void addEvent (const MidiMessage& message, double timeDelta = 0.0) noexcept
+    void addEvent (const MidiMessage& message, double timeDelta = 0.0)
     {
         MessageSortComparator sortComparator;
         auto insertLocation =
@@ -67,13 +67,13 @@ public:
         getState().addChild (MidiMessageModel::createStateForMessage (message, timeDelta), insertIndex, getUndoManager());
     }
 
-    void addTimeToMessages (double timeDelta) noexcept
+    void addTimeToMessages (double timeDelta)
     {
         for (MidiMessageModel* message : midiMessages)
             message->timestamp = message->timestamp.get() + timeDelta;
     }
 
-    MidiMessageModel* findNoteOnOffSiblingFor (MidiMessageModel* message) const noexcept
+    MidiMessageModel* findNoteOnOffSiblingFor (MidiMessageModel* message) const
     {
         int indexOfMessage = midiMessages.indexOf (message);
         if (!message || indexOfMessage < 0)
@@ -102,7 +102,7 @@ public:
         return nullptr;
     }
 
-    void trimMessagesOutsideBounds (double start, double end) noexcept
+    void trimMessagesOutsideBounds (double start, double end)
     {
         Array<MidiMessageModel*> messagesToRemove;
         Array<MidiMessage> messagesToAdd;
@@ -148,7 +148,7 @@ public:
             addEvent (message);
     }
 
-    GenericValueTreeObjectArray<MidiMessageModel> midiMessages;
+    GenericHomogeneousValueTreeObjectArray<MidiMessageModel> midiMessages;
 
 private:
     struct MessageSortComparator
@@ -168,4 +168,7 @@ private:
             return first->timestamp < second;
         }
     };
+
+    JUCE_DECLARE_WEAK_REFERENCEABLE (MidiMessageSequenceModel)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MidiMessageSequenceModel)
 };
