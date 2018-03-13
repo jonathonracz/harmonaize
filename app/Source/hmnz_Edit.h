@@ -26,7 +26,7 @@ class Edit  : public ValueTreeObject<IDs::Edit>,
               public PlaybackEngine::PlaybackTarget
 {
 public:
-    Edit (const ValueTree& v, bool useUndoManager = true);
+    Edit (const ValueTree& v, UndoManager* um);
     ~Edit();
 
     // AudioSource methods
@@ -37,28 +37,29 @@ public:
         MidiBuffer& incomingMidiBuffer,
         PlaybackEngine& playbackSource) override;
 
-    MidiFile exportToMidi() const noexcept;
-    void importFromMidi (const MidiFile& midiFile, int trackOffset, double timeOffset) noexcept;
+    MidiFile exportToMidi() const;
+    void importFromMidi (const MidiFile& midiFile, int trackOffset, double timeOffset);
 
-    std::mutex* getPlaybackLock () const noexcept { return playbackLock; }
-    void setPlaybackLock (std::mutex* _playbackLock) noexcept { playbackLock = _playbackLock; }
+    std::mutex* getPlaybackLock() const { return playbackLock; }
+    void setPlaybackLock (std::mutex* _playbackLock) { playbackLock = _playbackLock; }
 
-    MidiKeyboardState& getMidiKeyboardState() noexcept { return keyboardState; }
+    MidiKeyboardState& getMidiKeyboardState() { return keyboardState; }
 
+private:
+    JUCE_DECLARE_WEAK_REFERENCEABLE (Edit)
+
+public:
     MasterTrack masterTrack;
     Transport transport;
     ArrangementViewModel arrangementViewModel;
     TrackList trackList;
 
 private:
-    std::unique_ptr<UndoManager> undoManager;
-    jcf::ValueTreeDebugger stateDebugger;
     std::mutex* playbackLock;
 
     MidiKeyboardState keyboardState;
 
-    void convertTimestampsFromBeatsToTicks (MidiMessageSequence& sequence) const noexcept;
+    void convertTimestampsFromBeatsToTicks (MidiMessageSequence& sequence) const;
 
-    JUCE_DECLARE_WEAK_REFERENCEABLE (Edit)
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Edit)
 };

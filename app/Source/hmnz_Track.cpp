@@ -16,9 +16,10 @@ Track::Track (const ValueTree& v, UndoManager* um, Edit* const _edit)
       name (getState(), IDs::TrackProps::Name, getUndoManager(), "New Track"),
       color (getState(), IDs::TrackProps::Color, getUndoManager(), Utility::randomColor()),
       type (getState(), IDs::TrackProps::Type, getUndoManager(), IDs::TrackProps::Types::Midi),
+      height (getState(), IDs::TrackProps::Height, nullptr, 16),
       recordArmed (getState(), IDs::TrackProps::RecordArmed, nullptr, false),
-      edit (_edit),
-      clipList (getState().getOrCreateChildWithName (IDs::ClipList, nullptr), getUndoManager())
+      clipList (getState().getOrCreateChildWithName (IDs::ClipList, nullptr), getUndoManager(), this),
+      edit (_edit)
 {
     // May not entirely prevent allocation in the audio callback, but it will
     // at least provide a good starting point. 2048 is what's used internally
@@ -44,6 +45,7 @@ void Track::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
     midiWriteBackQueue = moodycamel::ReaderWriterQueue<RecordedMidiMessage> (static_cast<size_t> (sampleRate)); // Buffer 1 second of messages
     audioBuffer.setSize (2, samplesPerBlockExpected); // TODO: Hardcoded number of channels.
     synthesizer.setCurrentPlaybackSampleRate (sampleRate);
+    isPrepared.store (true, std::memory_order_release);
 }
 
 void Track::releaseResources()
@@ -54,6 +56,9 @@ void Track::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
                                   MidiBuffer& incomingMidiBuffer,
                                   PlaybackEngine& playbackSource)
 {
+    if (!isPrepared.load (std::memory_order_acquire))
+        return;
+
     midiBuffer = incomingMidiBuffer;
 
     AudioPlayHead::CurrentPositionInfo currentPosition;
@@ -108,7 +113,7 @@ void Track::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
     synthesizer.renderNextBlock (audioBuffer, midiBuffer, 0, audioBuffer.getNumSamples());
 }
 
-MidiMessageSequence Track::getMidiMessageSequence() const noexcept
+MidiMessageSequence Track::getMidiMessageSequence() const
 {
     MidiMessageSequence ret;
     for (Clip* clip : clipList.clips)
@@ -122,12 +127,12 @@ MidiMessageSequence Track::getMidiMessageSequence() const noexcept
     return ret;
 }
 
-void Track::addMidiMessageSequenceAsClip (double start, double length, const MidiMessageSequence& sequence) noexcept
+void Track::addMidiMessageSequenceAsClip (double start, double length, const MidiMessageSequence& sequence)
 {
     clipList.clips.insertStateAtObjectIndex (Clip::createState (start, length, sequence, color), -1);
 }
 
-void Track::updateMidiReadCache() noexcept
+void Track::updateMidiReadCache()
 {
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
     MidiMessageSequence newReadCache = getMidiMessageSequence();
@@ -139,7 +144,7 @@ void Track::updateMidiReadCache() noexcept
     }
 }
 
-void Track::flushMidiWriteBackQueue() noexcept
+void Track::flushMidiWriteBackQueue()
 {
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
     for (size_t i = 0; i < midiWriteBackQueue.size_approx(); ++i)

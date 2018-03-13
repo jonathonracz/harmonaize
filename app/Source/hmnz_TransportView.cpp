@@ -194,11 +194,11 @@ void TransportView::valueTreePropertyChanged (ValueTree& treeChanged, const Iden
         }
         else if (property == transport.playHeadTime.getPropertyID())
         {
-            timeLabel.setText (String (transport.playHeadTime), NotificationType::dontSendNotification);
+            timeLabel.setText (String ((int)(transport.playHeadTime * 100.0)/100.0), NotificationType::dontSendNotification);
         }
         else if (property == transport.playHeadBeat.getPropertyID())
         {
-            beatLabel.setText (String (transport.playHeadBeat), NotificationType::dontSendNotification);
+            beatLabel.setText (String ((int)(transport.playHeadBeat * 100.0)/100.0), NotificationType::dontSendNotification);
         }
         else if (property == transport.playHeadKeySigNumSharpsOrFlats.getPropertyID())
         {

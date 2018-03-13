@@ -25,6 +25,7 @@ public:
     static HarmonaizeApplication& getApp();
     static AudioDeviceManager& getDeviceManager();
     static AudioFormatManager& getFormatManager();
+    static ApplicationCommandManager& getCommandManager();
 
     const String getApplicationName() override       { return ProjectInfo::projectName; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }
@@ -36,6 +37,8 @@ public:
 
     std::unique_ptr<EditWindow> editWindow;
     std::unique_ptr<PreferencesView> preferencesView;
+    
+    ApplicationCommandManager commandManager;
 
 private:
     UnitTestRunner unitTestRunner;

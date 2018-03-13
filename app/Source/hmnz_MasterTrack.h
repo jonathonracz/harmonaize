@@ -21,19 +21,19 @@ class MasterTrack   : public ValueTreeObject<IDs::MasterTrack>,
                       public AudioSource
 {
 public:
-    MasterTrack (const ValueTree& v, UndoManager* um, Edit* const edit);
+    MasterTrack (const ValueTree& v, UndoManager* um);
     ~MasterTrack() = default;
 
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override {}
     void releaseResources() override {}
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override {}
 
-    MidiMessageSequence createMetaEventsSequence() const noexcept;
+    MidiMessageSequence createMetaEventsSequence() const;
 
     Tempo tempo;
     TimeSignature timeSignature;
     KeySignature keySignature;
 
 private:
-    Edit* const edit;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MasterTrack)
 };

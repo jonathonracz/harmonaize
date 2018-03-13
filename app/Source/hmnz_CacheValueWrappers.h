@@ -19,8 +19,6 @@
 template<typename Type>
 struct SPSCAtomicWrapper
 {
-    SPSCAtomicWrapper() = default;
-
     template<typename OtherType>
     SPSCAtomicWrapper (const OtherType& other)
     {
@@ -32,43 +30,43 @@ struct SPSCAtomicWrapper
         value.store (other.value.load (std::memory_order_acquire), std::memory_order_release);
     }
 
-    SPSCAtomicWrapper& operator= (const SPSCAtomicWrapper& other) noexcept
+    SPSCAtomicWrapper& operator= (const SPSCAtomicWrapper& other)
     {
         HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
         value.store (other.value.load (std::memory_order_acquire), std::memory_order_release);
         return *this;
     }
 
-    bool operator== (const SPSCAtomicWrapper& other) const noexcept
+    bool operator== (const SPSCAtomicWrapper& other) const
     {
         bool result = value.load (std::memory_order_relaxed) == other.value.load (std::memory_order_relaxed);
         std::atomic_thread_fence (std::memory_order_acquire);
         return result;
     }
 
-    bool operator!= (const SPSCAtomicWrapper& other) const noexcept
+    bool operator!= (const SPSCAtomicWrapper& other) const
     {
         bool result = value.load (std::memory_order_relaxed) != other.value.load (std::memory_order_relaxed);
         std::atomic_thread_fence (std::memory_order_acquire);
         return result;
     }
 
-    operator var() const noexcept
+    operator var() const
     {
         return value.load (std::memory_order_acquire);
     }
 
-    operator Type() const noexcept
+    operator Type() const
     {
         return value.load (std::memory_order_acquire);
     }
 
-    Type getRelaxed() const noexcept
+    Type getRelaxed() const
     {
         return value.load (std::memory_order_relaxed);
     }
 
-    void setRelaxed (Type newValue) noexcept
+    void setRelaxed (Type newValue)
     {
         value.store (newValue, std::memory_order_relaxed);
     }
@@ -88,42 +86,52 @@ struct DefaultConstrainer
     }
 };
 
+template<typename Type, Type min, Type max>
+struct MinMaxConstrainer
+{
+    static Type constrain (const Type& value)
+    {
+        return std::min (std::max (min, value), max);
+    }
+};
+
 template<typename Type, class Constrainer = DefaultConstrainer<Type>>
 struct ConstrainerWrapper
 {
-    ConstrainerWrapper() = default;
-
     template<typename OtherType>
     ConstrainerWrapper (const OtherType& other)
     {
         value = Constrainer::constrain (other);
     }
 
-    ConstrainerWrapper& operator= (const ConstrainerWrapper& other) noexcept
+    ConstrainerWrapper& operator= (const ConstrainerWrapper& other)
     {
         value = Constrainer::constrain (other.value);
         return *this;
     }
 
-    bool operator== (const ConstrainerWrapper& other) const noexcept
+    bool operator== (const ConstrainerWrapper& other) const
     {
         return value == other.value;
     }
 
-    bool operator!= (const ConstrainerWrapper& other) const noexcept
+    bool operator!= (const ConstrainerWrapper& other) const
     {
         return value != other.value;
     }
 
-    operator var() const noexcept
+    operator var() const
     {
         return Constrainer::constrain (value);
     }
 
-    operator Type() const noexcept
+    operator Type() const
     {
         return Constrainer::constrain (value);
     }
 
     Type value = Type();
 };
+
+template<typename Type, Type min, Type max>
+using MinMaxConstrainerWrapper = ConstrainerWrapper<Type, MinMaxConstrainer<Type, min, max>>;
