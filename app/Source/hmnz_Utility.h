@@ -26,13 +26,13 @@ namespace Utility
 {
 
 template<typename Type>
-void writeBackDefault (CachedValue<Type>& value) noexcept
+void writeBackDefault (CachedValue<Type>& value)
 {
     if (value.isUsingDefault())
         value = value.getDefault();
 }
 
-inline Colour randomColor() noexcept
+inline Colour randomColor()
 {
     return Colour (
             static_cast<uint8> (Random::getSystemRandom().nextInt(255)),
@@ -40,7 +40,7 @@ inline Colour randomColor() noexcept
             static_cast<uint8> (Random::getSystemRandom().nextInt(255)));
 }
 
-inline void printMidiBuffer (const MidiBuffer& buffer) noexcept
+inline void printMidiBuffer (const MidiBuffer& buffer)
 {
     MidiMessage midiMessage;
     int midiMessageSamplePosition;
@@ -62,6 +62,30 @@ inline int getIndexOfImmediateChildWithName (const ValueTree& parent, const Iden
             return i;
 
     return -1;
+}
+
+template<class Type, Type (*function)(Type)>
+inline Type toNearestInterval (Type value, Type interval)
+{
+    return function (value / interval) * interval;
+}
+
+template<class Type>
+inline Type floorToNearestInterval (Type value, Type interval)
+{
+    return toNearestInterval<Type, std::floor> (value, interval);
+}
+
+template<class Type>
+inline Type ceilToNearestInterval (Type value, Type interval)
+{
+    return toNearestInterval<Type, std::ceil> (value, interval);
+}
+
+template<class Type>
+inline Type roundToNearestInterval (Type value, Type interval)
+{
+    return toNearestInterval<Type, std::round> (value, interval);
 }
 
 }

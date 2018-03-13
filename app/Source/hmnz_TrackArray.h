@@ -11,15 +11,16 @@
 #pragma once
 
 #include "hmnz_Track.h"
-#include "hmnz_ValueTreeObjectArray.h"
+#include "hmnz_HomogeneousValueTreeObjectArray.h"
 
-class TrackArray    : public ValueTreeObjectArray<Track, CriticalSection>
+class TrackArray    : public HomogeneousValueTreeObjectArray<Track, CriticalSection>
 {
 public:
-    TrackArray (Edit* const edit);
+    TrackArray (const ValueTree& v, UndoManager* um, Edit* edit);
 
 private:
-    Edit* const edit;
-
+    WeakReference<Edit> const edit;
     Track* createNewObject (const ValueTree& v, UndoManager* um) override;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackArray)
 };

@@ -27,7 +27,7 @@ public:
         }
 
     private:
-        GenericValueTreeObjectArray<ValueTreeObjectUnitTest::TestValueTreeObject<Type>> array;
+        GenericHomogeneousValueTreeObjectArray<ValueTreeObjectUnitTest::TestValueTreeObject<Type>> array;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ObjectWithArray)
     };
 

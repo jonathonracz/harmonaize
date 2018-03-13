@@ -10,8 +10,9 @@
 
 #pragma once
 
-#include "hmnz_GenericValueTreeObjectArray.h"
 #include "hmnz_ValueTreeObjectUnitTest.h"
+#include "hmnz_HomogeneousValueTreeObjectArray.h"
+#include "hmnz_NonHomogeneousValueTreeObjectArray.h"
 
 class ValueTreeObjectArrayUnitTest   : public UnitTest
 {
@@ -29,11 +30,21 @@ public:
 
         ValueTree defaultState = TestObject::createDefaultState();
         UndoManager defaultUm;
-        GenericValueTreeObjectArray<TestObject> testArray (defaultState, &defaultUm);
 
-        testArray.addState (TestObject::createDefaultState());
-        defaultState.addChild (TestObject::createDefaultState(), 0, &defaultUm);
-        testArray.removeObject (testArray.getFirst());
-        defaultState.removeChild (0, &defaultUm);
+        {
+            GenericHomogeneousValueTreeObjectArray<TestObject> testArray (defaultState, &defaultUm);
+            testArray.addState (TestObject::createDefaultState());
+            defaultState.addChild (TestObject::createDefaultState(), 0, &defaultUm);
+            testArray.removeObject (testArray.getFirst());
+            defaultState.removeChild (0, &defaultUm);
+        }
+
+        {
+            GenericNonHomogeneousValueTreeObjectArray<TestObject> testArray (defaultState, &defaultUm);
+            testArray.addState (TestObject::createDefaultState());
+            defaultState.addChild (TestObject::createDefaultState(), 0, &defaultUm);
+            testArray.removeObject (testArray.getFirst());
+            defaultState.removeChild (0, &defaultUm);
+        }
     }
 };

@@ -11,43 +11,55 @@
 #pragma once
 
 #include "hmnz_ValueTreeObject.h"
-#include "hmnz_TrackArray.h"
+#include "hmnz_TrackList.h"
 #include "hmnz_MasterTrack.h"
 #include "hmnz_Transport.h"
 #include "hmnz_Track.h"
 #include "hmnz_CacheValueWrappers.h"
-#include "hmnz_PositionedAudioMidiSource.h"
+#include "hmnz_PlaybackEngine.h"
+#include "hmnz_ArrangementViewModel.h"
 
 /**
     Represents an active edit (also known as a project).
 */
 class Edit  : public ValueTreeObject<IDs::Edit>,
-              public PositionedAudioMidiSource
+              public PlaybackEngine::PlaybackTarget
 {
 public:
-    Edit (const ValueTree& v);
+    Edit (const ValueTree& v, UndoManager* um);
     ~Edit();
 
     // AudioSource methods
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
-    void getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
-        const MidiBuffer& incomingMidiBuffer,
-        const AudioPlayHead::CurrentPositionInfo& positionInfo) override;
+    void getNextAudioBlockWithInputs (
+        AudioBuffer<float>& audioBuffer,
+        MidiBuffer& incomingMidiBuffer,
+        PlaybackEngine& playbackSource) override;
 
-    MidiFile exportToMidi() const noexcept;
-    void importFromMidi (const MidiFile& midiFile, int trackOffset, double timeOffset) noexcept;
+    MidiFile exportToMidi() const;
+    void importFromMidi (const MidiFile& midiFile, int trackOffset, double timeOffset);
 
-    MasterTrack masterTrack;
-    Transport transport;
-    TrackArray tracks;
+    std::mutex* getPlaybackLock() const { return playbackLock; }
+    void setPlaybackLock (std::mutex* _playbackLock) { playbackLock = _playbackLock; }
+
+    MidiKeyboardState& getMidiKeyboardState() { return keyboardState; }
 
 private:
-    UndoManager undoManager;
-    jcf::ValueTreeDebugger stateDebugger;
-
-    void convertTimestampsFromBeatsToTicks (MidiMessageSequence& sequence) const noexcept;
-
     JUCE_DECLARE_WEAK_REFERENCEABLE (Edit)
+
+public:
+    MasterTrack masterTrack;
+    Transport transport;
+    ArrangementViewModel arrangementViewModel;
+    TrackList trackList;
+
+private:
+    std::mutex* playbackLock;
+
+    MidiKeyboardState keyboardState;
+
+    void convertTimestampsFromBeatsToTicks (MidiMessageSequence& sequence) const;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Edit)
 };

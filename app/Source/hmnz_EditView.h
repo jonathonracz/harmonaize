@@ -12,6 +12,7 @@
 
 #include "hmnz_Edit.h"
 #include "hmnz_TransportView.h"
+#include "hmnz_ArrangementView.h"
 
 class EditView  : public Component,
                   public ValueTree::Listener
@@ -26,6 +27,7 @@ private:
     WeakReference<Edit> edit;
 
     TransportView transportView;
+    ArrangementView arrangementView;
     std::unique_ptr<MidiKeyboardComponent> keyboard;
 
     void resized() override;

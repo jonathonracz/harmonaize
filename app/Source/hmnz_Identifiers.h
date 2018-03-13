@@ -36,13 +36,18 @@ namespace IDs
         DECLARE_ID (PlayHeadKeySigNumSharpsOrFlats)
         DECLARE_ID (PlayHeadKeySigIsMinor)
 
-        DECLARE_ID (LoopStartBeat)
-        DECLARE_ID (LoopEndBeat)
-        DECLARE_ID (LoopEnabled)
         DECLARE_ID (RecordEnabled)
         DECLARE_ID (PlayState)
         DECLARE_ID (SampleRate)
-        DECLARE_ID (PulsesPerQuarterNote)
+    }
+
+    DECLARE_ID (ArrangementViewModel)
+    namespace ArrangementViewModelProps
+    {
+        DECLARE_ID (TimeStart)
+        DECLARE_ID (TimeEnd)
+        DECLARE_ID (HeaderWidth)
+        DECLARE_ID (ScrollPosition)
     }
 
     DECLARE_ID (MasterTrack)
@@ -67,12 +72,15 @@ namespace IDs
         DECLARE_ID (IsMinor)
     }
 
+    DECLARE_ID (TrackList)
+
     DECLARE_ID (Track)
     namespace TrackProps
     {
         DECLARE_ID (Name)
         DECLARE_ID (Color)
         DECLARE_ID (Type)
+        DECLARE_ID (Height)
         namespace Types
         {
             DECLARE_ID (Midi)

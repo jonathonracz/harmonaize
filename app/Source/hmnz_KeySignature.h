@@ -15,14 +15,21 @@
 class KeySignature  : public ValueTreeObject<IDs::KeySignature>
 {
 public:
-    KeySignature(const ValueTree& v, UndoManager* um)
+    struct Snapshot
+    {
+        int numSharpsOrFlats;
+        bool isMinor;
+        double snapshotTime;
+    };
+
+    KeySignature (const ValueTree& v, UndoManager* um)
         : ValueTreeObject (v, um),
           numSharpsOrFlats (getState(), IDs::KeySignatureProps::NumberOfSharpsOrFlats, getUndoManager(), 0),
           isMinor (getState(), IDs::KeySignatureProps::IsMinor, getUndoManager(), false)
     {
     }
 
-    static StringArray getKeyDescriptions() noexcept
+    static StringArray getKeyDescriptions()
     {
         StringArray ret;
         for (int majorMinor = 0; majorMinor < 2; ++majorMinor)
@@ -32,7 +39,7 @@ public:
         return ret;
     }
 
-    static String createKeyDescription (int numSharpsOrFlats, bool isMinor) noexcept
+    static String createKeyDescription (int numSharpsOrFlats, bool isMinor)
     {
         jassert (numSharpsOrFlats >= 7 || numSharpsOrFlats <= 7);
         String ret;
@@ -86,7 +93,7 @@ public:
         return ret;
     }
 
-    static std::pair<int, bool> createRepresentationFromDescription (const String& description) noexcept
+    static std::pair<int, bool> createRepresentationFromDescription (const String& description)
     {
         jassert (description.containsWholeWordIgnoreCase ("major") || description.containsWholeWordIgnoreCase ("minor"));
         bool isMinor = description.containsWholeWordIgnoreCase ("minor");
@@ -133,6 +140,46 @@ public:
         return std::make_pair (numSharpsOrFlats, isMinor);
     }
 
-    CachedValue<int> numSharpsOrFlats;
-    CachedValue<bool> isMinor;
+    Snapshot getKeySignatureAtTime (double time) const
+    {
+        Snapshot ret;
+        ret.numSharpsOrFlats = numSharpsOrFlats.get().getRelaxed();
+        ret.isMinor = isMinor.get().getRelaxed();
+        std::atomic_thread_fence (std::memory_order_acquire);
+        ret.snapshotTime = time;
+        return ret;
+    }
+
+    void setKeySignatureAtTime (Snapshot keySignature)
+    {
+        std::atomic_thread_fence (std::memory_order_acquire);
+        numSharpsOrFlats.get().setRelaxed (keySignature.numSharpsOrFlats);
+        isMinor.get().setRelaxed (keySignature.isMinor);
+    }
+
+    int getNumSharpsOrFlatsAtTime (double time) const
+    {
+        return numSharpsOrFlats.get();
+    }
+
+    void setNumSharpsOrFlatsAtTime (int newNumSharpsOrFlats, double time)
+    {
+        return numSharpsOrFlats.setValue (newNumSharpsOrFlats, getUndoManager());
+    }
+
+    int getIsMinorAtTime (double time) const
+    {
+        return isMinor.get();
+    }
+
+    void setIsMinorAtTime (int newIsMinor, double time)
+    {
+        return isMinor.setValue (newIsMinor, getUndoManager());
+    }
+
+private:
+    CachedValue<SPSCAtomicWrapper<int>> numSharpsOrFlats;
+    CachedValue<SPSCAtomicWrapper<bool>> isMinor;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySignature)
 };

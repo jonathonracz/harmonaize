@@ -13,6 +13,7 @@
 EditView::EditView()
 {
     addAndMakeVisible (transportView);
+    addAndMakeVisible (arrangementView);
 }
 
 EditView::~EditView()
@@ -30,10 +31,11 @@ void EditView::setEdit (Edit* _edit)
 
     if (edit)
     {
-        transportView.setTransport (&edit->transport);
+        transportView.setEdit (edit);
+        arrangementView.setEdit (edit);
         edit->getState().addListener (this);
         keyboard = std::unique_ptr<MidiKeyboardComponent> (new MidiKeyboardComponent (
-                edit->transport.getMidiKeyboardState(), MidiKeyboardComponent::Orientation::horizontalKeyboard));
+                edit->getMidiKeyboardState(), MidiKeyboardComponent::Orientation::horizontalKeyboard));
         addAndMakeVisible (*keyboard);
         keyboard->setKeyWidth(53);
         keyboard->setLowestVisibleKey(60);
@@ -46,10 +48,10 @@ void EditView::resized()
     FlexBox mainBox;
     mainBox.flexDirection = FlexBox::Direction::column;
 
-    mainBox.items.add (FlexItem (transportView).withFlex (1.0f));
-
     if (edit)
     {
+        mainBox.items.add (FlexItem (transportView).withFlex (1.0f));
+        mainBox.items.add (FlexItem (arrangementView).withFlex (1.0f));
         mainBox.items.add (FlexItem (*keyboard).withFlex (1.0f));
     }
 
@@ -58,8 +60,4 @@ void EditView::resized()
 
 void EditView::paint (Graphics& g)
 {
-    if (edit)
-        g.fillAll (Colours::red);
-    else
-        g.fillAll (Colours::blue);
 }
