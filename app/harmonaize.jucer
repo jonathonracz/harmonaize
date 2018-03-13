@@ -67,6 +67,8 @@
             file="Source/hmnz_TransportView.cpp"/>
       <FILE id="KG4fSG" name="hmnz_TransportView.h" compile="0" resource="0"
             file="Source/hmnz_TransportView.h"/>
+      <FILE id="apghKU" name="hmnz_CommandIDs.h" compile="0" resource="0"
+            file="Source/hmnz_CommandIDs.h"/>
     </GROUP>
     <GROUP id="{186A05D2-465A-EAF5-224F-706A2514D5F8}" name="Model">
       <GROUP id="{F1611D00-5B76-00F5-E54F-78CD868347B4}" name="Arrangement">
