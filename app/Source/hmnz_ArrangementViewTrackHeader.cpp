@@ -16,7 +16,7 @@ ArrangementViewTrackHeader::ArrangementViewTrackHeader (Track* _track)
 {
 }
 
-void ArrangementViewTrackHeader::paint (Graphics& g) noexcept
+void ArrangementViewTrackHeader::paint (Graphics& g)
 {
     g.fillAll (track->color);
 }

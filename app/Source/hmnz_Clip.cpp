@@ -17,9 +17,10 @@ Clip::Clip (const ValueTree& v, UndoManager* um, Track* _track)
       length (getState(), IDs::ClipProps::Length, getUndoManager(), 0.0),
       color (getState(), IDs::ClipProps::Color, getUndoManager(), _track ? _track->color : Colours::pink),
       type (getState(), IDs::TrackProps::Type, getUndoManager(), _track ? defaultClipTypeForTrackType (_track->type) : IDs::ClipProps::Types::Midi),
-      track (_track),
       midiMessageSequenceModel (getState().getOrCreateChildWithName (MidiMessageSequenceModel::identifier, nullptr), getUndoManager())
 {
+    track = _track;
+
     if (midiMessageSequenceModel.midiMessages.size() > 0)
     {
         adjustBoundsToFitMessageTimestamp (midiMessageSequenceModel.midiMessages.getFirst()->timestamp);
@@ -27,17 +28,17 @@ Clip::Clip (const ValueTree& v, UndoManager* um, Track* _track)
     }
 }
 
-MidiMessageSequence Clip::getMidiMessageSequence (double timeDelta) const noexcept
+MidiMessageSequence Clip::getMidiMessageSequence (double timeDelta) const
 {
     return getPartialMidiMessageSequence (std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), timeDelta);
 }
 
-MidiMessageSequence Clip::getPartialMidiMessageSequence (double rangeStart, double rangeEnd, double timeDelta) const noexcept
+MidiMessageSequence Clip::getPartialMidiMessageSequence (double rangeStart, double rangeEnd, double timeDelta) const
 {
     return midiMessageSequenceModel.getPartialMidiMessageSequence (rangeStart, rangeEnd, timeDelta + start);
 }
 
-void Clip::setMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta, bool resizeToFit) noexcept
+void Clip::setMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta, bool resizeToFit)
 {
     if (resizeToFit)
     {
@@ -48,7 +49,7 @@ void Clip::setMidiMessageSequence (const MidiMessageSequence& sequence, double t
     midiMessageSequenceModel.setMidiMessageSequence (sequence, -start + timeDelta);
 }
 
-void Clip::addMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta, bool resizeToFit) noexcept
+void Clip::addMidiMessageSequence (const MidiMessageSequence& sequence, double timeDelta, bool resizeToFit)
 {
     if (resizeToFit)
     {
@@ -59,7 +60,7 @@ void Clip::addMidiMessageSequence (const MidiMessageSequence& sequence, double t
     midiMessageSequenceModel.addMidiMessageSequence (sequence, -start + timeDelta);
 }
 
-void Clip::addEvent (const MidiMessage& message, double timeDelta, bool resizeToFit) noexcept
+void Clip::addEvent (const MidiMessage& message, double timeDelta, bool resizeToFit)
 {
     if (resizeToFit)
         adjustBoundsToFitMessageTimestamp (message.getTimeStamp() + timeDelta);
@@ -67,7 +68,7 @@ void Clip::addEvent (const MidiMessage& message, double timeDelta, bool resizeTo
     midiMessageSequenceModel.addEvent (MidiMessage (message, message.getTimeStamp() - start + timeDelta));
 }
 
-void Clip::setStartTimeKeepingEndTime (double newStartTime) noexcept
+void Clip::setStartTimeKeepingEndTime (double newStartTime)
 {
     double startDelta = start - newStartTime;
     start = newStartTime;
@@ -102,7 +103,7 @@ ValueTree Clip::createState (double start, double length, const MidiMessageSeque
     return ret;
 }
 
-void Clip::adjustBoundsToFitMessageTimestamp (double timestamp) noexcept
+void Clip::adjustBoundsToFitMessageTimestamp (double timestamp)
 {
     if (timestamp < start)
         setStartTimeKeepingEndTime (timestamp);

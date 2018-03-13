@@ -20,15 +20,15 @@ class ArrangementViewComponent  : public Component,
 public:
     ArrangementViewComponent() = default;
 
-    Edit* getEdit() const noexcept;
-    void setEdit (Edit* edit) noexcept;
+    Edit* getEdit() const;
+    void setEdit (Edit* edit);
 
 protected:
-    virtual void editChanged (Edit* oldEdit) noexcept {}
-    NormalisableRange<double> getBeatRemapper() const noexcept;
-    int getXPosForBeat (double beat) const noexcept;
-    double getBeatForXPos (int xPos) const noexcept;
-    double getLinesPerBeatForMinimumLineSpacing (int minimumLineSpacing) const noexcept;
+    virtual void editChanged (Edit* oldEdit) {}
+    NormalisableRange<double> getBeatRemapper() const;
+    int getXPosForBeat (double beat) const;
+    double getBeatForXPos (int xPos) const;
+    double getLinesPerBeatForMinimumLineSpacing (int minimumLineSpacing) const;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override {}
     void valueTreeChildAdded (ValueTree&, ValueTree&) override {}

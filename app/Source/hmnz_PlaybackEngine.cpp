@@ -26,13 +26,13 @@ PlaybackEngine::~PlaybackEngine()
     output.setSource (nullptr);
 }
 
-Edit* PlaybackEngine::getEdit() const noexcept
+Edit* PlaybackEngine::getEdit() const
 {
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
     return edit;
 }
 
-void PlaybackEngine::setEdit (Edit* _edit) noexcept
+void PlaybackEngine::setEdit (Edit* _edit)
 {
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
     if (edit)
@@ -58,48 +58,48 @@ void PlaybackEngine::setEdit (Edit* _edit) noexcept
     }
 }
 
-bool PlaybackEngine::getCurrentPosition (AudioPlayHead::CurrentPositionInfo& result) noexcept
+bool PlaybackEngine::getCurrentPosition (AudioPlayHead::CurrentPositionInfo& result)
 {
     result = currentPositionInfo.load (std::memory_order_release);
     return true;
 }
 
-void PlaybackEngine::transportPlay (bool shouldStartPlaying) noexcept
+void PlaybackEngine::transportPlay (bool shouldStartPlaying)
 {
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
     if (edit)
         edit->transport.playState = (shouldStartPlaying) ? Transport::State::playing : Transport::State::stopped;
 }
 
-void PlaybackEngine::transportRecord (bool shouldStartRecording) noexcept
+void PlaybackEngine::transportRecord (bool shouldStartRecording)
 {
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
     if (edit)
         edit->transport.recordEnabled = shouldStartRecording;
 }
 
-void PlaybackEngine::transportRewind() noexcept
+void PlaybackEngine::transportRewind()
 {
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
 }
 
-void PlaybackEngine::setPositionSample (int64 sample) noexcept
+void PlaybackEngine::setPositionSample (int64 sample)
 {
     readPosition.store (sample, std::memory_order_release);
     playHeadPositionChanged.store (true, std::memory_order_release);
 }
 
-void PlaybackEngine::setPositionSecond (double second) noexcept
+void PlaybackEngine::setPositionSecond (double second)
 {
     setPositionSample (static_cast<int64> (second * activeSampleRate));
 }
 
-void PlaybackEngine::setPositionBeat (double beat) noexcept
+void PlaybackEngine::setPositionBeat (double beat)
 {
     setPositionSecond (edit->masterTrack.tempo.time (beat));
 }
 
-PlaybackEngine::CurrentPositionInfo PlaybackEngine::updatePositionInfo() noexcept
+PlaybackEngine::CurrentPositionInfo PlaybackEngine::updatePositionInfo()
 {
     CurrentPositionInfo newPositionInfo;
     int64 currentReadPosition = readPosition.load (std::memory_order_acquire);
@@ -131,13 +131,13 @@ PlaybackEngine::CurrentPositionInfo PlaybackEngine::updatePositionInfo() noexcep
 }
 
 template<class Type>
-static void setTransportPropertyValue (PlaybackEngine* engine, const CachedValue<Type>& property, Type value) noexcept
+static void setTransportPropertyValue (PlaybackEngine* engine, const CachedValue<Type>& property, Type value)
 {
     jassert (engine->getEdit());
     engine->getEdit()->transport.getState().setPropertyExcludingListener (engine, property.getPropertyID(), value, engine->getEdit()->transport.getUndoManager());
 }
 
-void PlaybackEngine::prepareToPlay (int samplesPerBlockExpected, double sampleRate) noexcept
+void PlaybackEngine::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
     activeSamplesPerBlockExpected = samplesPerBlockExpected;
@@ -148,13 +148,13 @@ void PlaybackEngine::prepareToPlay (int samplesPerBlockExpected, double sampleRa
         edit->prepareToPlay (samplesPerBlockExpected, sampleRate);
 }
 
-void PlaybackEngine::releaseResources() noexcept
+void PlaybackEngine::releaseResources()
 {
     if (edit)
         edit->releaseResources();
 }
 
-void PlaybackEngine::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) noexcept
+void PlaybackEngine::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
     HMNZ_ASSERT_IS_NOT_ON_MESSAGE_THREAD
     const std::lock_guard<std::mutex> lock (callbackLock);
@@ -182,7 +182,7 @@ void PlaybackEngine::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFi
     triggerAsyncUpdate();
 }
 
-void PlaybackEngine::changeListenerCallback (ChangeBroadcaster* source) noexcept
+void PlaybackEngine::changeListenerCallback (ChangeBroadcaster* source)
 {
     if (source == &HarmonaizeApplication::getDeviceManager())
     {
@@ -197,7 +197,7 @@ void PlaybackEngine::changeListenerCallback (ChangeBroadcaster* source) noexcept
     }
 }
 
-void PlaybackEngine::handleAsyncUpdate() noexcept
+void PlaybackEngine::handleAsyncUpdate()
 {
     if (!edit)
         return;
@@ -213,7 +213,7 @@ void PlaybackEngine::handleAsyncUpdate() noexcept
     setTransportPropertyValue (this, transport.playHeadKeySigIsMinor, currentPosition.keySigIsMinor);
 }
 
-void PlaybackEngine::valueTreePropertyChanged (ValueTree& tree, const Identifier& identifier) noexcept
+void PlaybackEngine::valueTreePropertyChanged (ValueTree& tree, const Identifier& identifier)
 {
     jassert (edit);
     Transport& transport = edit->transport;
@@ -259,7 +259,7 @@ void PlaybackEngine::valueTreePropertyChanged (ValueTree& tree, const Identifier
     }
 }
 
-void PlaybackEngine::objectAdded (Track* track, int, HomogeneousValueTreeObjectArray<Track, CriticalSection>*) noexcept
+void PlaybackEngine::objectAdded (Track* track, int, HomogeneousValueTreeObjectArray<Track, CriticalSection>*)
 {
     const std::lock_guard<std::mutex> lock (getCallbackLock());
     track->prepareToPlay (getActiveSamplesPerBlockExpected(), getActiveSampleRate());

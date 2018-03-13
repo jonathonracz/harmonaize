@@ -20,11 +20,12 @@ public:
     EditWindow();
     ~EditWindow();
 
-    void setEdit (Edit* edit) noexcept;
+    void setEdit (const ValueTree& edit);
 
 private:
     PlaybackEngine playbackEngine;
     std::unique_ptr<Edit> currentEdit;
+    std::unique_ptr<UndoManager> undoManager;
     jcf::ValueTreeDebugger editDebugger;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditWindow)

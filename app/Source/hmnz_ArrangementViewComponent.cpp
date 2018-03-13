@@ -11,12 +11,12 @@
 #include "hmnz_ArrangementViewComponent.h"
 #include "hmnz_Edit.h"
 
-Edit* ArrangementViewComponent::getEdit() const noexcept
+Edit* ArrangementViewComponent::getEdit() const
 {
     return edit;
 }
 
-void ArrangementViewComponent::setEdit (Edit* _edit) noexcept
+void ArrangementViewComponent::setEdit (Edit* _edit)
 {
     if (edit)
         edit->getState().removeListener (this);
@@ -29,7 +29,7 @@ void ArrangementViewComponent::setEdit (Edit* _edit) noexcept
         edit->getState().addListener (this);
 }
 
-NormalisableRange<double> ArrangementViewComponent::getBeatRemapper() const noexcept
+NormalisableRange<double> ArrangementViewComponent::getBeatRemapper() const
 {
     if (!edit)
         return NormalisableRange<double>();
@@ -37,7 +37,7 @@ NormalisableRange<double> ArrangementViewComponent::getBeatRemapper() const noex
     return NormalisableRange<double> (edit->arrangementViewModel.timeStart, edit->arrangementViewModel.timeEnd);
 }
 
-int ArrangementViewComponent::getXPosForBeat (double beat) const noexcept
+int ArrangementViewComponent::getXPosForBeat (double beat) const
 {
     if (!edit)
         return -1;
@@ -45,7 +45,7 @@ int ArrangementViewComponent::getXPosForBeat (double beat) const noexcept
     return static_cast<int> (getBeatRemapper().convertTo0to1 (beat) * getWidth());
 }
 
-double ArrangementViewComponent::getBeatForXPos (int xPos) const noexcept
+double ArrangementViewComponent::getBeatForXPos (int xPos) const
 {
     if (!edit)
         return 0.0;
@@ -53,7 +53,7 @@ double ArrangementViewComponent::getBeatForXPos (int xPos) const noexcept
     return  getBeatRemapper().convertFrom0to1 (xPos / static_cast<double> (getWidth()));
 }
 
-double ArrangementViewComponent::getLinesPerBeatForMinimumLineSpacing (int minimumLineSpacing) const noexcept
+double ArrangementViewComponent::getLinesPerBeatForMinimumLineSpacing (int minimumLineSpacing) const
 {
     if (!edit)
         return 0.0;

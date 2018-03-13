@@ -24,16 +24,16 @@ public:
     ArrangementViewTrackLane (Track* track);
     ~ArrangementViewTrackLane();
 
-    Track* getRepresentedTrack() const noexcept { return track; }
+    Track* getRepresentedTrack() const { return track; }
 
 private:
     Track* track;
 
-    ArrangementViewTrackLaneClip* getChildForClip (Clip* clip) noexcept;
+    ArrangementViewTrackLaneClip* getChildForClip (Clip* clip);
 
-    void editChanged (Edit* oldEdit) noexcept override;
+    void editChanged (Edit* oldEdit) override;
 
-    void paint (Graphics&) noexcept override;
+    void paint (Graphics&) override;
 
     void objectAdded (Clip*, int, HomogeneousValueTreeObjectArray<Clip>*) override;
     void objectRemoved (Clip*, int, HomogeneousValueTreeObjectArray<Clip>*) override;

@@ -21,15 +21,14 @@ public:
           bytes (getState(), IDs::MidiMessageModelProps::Bytes, getUndoManager(), MemoryBlock (MidiMessage().getRawData(), MidiMessage().getRawDataSize())),
           timestamp (getState(), IDs::MidiMessageModelProps::Timestamp, getUndoManager(), MidiMessage().getTimeStamp())
     {
-        getState().addListener (this);
     }
 
-    MidiMessage getMessage() const noexcept
+    MidiMessage getMessage() const
     {
         return MidiMessage (bytes.get().getData(), static_cast<int> (bytes.get().getSize()), timestamp);
     }
 
-    void setMessage (const MidiMessage& message, double timeDelta = 0.0) noexcept
+    void setMessage (const MidiMessage& message, double timeDelta = 0.0)
     {
         bytes = MemoryBlock (message.getRawData(), static_cast<size_t> (message.getRawDataSize()));
         timestamp = message.getTimeStamp() + timeDelta;
@@ -45,4 +44,8 @@ public:
 
     CachedValue<MemoryBlock> bytes;
     CachedValue<double> timestamp;
+
+private:
+    JUCE_DECLARE_WEAK_REFERENCEABLE (MidiMessageModel)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MidiMessageModel)
 };

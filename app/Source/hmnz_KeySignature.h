@@ -29,7 +29,7 @@ public:
     {
     }
 
-    static StringArray getKeyDescriptions() noexcept
+    static StringArray getKeyDescriptions()
     {
         StringArray ret;
         for (int majorMinor = 0; majorMinor < 2; ++majorMinor)
@@ -39,7 +39,7 @@ public:
         return ret;
     }
 
-    static String createKeyDescription (int numSharpsOrFlats, bool isMinor) noexcept
+    static String createKeyDescription (int numSharpsOrFlats, bool isMinor)
     {
         jassert (numSharpsOrFlats >= 7 || numSharpsOrFlats <= 7);
         String ret;
@@ -93,7 +93,7 @@ public:
         return ret;
     }
 
-    static std::pair<int, bool> createRepresentationFromDescription (const String& description) noexcept
+    static std::pair<int, bool> createRepresentationFromDescription (const String& description)
     {
         jassert (description.containsWholeWordIgnoreCase ("major") || description.containsWholeWordIgnoreCase ("minor"));
         bool isMinor = description.containsWholeWordIgnoreCase ("minor");
@@ -140,7 +140,7 @@ public:
         return std::make_pair (numSharpsOrFlats, isMinor);
     }
 
-    Snapshot getKeySignatureAtTime (double time) const noexcept
+    Snapshot getKeySignatureAtTime (double time) const
     {
         Snapshot ret;
         ret.numSharpsOrFlats = numSharpsOrFlats.get().getRelaxed();
@@ -150,29 +150,29 @@ public:
         return ret;
     }
 
-    void setKeySignatureAtTime (Snapshot keySignature) noexcept
+    void setKeySignatureAtTime (Snapshot keySignature)
     {
         std::atomic_thread_fence (std::memory_order_acquire);
         numSharpsOrFlats.get().setRelaxed (keySignature.numSharpsOrFlats);
         isMinor.get().setRelaxed (keySignature.isMinor);
     }
 
-    int getNumSharpsOrFlatsAtTime (double time) const noexcept
+    int getNumSharpsOrFlatsAtTime (double time) const
     {
         return numSharpsOrFlats.get();
     }
 
-    void setNumSharpsOrFlatsAtTime (int newNumSharpsOrFlats, double time) noexcept
+    void setNumSharpsOrFlatsAtTime (int newNumSharpsOrFlats, double time)
     {
         return numSharpsOrFlats.setValue (newNumSharpsOrFlats, getUndoManager());
     }
 
-    int getIsMinorAtTime (double time) const noexcept
+    int getIsMinorAtTime (double time) const
     {
         return isMinor.get();
     }
 
-    void setIsMinorAtTime (int newIsMinor, double time) noexcept
+    void setIsMinorAtTime (int newIsMinor, double time)
     {
         return isMinor.setValue (newIsMinor, getUndoManager());
     }
@@ -180,4 +180,6 @@ public:
 private:
     CachedValue<SPSCAtomicWrapper<int>> numSharpsOrFlats;
     CachedValue<SPSCAtomicWrapper<bool>> isMinor;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySignature)
 };

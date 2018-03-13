@@ -18,8 +18,8 @@ Track::Track (const ValueTree& v, UndoManager* um, Edit* const _edit)
       type (getState(), IDs::TrackProps::Type, getUndoManager(), IDs::TrackProps::Types::Midi),
       height (getState(), IDs::TrackProps::Height, nullptr, 16),
       recordArmed (getState(), IDs::TrackProps::RecordArmed, nullptr, false),
-      edit (_edit),
-      clipList (getState().getOrCreateChildWithName (IDs::ClipList, nullptr), getUndoManager(), this)
+      clipList (getState().getOrCreateChildWithName (IDs::ClipList, nullptr), getUndoManager(), this),
+      edit (_edit)
 {
     // May not entirely prevent allocation in the audio callback, but it will
     // at least provide a good starting point. 2048 is what's used internally
@@ -113,7 +113,7 @@ void Track::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
     synthesizer.renderNextBlock (audioBuffer, midiBuffer, 0, audioBuffer.getNumSamples());
 }
 
-MidiMessageSequence Track::getMidiMessageSequence() const noexcept
+MidiMessageSequence Track::getMidiMessageSequence() const
 {
     MidiMessageSequence ret;
     for (Clip* clip : clipList.clips)
@@ -127,12 +127,12 @@ MidiMessageSequence Track::getMidiMessageSequence() const noexcept
     return ret;
 }
 
-void Track::addMidiMessageSequenceAsClip (double start, double length, const MidiMessageSequence& sequence) noexcept
+void Track::addMidiMessageSequenceAsClip (double start, double length, const MidiMessageSequence& sequence)
 {
     clipList.clips.insertStateAtObjectIndex (Clip::createState (start, length, sequence, color), -1);
 }
 
-void Track::updateMidiReadCache() noexcept
+void Track::updateMidiReadCache()
 {
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
     MidiMessageSequence newReadCache = getMidiMessageSequence();
@@ -144,7 +144,7 @@ void Track::updateMidiReadCache() noexcept
     }
 }
 
-void Track::flushMidiWriteBackQueue() noexcept
+void Track::flushMidiWriteBackQueue()
 {
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
     for (size_t i = 0; i < midiWriteBackQueue.size_approx(); ++i)

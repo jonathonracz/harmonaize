@@ -16,13 +16,13 @@ ArrangementViewTimeline::ArrangementViewTimeline()
     addAndMakeVisible (trackLaneList);
 }
 
-void ArrangementViewTimeline::editChanged (Edit* oldEdit) noexcept
+void ArrangementViewTimeline::editChanged (Edit* oldEdit)
 {
     grid.setEdit (getEdit());
     trackLaneList.setEdit (getEdit());
 }
 
-void ArrangementViewTimeline::resized() noexcept
+void ArrangementViewTimeline::resized()
 {
     grid.setBounds (getLocalBounds());
     trackLaneList.setBounds (getLocalBounds());

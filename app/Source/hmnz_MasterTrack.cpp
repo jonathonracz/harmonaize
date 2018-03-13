@@ -9,19 +9,16 @@
 */
 
 #include "hmnz_MasterTrack.h"
-#include "hmnz_Edit.h"
-#include <ratio>
 
-MasterTrack::MasterTrack (const ValueTree& v, UndoManager* um, Edit* const _edit)
+MasterTrack::MasterTrack (const ValueTree& v, UndoManager* um)
     : ValueTreeObject (v, um),
       tempo (getState().getOrCreateChildWithName (Tempo::identifier, nullptr), getUndoManager()),
       timeSignature (getState().getOrCreateChildWithName (TimeSignature::identifier, nullptr), getUndoManager()),
-      keySignature (getState().getOrCreateChildWithName (KeySignature::identifier, nullptr), getUndoManager()),
-      edit (_edit)
+      keySignature (getState().getOrCreateChildWithName (KeySignature::identifier, nullptr), getUndoManager())
 {
 }
 
-MidiMessageSequence MasterTrack::createMetaEventsSequence() const noexcept
+MidiMessageSequence MasterTrack::createMetaEventsSequence() const
 {
     // TODO: This is extremely rudimentary and does not support automation
     MidiMessageSequence ret;

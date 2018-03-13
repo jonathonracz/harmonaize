@@ -16,7 +16,8 @@
 
 class Track;
 
-class ClipList  : public ValueTreeObject<IDs::ClipList>
+class ClipList  : public ValueTreeObject<IDs::ClipList>,
+                  public ValueTree::Listener
 {
 public:
     ClipList (const ValueTree& v, UndoManager* um, Track* _track)
@@ -25,7 +26,7 @@ public:
         getState().addListener (this);
     }
 
-    Array<Clip*> getClipsForInterval (double start, double end) const noexcept
+    Array<Clip*> getClipsForInterval (double start, double end) const
     {
         Array<Clip*> ret;
         for (Clip* clip : clips)
@@ -35,7 +36,7 @@ public:
         return ret;
     }
 
-    Clip* clipAtTime (double time) const noexcept
+    Clip* clipAtTime (double time) const
     {
         for (Clip* clip : clips)
             if (clip->start >= time && clip->start + clip->length < time)
@@ -69,6 +70,10 @@ private:
         }
     }
 
+    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
+    void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
+    void valueTreeParentChanged (ValueTree&) override {}
+
     struct StartComparator
     {
         int compareElements (const ValueTree& first, const ValueTree& second)
@@ -80,13 +85,13 @@ private:
         }
     };
 
-    void sortClips() noexcept
+    void sortClips()
     {
         StartComparator comparator;
         getState().sort (comparator, nullptr, false);
     }
 
-    void fixClipOverlaps (const ValueTree& dominantClip) noexcept
+    void fixClipOverlaps (const ValueTree& dominantClip)
     {
         Array<int> childrenToDelete;
         Clip* changedChild = clips[getState().indexOf (dominantClip)];
@@ -107,4 +112,6 @@ private:
         for (int i = childrenToDelete.size() - 1; i >= 0; --i)
             getState().removeChild (i, getUndoManager());
     }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ClipList)
 };

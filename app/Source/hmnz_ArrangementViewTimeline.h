@@ -22,7 +22,9 @@ private:
     ArrangementViewTimelineGrid grid;
     ArrangementViewTrackLaneList trackLaneList;
 
-    void editChanged (Edit* oldEdit) noexcept override;
+    void editChanged (Edit* oldEdit) override;
 
-    void resized() noexcept override;
+    void resized() override;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementViewTimeline)
 };
