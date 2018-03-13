@@ -16,6 +16,7 @@ PreferencesView::PreferencesView()
 {
     setOpaque (true);
     addAndMakeVisible (selectorComponent);
+    addKeyListener (HarmonaizeApplication::getCommandManager().getKeyMappings());
 }
 
 void PreferencesView::resized()
