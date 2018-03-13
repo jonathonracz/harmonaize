@@ -20,6 +20,7 @@ namespace CommandIDs
         saveProjectAs           = 0x300004,
         
         showPreferences         = 0x300020,
+        showDebugger            = 0x300021,
         
         undo                    = 0x300040,
         redo                    = 0x300041,

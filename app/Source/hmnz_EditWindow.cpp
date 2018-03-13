@@ -24,11 +24,10 @@ EditWindow::EditWindow()
     
     setApplicationCommandManagerToWatch (&HarmonaizeApplication::getCommandManager());
     #if JUCE_MAC
-    PopupMenu extraAppleMenuItems;
-    extraAppleMenuItems.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::showPreferences);
-    setMacMainMenu (this, &extraAppleMenuItems);
+    setMacMainMenu (this);
     #endif
     HarmonaizeApplication::getCommandManager().setFirstCommandTarget (this);
+    addKeyListener (HarmonaizeApplication::getCommandManager().getKeyMappings());
 
     ValueTree defaultEdit = Edit::createDefaultState();
     setEdit (defaultEdit);
@@ -57,6 +56,7 @@ void EditWindow::setEdit (const ValueTree& edit)
         Edit* newEdit = new Edit (edit, undoManager.get());
         currentEdit = std::unique_ptr<Edit> (newEdit);
         editDebugger.setSource (currentEdit->getState());
+        editDebugger.setVisible (false);
         playbackEngine.setEdit (currentEdit.get());
         static_cast<EditView*> (getContentComponent())->setEdit (currentEdit.get());
     }
@@ -72,6 +72,11 @@ StringArray EditWindow::getMenuBarNames()
 
 PopupMenu EditWindow::getMenuForIndex (int topLevelMenuIndex, const String& /*menuName*/)
 {
+    PopupMenu extraAppleMenuItems;
+    extraAppleMenuItems.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::showPreferences);
+//    extraAppleMenuItems.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::showDebugger);
+    setMacMainMenu (this, &extraAppleMenuItems);
+    
     PopupMenu menu;
     
     if (topLevelMenuIndex == 0)
@@ -115,6 +120,7 @@ void EditWindow::getAllCommands (Array<CommandID>& commands)
         CommandIDs::saveProject,
         CommandIDs::saveProjectAs,
         CommandIDs::showPreferences,
+        CommandIDs::showDebugger,
         CommandIDs::undo,
         CommandIDs::redo
     };
@@ -160,6 +166,11 @@ void EditWindow::getCommandInfo (const CommandID commandID, ApplicationCommandIn
             result.addDefaultKeypress ('p', ModifierKeys::commandModifier);
             break;
             
+        case CommandIDs::showDebugger:
+            result.setInfo ("Debugger", String(), category, 0);
+            result.addDefaultKeypress('d', ModifierKeys::commandModifier);
+            break;
+            
         case CommandIDs::undo:
             result.setInfo ("Undo", String(), category, 0);
             result.addDefaultKeypress ('z', ModifierKeys::commandModifier);
@@ -167,6 +178,7 @@ void EditWindow::getCommandInfo (const CommandID commandID, ApplicationCommandIn
             
         case CommandIDs::redo:
             result.setInfo ("Redo", String(), category, 0);
+            result.defaultKeypresses.add (KeyPress ('z', ModifierKeys::shiftModifier | ModifierKeys::commandModifier, 0));
             break;
             
         default:
@@ -178,33 +190,52 @@ bool EditWindow::perform (const InvocationInfo& info)
 {
     switch (info.commandID)
     {
-        case CommandIDs::newProject: {
+        case CommandIDs::newProject:
+        {
             //            if (graphHolder != nullptr && graphHolder->graph != nullptr && graphHolder->graph->saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
             //                graphHolder->graph->newDocument();
             break;
         }
-        case CommandIDs::openProject: {
+        case CommandIDs::openProject:
+        {
             //            if (graphHolder != nullptr && graphHolder->graph != nullptr && graphHolder->graph->saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
             //                graphHolder->graph->loadFromUserSpecifiedFile (true);
             break;
         }
-        case CommandIDs::saveProject: {
+        case CommandIDs::saveProject:
+        {
             //            if (graphHolder != nullptr && graphHolder->graph != nullptr)
             //                graphHolder->graph->save (true, true);
             break;
         }
-        case CommandIDs::saveProjectAs: {
+        case CommandIDs::saveProjectAs:
+        {
             //            if (graphHolder != nullptr && graphHolder->graph != nullptr)
             //                graphHolder->graph->saveAs (File(), true, true, true);
             break;
         }
-        case CommandIDs::showPreferences: {
+        case CommandIDs::showPreferences:
+        {
+            if (HarmonaizeApplication::getApp().preferencesView->isVisible())
+                HarmonaizeApplication::getApp().preferencesView->setVisible (false);
+            else
+                HarmonaizeApplication::getApp().preferencesView->setVisible (true);
             break;
         }
-        case CommandIDs::undo: {
+        case CommandIDs::showDebugger:
+        {
+            if (editDebugger.isVisible())
+                editDebugger.setVisible (false);
+            else
+                editDebugger.setVisible (true);
             break;
         }
-        case CommandIDs::redo: {
+        case CommandIDs::undo:
+        {
+            break;
+        }
+        case CommandIDs::redo:
+        {
             break;
         }
         default:

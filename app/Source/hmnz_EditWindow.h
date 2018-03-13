@@ -14,6 +14,7 @@
 #include "hmnz_EditView.h"
 #include "hmnz_PlaybackEngine.h"
 #include "hmnz_CommandIDs.h"
+#include "hmnz_Application.h"
 
 class EditWindow    : public DocumentWindow,
                       public MenuBarModel,

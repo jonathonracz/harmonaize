@@ -31,3 +31,8 @@ void PreferencesView::paint (Graphics& g)
 {
     g.fillAll (Colours::grey);
 }
+
+void PreferencesView::userTriedToCloseWindow()
+{
+    this->setVisible (false);
+}
