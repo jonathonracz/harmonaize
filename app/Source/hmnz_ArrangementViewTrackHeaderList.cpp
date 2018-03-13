@@ -24,9 +24,9 @@ void ArrangementViewTrackHeaderList::editChanged (Edit* oldEdit)
         {
             objectAdded (getEdit()->trackList.tracks[i], i, &(getEdit()->trackList.tracks));
         }
+        
+        getEdit()->trackList.tracks.addListener (this);
     }
-
-    getEdit()->trackList.tracks.addListener (this);
 }
 
 void ArrangementViewTrackHeaderList::resized()

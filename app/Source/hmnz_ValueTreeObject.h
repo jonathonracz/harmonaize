@@ -24,9 +24,13 @@ public:
     {
         jassert (v.isValid());
         jassert (v.getType() == identifier);
+        DBG ("ValueTreeObject " << identifier << " CONSTRUCT");
     }
 
-    virtual ~ValueTreeObject() = default;
+    virtual ~ValueTreeObject()
+    {
+        DBG ("ValueTreeObject " << identifier << " DELETE");
+    }
 
     ValueTree& getState()
     {
@@ -55,5 +59,5 @@ private:
     ValueTree state;
     UndoManager* undoManager;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ValueTreeObject)
+    JUCE_DECLARE_NON_COPYABLE (ValueTreeObject)
 };
