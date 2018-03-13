@@ -49,11 +49,6 @@ public:
         return ValueTree (identifier);
     }
 
-    operator ValueTree()
-    {
-        return getState();
-    }
-
     static constexpr const Identifier& identifier = identifierType;
 
 private:
