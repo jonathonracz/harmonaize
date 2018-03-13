@@ -16,8 +16,6 @@ namespace CommandIDs
     {
         newProject              = 0x300000,
         openProject             = 0x300001,
-        saveProject             = 0x300003,
-        saveProjectAs           = 0x300004,
         
         showPreferences         = 0x300020,
         showDebugger            = 0x300021,

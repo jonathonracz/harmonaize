@@ -18,6 +18,7 @@ EditWindow::EditWindow()
 {
     setUsingNativeTitleBar (true);
     setResizeLimits (800, 600, std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
+    setResizable (true, false);
     setContentOwned (new EditView(), false);
     centreWithSize (getWidth(), getHeight());
     setVisible (true);
@@ -28,6 +29,7 @@ EditWindow::EditWindow()
     #endif
     HarmonaizeApplication::getCommandManager().setFirstCommandTarget (this);
     addKeyListener (HarmonaizeApplication::getCommandManager().getKeyMappings());
+    editDebugger.addKeyListener(HarmonaizeApplication::getCommandManager().getKeyMappings());
 
     ValueTree defaultEdit = Edit::createDefaultState();
     setEdit (defaultEdit);
@@ -74,7 +76,6 @@ PopupMenu EditWindow::getMenuForIndex (int topLevelMenuIndex, const String& /*me
 {
     PopupMenu extraAppleMenuItems;
     extraAppleMenuItems.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::showPreferences);
-//    extraAppleMenuItems.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::showDebugger);
     setMacMainMenu (this, &extraAppleMenuItems);
     
     PopupMenu menu;
@@ -84,9 +85,6 @@ PopupMenu EditWindow::getMenuForIndex (int topLevelMenuIndex, const String& /*me
         // "File" menu
         menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::newProject);
         menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::openProject);
-        
-        menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::saveProject);
-        menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::saveProjectAs);
     }
     else if (topLevelMenuIndex == 1)
     {
@@ -101,15 +99,7 @@ PopupMenu EditWindow::getMenuForIndex (int topLevelMenuIndex, const String& /*me
 
 void EditWindow::menuItemSelected (int menuItemID, int /*topLevelMenuIndex*/)
 {
-    if (menuItemID == 250)
-    {
-    }
-    else if (menuItemID >= 100 && menuItemID < 200)
-    {
-    }
-    else
-    {
-    }
+    
 }
 
 void EditWindow::getAllCommands (Array<CommandID>& commands)
@@ -117,8 +107,6 @@ void EditWindow::getAllCommands (Array<CommandID>& commands)
     // this returns the set of all commands that this target can perform..
     const CommandID ids[] = { CommandIDs::newProject,
         CommandIDs::openProject,
-        CommandIDs::saveProject,
-        CommandIDs::saveProjectAs,
         CommandIDs::showPreferences,
         CommandIDs::showDebugger,
         CommandIDs::undo,
@@ -147,18 +135,6 @@ void EditWindow::getCommandInfo (const CommandID commandID, ApplicationCommandIn
         case CommandIDs::openProject:
             result.setInfo ("Open...", "Opens a filter graph file", category, 0);
             result.defaultKeypresses.add (KeyPress ('o', ModifierKeys::commandModifier, 0));
-            break;
-            
-        case CommandIDs::saveProject:
-            result.setInfo ("Save", "Saves the current graph to a file", category, 0);
-            result.defaultKeypresses.add (KeyPress ('s', ModifierKeys::commandModifier, 0));
-            break;
-            
-        case CommandIDs::saveProjectAs:
-            result.setInfo ("Save As...",
-                            "Saves a copy of the current graph to a file",
-                            category, 0);
-            result.defaultKeypresses.add (KeyPress ('s', ModifierKeys::shiftModifier | ModifierKeys::commandModifier, 0));
             break;
             
         case CommandIDs::showPreferences:
@@ -202,33 +178,26 @@ bool EditWindow::perform (const InvocationInfo& info)
             //                graphHolder->graph->loadFromUserSpecifiedFile (true);
             break;
         }
-        case CommandIDs::saveProject:
-        {
-            //            if (graphHolder != nullptr && graphHolder->graph != nullptr)
-            //                graphHolder->graph->save (true, true);
-            break;
-        }
-        case CommandIDs::saveProjectAs:
-        {
-            //            if (graphHolder != nullptr && graphHolder->graph != nullptr)
-            //                graphHolder->graph->saveAs (File(), true, true, true);
-            break;
-        }
         case CommandIDs::showPreferences:
         {
             if (HarmonaizeApplication::getApp().preferencesView->isVisible())
                 HarmonaizeApplication::getApp().preferencesView->setVisible (false);
             else
+            {
                 HarmonaizeApplication::getApp().preferencesView->setVisible (true);
+                HarmonaizeApplication::getApp().preferencesView->grabKeyboardFocus();
+            }
             break;
         }
         case CommandIDs::showDebugger:
         {
+        #if JUCE_DEBUG
             if (editDebugger.isVisible())
                 editDebugger.setVisible (false);
             else
                 editDebugger.setVisible (true);
             break;
+        #endif
         }
         case CommandIDs::undo:
         {
