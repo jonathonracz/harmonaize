@@ -24,9 +24,13 @@ EditWindow::EditWindow()
     setVisible (true);
     
     setApplicationCommandManagerToWatch (&HarmonaizeApplication::getCommandManager());
-    #if JUCE_MAC
+
+#if JUCE_MAC
     setMacMainMenu (this);
-    #endif
+#else
+    setMenuBar (this);
+#endif
+
     HarmonaizeApplication::getCommandManager().setFirstCommandTarget (this);
     addKeyListener (HarmonaizeApplication::getCommandManager().getKeyMappings());
     editDebugger.addKeyListener(HarmonaizeApplication::getCommandManager().getKeyMappings());
@@ -38,30 +42,12 @@ EditWindow::EditWindow()
 EditWindow::~EditWindow()
 {
     setEdit (ValueTree());
-}
 
-void EditWindow::setEdit (const ValueTree& edit)
-{
-    if (currentEdit.get())
-    {
-        static_cast<EditView*> (getContentComponent())->setEdit (nullptr);
-        playbackEngine.setEdit (nullptr);
-        ValueTree nullTree;
-        editDebugger.setSource (nullTree);
-        currentEdit.reset();
-        undoManager.reset();
-    }
-
-    if (edit.getType() == IDs::Edit)
-    {
-        undoManager = std::unique_ptr<UndoManager> (new UndoManager);
-        Edit* newEdit = new Edit (edit, undoManager.get());
-        currentEdit = std::unique_ptr<Edit> (newEdit);
-        editDebugger.setSource (currentEdit->getState());
-        editDebugger.setVisible (false);
-        playbackEngine.setEdit (currentEdit.get());
-        static_cast<EditView*> (getContentComponent())->setEdit (currentEdit.get());
-    }
+#if JUCE_MAC
+    setMacMainMenu (nullptr);
+#else
+    setMenuBar (nullptr);
+#endif
 }
 
 StringArray EditWindow::getMenuBarNames()
@@ -212,4 +198,28 @@ bool EditWindow::perform (const InvocationInfo& info)
     }
     
     return true;
+}
+
+void EditWindow::setEdit (const ValueTree& edit)
+{
+    if (currentEdit.get())
+    {
+        static_cast<EditView*> (getContentComponent())->setEdit (nullptr);
+        playbackEngine.setEdit (nullptr);
+        ValueTree nullTree;
+        editDebugger.setSource (nullTree);
+        currentEdit.reset();
+        undoManager.reset();
+    }
+
+    if (edit.getType() == IDs::Edit)
+    {
+        undoManager = std::unique_ptr<UndoManager> (new UndoManager);
+        Edit* newEdit = new Edit (edit, undoManager.get());
+        currentEdit = std::unique_ptr<Edit> (newEdit);
+        editDebugger.setSource (currentEdit->getState());
+        editDebugger.setVisible (false);
+        playbackEngine.setEdit (currentEdit.get());
+        static_cast<EditView*> (getContentComponent())->setEdit (currentEdit.get());
+    }
 }

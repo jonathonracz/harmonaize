@@ -37,7 +37,7 @@ public:
 
     std::unique_ptr<EditWindow> editWindow;
     std::unique_ptr<PreferencesView> preferencesView;
-    
+
     ApplicationCommandManager commandManager;
 
 private:
