@@ -16,14 +16,14 @@ ArrangementView::ArrangementView()
 {
     addAndMakeVisible (topBar);
     addAndMakeVisible (timeline);
-    addAndMakeVisible (headerList);
+    addAndMakeVisible (trackList);
 }
 
 void ArrangementView::editChanged (Edit* oldEdit)
 {
     topBar.setEdit (getEdit());
     timeline.setEdit (getEdit());
-    headerList.setEdit (getEdit());
+    trackList.setEdit (getEdit());
 }
 
 void ArrangementView::resized()
@@ -42,15 +42,11 @@ void ArrangementView::resized()
     timelineGroup.items.add (FlexItem (topBar).withHeight (topBarHeight));
     timelineGroup.items.add (FlexItem (timeline).withFlex (1.0f));
 
-    FlexBox header;
-    header.flexDirection = FlexBox::Direction::column;
-    header.items.add (FlexItem().withHeight (topBarHeight));
-    header.items.add (FlexItem (headerList).withFlex (1.0f));
-
     layout.items.add (FlexItem (timelineGroup).withFlex (1.0f));
-    layout.items.add (FlexItem (header).withWidth (model.headerWidth.get()));
+    layout.items.add (FlexItem ().withWidth (model.headerWidth.get()));
 
     layout.performLayout (getLocalBounds());
+    trackList.setBounds (getLocalBounds().withTop (topBar.getHeight()));
 }
 
 void ArrangementView::mouseWheelMove (const MouseEvent& event, const MouseWheelDetails& wheel)

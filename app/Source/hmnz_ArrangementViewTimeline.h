@@ -11,7 +11,6 @@
 #pragma once
 
 #include "hmnz_ArrangementViewTimelineGrid.h"
-#include "hmnz_ArrangementViewTrackLaneList.h"
 
 class ArrangementViewTimeline   : public ArrangementViewComponent
 {
@@ -20,7 +19,6 @@ public:
 
 private:
     ArrangementViewTimelineGrid grid;
-    ArrangementViewTrackLaneList trackLaneList;
 
     void editChanged (Edit* oldEdit) override;
 
