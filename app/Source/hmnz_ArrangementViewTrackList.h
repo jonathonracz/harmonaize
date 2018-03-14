@@ -1,8 +1,8 @@
 /*
   ==============================================================================
 
-    hmnz_ArrangementViewTrackLaneList.h
-    Created: 9 Mar 2018 2:36:58pm
+    hmnz_ArrangementViewTrackList.h
+    Created: 14 Mar 2018 1:47:29pm
     Author:  Jonathon Racz
 
   ==============================================================================
@@ -11,17 +11,20 @@
 #pragma once
 
 #include "hmnz_ArrangementViewComponent.h"
-#include "hmnz_ArrangementViewTrackLane.h"
 #include "hmnz_HomogeneousValueTreeObjectArray.h"
+#include "hmnz_ArrangementViewTrack.h"
 
-class ArrangementViewTrackLaneList  : public ArrangementViewComponent,
-                                      public HomogeneousValueTreeObjectArray<Track, CriticalSection>::Listener
+class Edit;
+class Track;
+
+class ArrangementViewTrackList  : public ArrangementViewComponent,
+                                  public HomogeneousValueTreeObjectArray<Track, CriticalSection>::Listener
 {
 public:
-    ArrangementViewTrackLaneList() = default;
+    ArrangementViewTrackList() = default;
 
 private:
-    OwnedArray<ArrangementViewTrackLane> lanes;
+    OwnedArray<ArrangementViewTrack> tracks;
 
     void editChanged (Edit*) override;
 
@@ -33,5 +36,5 @@ private:
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementViewTrackLaneList)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementViewTrackList)
 };

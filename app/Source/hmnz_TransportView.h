@@ -38,7 +38,8 @@ private:
     Label timeLabel;
     Label beatLabel;
 //    Label tempoLabel;
-    Label timeSignatureLabel;
+    Label timeSignatureNumerator;
+    Label timeSignatureDenominator;
     
     Slider tempoSlider;
     ComboBox keySignatureComboBox;
@@ -64,7 +65,7 @@ private:
     void comboBoxChanged (ComboBox*) override;
     void sliderValueChanged (Slider*) override;
 
-    void labelTextChanged (Label*) override {}
+    void labelTextChanged (Label*) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TransportView)
 };

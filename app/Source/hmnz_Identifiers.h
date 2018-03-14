@@ -14,7 +14,7 @@
 
 namespace IDs
 {
-#define DECLARE_ID(name) const Identifier name (#name);
+#define DECLARE_ID(name) extern const Identifier name;
 
     DECLARE_ID (Test)
     DECLARE_ID (TestWithArray)

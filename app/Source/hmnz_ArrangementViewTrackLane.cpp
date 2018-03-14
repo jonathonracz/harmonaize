@@ -34,11 +34,6 @@ ArrangementViewTrackLane::~ArrangementViewTrackLane()
     }
 }
 
-void ArrangementViewTrackLane::editChanged (Edit* oldEdit)
-{
-    getEdit()->arrangementViewModel.getState().addListener (this);
-}
-
 ArrangementViewTrackLaneClip* ArrangementViewTrackLane::getChildForClip (Clip* clip)
 {
     for (Component* comp : getChildren())
@@ -53,14 +48,26 @@ ArrangementViewTrackLaneClip* ArrangementViewTrackLane::getChildForClip (Clip* c
     return nullptr;
 }
 
-void ArrangementViewTrackLane::paint (Graphics& g)
+void ArrangementViewTrackLane::editChanged (Edit* oldEdit)
 {
-    g.fillAll (track->color);
+    clips.clear();
+    getEdit()->arrangementViewModel.getState().addListener (this);
+}
+
+void ArrangementViewTrackLane::resized()
+{
+    for (ArrangementViewTrackLaneClip* clip : clips)
+    {
+        //Rectangle<int> newClipBounds =
+        //clip->setBounds (<#int x#>, <#int y#>, <#int width#>, <#int height#>)
+    }
 }
 
 void ArrangementViewTrackLane::objectAdded (Clip* clip, int, HomogeneousValueTreeObjectArray<Clip>*)
 {
-    addAndMakeVisible (new ArrangementViewTrackLaneClip (clip));
+    ArrangementViewTrackLaneClip* newClip = new ArrangementViewTrackLaneClip (clip);
+    clips.add (newClip);
+    addAndMakeVisible (newClip);
 }
 
 void ArrangementViewTrackLane::objectRemoved (Clip* clip, int, HomogeneousValueTreeObjectArray<Clip>*)
@@ -68,12 +75,14 @@ void ArrangementViewTrackLane::objectRemoved (Clip* clip, int, HomogeneousValueT
     ArrangementViewTrackLaneClip* childToRemove = getChildForClip (clip);
     jassert (childToRemove);
     removeChildComponent (childToRemove);
+    clips.removeObject (childToRemove);
 }
 
 void ArrangementViewTrackLane::valueTreePropertyChanged (ValueTree&, const Identifier& property)
 {
     if (property == track->height.getPropertyID())
     {
+
         for (Component* child : getChildren())
         {
             if (ArrangementViewTrackLaneClip* clip = dynamic_cast<ArrangementViewTrackLaneClip*> (child))
@@ -81,5 +90,11 @@ void ArrangementViewTrackLane::valueTreePropertyChanged (ValueTree&, const Ident
                 clip->setBounds (clip->getBounds().withHeight (track->height.get()));
             }
         }
+    }
+    if (property == getEdit()->arrangementViewModel.timeEnd.getPropertyID() ||
+        property == getEdit()->arrangementViewModel.timeStart.getPropertyID())
+    {
+        resized();
+        repaint();
     }
 }

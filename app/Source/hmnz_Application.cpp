@@ -21,7 +21,6 @@ HarmonaizeApplication::HarmonaizeApplication()
 
 HarmonaizeApplication::~HarmonaizeApplication()
 {
-    audioDeviceManager.closeAudioDevice();
 }
 
 HarmonaizeApplication& HarmonaizeApplication::getApp()
@@ -44,8 +43,8 @@ void HarmonaizeApplication::initialise (const String& commandLine)
 {
     editWindow = std::unique_ptr<EditWindow> (new EditWindow());
     preferencesView = std::unique_ptr<PreferencesView> (new PreferencesView());
-    preferencesView->centreWithSize (400, 300);
-    preferencesView->setVisible (true);
+    preferencesView->centreWithSize (400, 350);
+    preferencesView->setName("Preferences");
     preferencesView->addToDesktop (
         ComponentPeer::StyleFlags::windowAppearsOnTaskbar |
         ComponentPeer::StyleFlags::windowHasTitleBar |
@@ -59,7 +58,9 @@ void HarmonaizeApplication::initialise (const String& commandLine)
 
 void HarmonaizeApplication::shutdown()
 {
-    editWindow = nullptr;
+    editWindow.reset();
+    preferencesView.reset();
+    audioDeviceManager.closeAudioDevice();
 }
 
 void HarmonaizeApplication::systemRequestedQuit()

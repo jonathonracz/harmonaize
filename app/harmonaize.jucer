@@ -12,6 +12,14 @@
             file="Source/hmnz_PlaybackEngine.h"/>
     </GROUP>
     <GROUP id="{4C57DD66-0DB0-A254-59EF-09BAA05140B1}" name="GUI">
+      <FILE id="QVsY2J" name="hmnz_ArrangementViewTrack.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewTrack.cpp"/>
+      <FILE id="q45wJi" name="hmnz_ArrangementViewTrack.h" compile="0" resource="0"
+            file="Source/hmnz_ArrangementViewTrack.h"/>
+      <FILE id="kWcc9r" name="hmnz_ArrangementViewTrackList.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewTrackList.cpp"/>
+      <FILE id="OR02V7" name="hmnz_ArrangementViewTrackList.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewTrackList.h"/>
       <FILE id="Ar7tIw" name="hmnz_ArrangementView.cpp" compile="1" resource="0"
             file="Source/hmnz_ArrangementView.cpp"/>
       <FILE id="E8saIS" name="hmnz_ArrangementView.h" compile="0" resource="0"
@@ -36,10 +44,6 @@
             resource="0" file="Source/hmnz_ArrangementViewTrackHeader.cpp"/>
       <FILE id="peIslz" name="hmnz_ArrangementViewTrackHeader.h" compile="0"
             resource="0" file="Source/hmnz_ArrangementViewTrackHeader.h"/>
-      <FILE id="OnX6G4" name="hmnz_ArrangementViewTrackHeaderList.cpp" compile="1"
-            resource="0" file="Source/hmnz_ArrangementViewTrackHeaderList.cpp"/>
-      <FILE id="pUDjAR" name="hmnz_ArrangementViewTrackHeaderList.h" compile="0"
-            resource="0" file="Source/hmnz_ArrangementViewTrackHeaderList.h"/>
       <FILE id="OaE9nD" name="hmnz_ArrangementViewTrackLane.cpp" compile="1"
             resource="0" file="Source/hmnz_ArrangementViewTrackLane.cpp"/>
       <FILE id="XrZiPI" name="hmnz_ArrangementViewTrackLane.h" compile="0"
@@ -48,10 +52,6 @@
             resource="0" file="Source/hmnz_ArrangementViewTrackLaneClip.cpp"/>
       <FILE id="BrCGHC" name="hmnz_ArrangementViewTrackLaneClip.h" compile="0"
             resource="0" file="Source/hmnz_ArrangementViewTrackLaneClip.h"/>
-      <FILE id="KS1BQB" name="hmnz_ArrangementViewTrackLaneList.cpp" compile="1"
-            resource="0" file="Source/hmnz_ArrangementViewTrackLaneList.cpp"/>
-      <FILE id="QlKwMC" name="hmnz_ArrangementViewTrackLaneList.h" compile="0"
-            resource="0" file="Source/hmnz_ArrangementViewTrackLaneList.h"/>
       <FILE id="IlADi2" name="hmnz_EditView.cpp" compile="1" resource="0"
             file="Source/hmnz_EditView.cpp"/>
       <FILE id="uFs8Cd" name="hmnz_EditView.h" compile="0" resource="0" file="Source/hmnz_EditView.h"/>
@@ -138,6 +138,8 @@
         <FILE id="oGqJ3e" name="hmnz_VariantConverters.h" compile="0" resource="0"
               file="Source/hmnz_VariantConverters.h"/>
       </GROUP>
+      <FILE id="dMedUN" name="hmnz_Identifiers.cpp" compile="1" resource="0"
+            file="Source/hmnz_Identifiers.cpp"/>
       <FILE id="InvRfR" name="hmnz_Identifiers.h" compile="0" resource="0"
             file="Source/hmnz_Identifiers.h"/>
     </GROUP>

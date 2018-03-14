@@ -18,17 +18,22 @@ EditWindow::EditWindow()
 {
     setUsingNativeTitleBar (true);
     setResizeLimits (800, 600, std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
+    setResizable (true, false);
     setContentOwned (new EditView(), false);
     centreWithSize (getWidth(), getHeight());
     setVisible (true);
     
     setApplicationCommandManagerToWatch (&HarmonaizeApplication::getCommandManager());
-    #if JUCE_MAC
-    PopupMenu extraAppleMenuItems;
-    extraAppleMenuItems.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::showPreferences);
-    setMacMainMenu (this, &extraAppleMenuItems);
-    #endif
+
+#if JUCE_MAC
+    setMacMainMenu (this);
+#else
+    setMenuBar (this);
+#endif
+
     HarmonaizeApplication::getCommandManager().setFirstCommandTarget (this);
+    addKeyListener (HarmonaizeApplication::getCommandManager().getKeyMappings());
+    editDebugger.addKeyListener(HarmonaizeApplication::getCommandManager().getKeyMappings());
 
     ValueTree defaultEdit = Edit::createDefaultState();
     setEdit (defaultEdit);
@@ -37,29 +42,12 @@ EditWindow::EditWindow()
 EditWindow::~EditWindow()
 {
     setEdit (ValueTree());
-}
 
-void EditWindow::setEdit (const ValueTree& edit)
-{
-    if (currentEdit.get())
-    {
-        static_cast<EditView*> (getContentComponent())->setEdit (nullptr);
-        playbackEngine.setEdit (nullptr);
-        ValueTree nullTree;
-        editDebugger.setSource (nullTree);
-        currentEdit.reset();
-        undoManager.reset();
-    }
-
-    if (edit.getType() == IDs::Edit)
-    {
-        undoManager = std::unique_ptr<UndoManager> (new UndoManager);
-        Edit* newEdit = new Edit (edit, undoManager.get());
-        currentEdit = std::unique_ptr<Edit> (newEdit);
-        editDebugger.setSource (currentEdit->getState());
-        playbackEngine.setEdit (currentEdit.get());
-        static_cast<EditView*> (getContentComponent())->setEdit (currentEdit.get());
-    }
+#if JUCE_MAC
+    setMacMainMenu (nullptr);
+#else
+    setMenuBar (nullptr);
+#endif
 }
 
 StringArray EditWindow::getMenuBarNames()
@@ -67,11 +55,16 @@ StringArray EditWindow::getMenuBarNames()
     StringArray names;
     names.add ("File");
     names.add ("Edit");
+    names.add ("View");
     return names;
 }
 
 PopupMenu EditWindow::getMenuForIndex (int topLevelMenuIndex, const String& /*menuName*/)
 {
+    PopupMenu extraAppleMenuItems;
+    extraAppleMenuItems.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::showPreferences);
+    setMacMainMenu (this, &extraAppleMenuItems);
+    
     PopupMenu menu;
     
     if (topLevelMenuIndex == 0)
@@ -79,9 +72,6 @@ PopupMenu EditWindow::getMenuForIndex (int topLevelMenuIndex, const String& /*me
         // "File" menu
         menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::newProject);
         menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::openProject);
-        
-        menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::saveProject);
-        menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::saveProjectAs);
     }
     else if (topLevelMenuIndex == 1)
     {
@@ -90,21 +80,20 @@ PopupMenu EditWindow::getMenuForIndex (int topLevelMenuIndex, const String& /*me
         menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::undo);
         menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::redo);
     }
+
+    else if (topLevelMenuIndex == 2)
+    {
+        PopupMenu viewMenu;
+        menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::scaleUp);
+        menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::scaleDown);
+    }
     
     return menu;
 }
 
 void EditWindow::menuItemSelected (int menuItemID, int /*topLevelMenuIndex*/)
 {
-    if (menuItemID == 250)
-    {
-    }
-    else if (menuItemID >= 100 && menuItemID < 200)
-    {
-    }
-    else
-    {
-    }
+    
 }
 
 void EditWindow::getAllCommands (Array<CommandID>& commands)
@@ -112,11 +101,12 @@ void EditWindow::getAllCommands (Array<CommandID>& commands)
     // this returns the set of all commands that this target can perform..
     const CommandID ids[] = { CommandIDs::newProject,
         CommandIDs::openProject,
-        CommandIDs::saveProject,
-        CommandIDs::saveProjectAs,
         CommandIDs::showPreferences,
+        CommandIDs::showDebugger,
         CommandIDs::undo,
-        CommandIDs::redo
+        CommandIDs::redo,
+        CommandIDs::scaleUp,
+        CommandIDs::scaleDown
     };
     
     commands.addArray (ids, numElementsInArray (ids));
@@ -143,21 +133,14 @@ void EditWindow::getCommandInfo (const CommandID commandID, ApplicationCommandIn
             result.defaultKeypresses.add (KeyPress ('o', ModifierKeys::commandModifier, 0));
             break;
             
-        case CommandIDs::saveProject:
-            result.setInfo ("Save", "Saves the current graph to a file", category, 0);
-            result.defaultKeypresses.add (KeyPress ('s', ModifierKeys::commandModifier, 0));
-            break;
-            
-        case CommandIDs::saveProjectAs:
-            result.setInfo ("Save As...",
-                            "Saves a copy of the current graph to a file",
-                            category, 0);
-            result.defaultKeypresses.add (KeyPress ('s', ModifierKeys::shiftModifier | ModifierKeys::commandModifier, 0));
-            break;
-            
         case CommandIDs::showPreferences:
             result.setInfo ("Preferences", String(), category, 0);
             result.addDefaultKeypress ('p', ModifierKeys::commandModifier);
+            break;
+            
+        case CommandIDs::showDebugger:
+            result.setInfo ("Debugger", String(), category, 0);
+            result.addDefaultKeypress('d', ModifierKeys::commandModifier);
             break;
             
         case CommandIDs::undo:
@@ -167,8 +150,19 @@ void EditWindow::getCommandInfo (const CommandID commandID, ApplicationCommandIn
             
         case CommandIDs::redo:
             result.setInfo ("Redo", String(), category, 0);
+            result.defaultKeypresses.add (KeyPress ('z', ModifierKeys::shiftModifier | ModifierKeys::commandModifier, 0));
             break;
-            
+
+        case CommandIDs::scaleUp:
+            result.setInfo ("Scale Up", String(), category, 0);
+            result.addDefaultKeypress ('=', ModifierKeys::commandModifier);
+            break;
+
+        case CommandIDs::scaleDown:
+            result.setInfo ("Scale Down", String(), category, 0);
+            result.addDefaultKeypress ('-', ModifierKeys::commandModifier);
+            break;
+
         default:
             break;
     }
@@ -178,33 +172,55 @@ bool EditWindow::perform (const InvocationInfo& info)
 {
     switch (info.commandID)
     {
-        case CommandIDs::newProject: {
+        case CommandIDs::newProject:
+        {
             //            if (graphHolder != nullptr && graphHolder->graph != nullptr && graphHolder->graph->saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
             //                graphHolder->graph->newDocument();
             break;
         }
-        case CommandIDs::openProject: {
+        case CommandIDs::openProject:
+        {
             //            if (graphHolder != nullptr && graphHolder->graph != nullptr && graphHolder->graph->saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
             //                graphHolder->graph->loadFromUserSpecifiedFile (true);
             break;
         }
-        case CommandIDs::saveProject: {
-            //            if (graphHolder != nullptr && graphHolder->graph != nullptr)
-            //                graphHolder->graph->save (true, true);
+        case CommandIDs::showPreferences:
+        {
+            if (HarmonaizeApplication::getApp().preferencesView->isVisible())
+                HarmonaizeApplication::getApp().preferencesView->setVisible (false);
+            else
+            {
+                HarmonaizeApplication::getApp().preferencesView->setVisible (true);
+                HarmonaizeApplication::getApp().preferencesView->grabKeyboardFocus();
+            }
             break;
         }
-        case CommandIDs::saveProjectAs: {
-            //            if (graphHolder != nullptr && graphHolder->graph != nullptr)
-            //                graphHolder->graph->saveAs (File(), true, true, true);
+        case CommandIDs::showDebugger:
+        {
+        #if JUCE_DEBUG
+            if (editDebugger.isVisible())
+                editDebugger.setVisible (false);
+            else
+                editDebugger.setVisible (true);
+            break;
+        #endif
+        }
+        case CommandIDs::undo:
+        {
             break;
         }
-        case CommandIDs::showPreferences: {
+        case CommandIDs::redo:
+        {
             break;
         }
-        case CommandIDs::undo: {
+        case CommandIDs::scaleUp:
+        {
+            HarmonaizeApplication::getApp().preferencesView->scaleUp();
             break;
         }
-        case CommandIDs::redo: {
+        case CommandIDs::scaleDown:
+        {
+            HarmonaizeApplication::getApp().preferencesView->scaleDown();
             break;
         }
         default:
@@ -212,4 +228,28 @@ bool EditWindow::perform (const InvocationInfo& info)
     }
     
     return true;
+}
+
+void EditWindow::setEdit (const ValueTree& edit)
+{
+    if (currentEdit.get())
+    {
+        static_cast<EditView*> (getContentComponent())->setEdit (nullptr);
+        playbackEngine.setEdit (nullptr);
+        ValueTree nullTree;
+        editDebugger.setSource (nullTree);
+        currentEdit.reset();
+        undoManager.reset();
+    }
+
+    if (edit.getType() == IDs::Edit)
+    {
+        undoManager = std::unique_ptr<UndoManager> (new UndoManager);
+        Edit* newEdit = new Edit (edit, undoManager.get());
+        currentEdit = std::unique_ptr<Edit> (newEdit);
+        editDebugger.setSource (currentEdit->getState());
+        editDebugger.setVisible (false);
+        playbackEngine.setEdit (currentEdit.get());
+        static_cast<EditView*> (getContentComponent())->setEdit (currentEdit.get());
+    }
 }

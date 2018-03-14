@@ -26,7 +26,7 @@ class Track : public ValueTreeObject<IDs::Track>,
               public ValueTree::Listener
 {
 public:
-    Track (const ValueTree& v, UndoManager* um, Edit* edit);
+    Track (const ValueTree& v, UndoManager* um, Edit& edit);
 
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
@@ -43,7 +43,12 @@ public:
     CachedValue<MinMaxConstrainerWrapper<int, 8, 64>> height;
     CachedValue<SPSCAtomicWrapper<bool>> recordArmed;
 
-    WeakReference<Edit> edit;
+    Edit& edit;
+
+private:
+    JUCE_DECLARE_WEAK_REFERENCEABLE (Track)
+
+public:
     ClipList clipList;
 
 private:
@@ -75,6 +80,5 @@ private:
     void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
     void valueTreeParentChanged (ValueTree&) override {}
 
-    JUCE_DECLARE_WEAK_REFERENCEABLE (Track)
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Track)
 };

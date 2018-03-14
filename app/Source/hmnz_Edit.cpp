@@ -16,7 +16,7 @@ Edit::Edit (const ValueTree& v, UndoManager* um)
       masterTrack (getState().getOrCreateChildWithName (MasterTrack::identifier, nullptr), getUndoManager()),
       transport (getState().getOrCreateChildWithName (Transport::identifier, nullptr)),
       arrangementViewModel (getState().getOrCreateChildWithName (ArrangementViewModel::identifier, nullptr)),
-      trackList (getState().getOrCreateChildWithName (TrackList::identifier, nullptr), getUndoManager(), this)
+      trackList (getState().getOrCreateChildWithName (TrackList::identifier, nullptr), getUndoManager(), *this)
 {
     // TODO: Validate the ValueTree data model, display an error if
     // something unexpected occurs, etc...
