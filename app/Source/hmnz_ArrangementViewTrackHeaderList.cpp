@@ -17,6 +17,7 @@ void ArrangementViewTrackHeaderList::editChanged (Edit* oldEdit)
         oldEdit->trackList.tracks.removeListener (this);
 
     removeAllChildren();
+    headers.clear();
 
     if (getEdit())
     {
@@ -38,6 +39,7 @@ void ArrangementViewTrackHeaderList::resized()
     for (int i = 0; i < headers.size(); ++i)
     {
         headers[i]->setBounds (0, currentPosition, getWidth(), headers[i]->getRepresentedTrack()->height.get());
+        currentPosition += getEdit()->trackList.tracks[i]->height.get();
     }
 }
 
@@ -46,6 +48,7 @@ void ArrangementViewTrackHeaderList::objectAdded (Track* track, int insertionInd
     ArrangementViewTrackHeader* newHeader = new ArrangementViewTrackHeader (track);
     headers.add (newHeader);
     addAndMakeVisible (newHeader);
+    repaint();
 }
 
 void ArrangementViewTrackHeaderList::objectRemoved (Track* track, int indexRemovedFrom, HomogeneousValueTreeObjectArray<Track, CriticalSection>*)
@@ -53,11 +56,13 @@ void ArrangementViewTrackHeaderList::objectRemoved (Track* track, int indexRemov
     jassert (headers[indexRemovedFrom]->getRepresentedTrack() == track);
     removeChildComponent (headers[indexRemovedFrom]);
     headers.remove (indexRemovedFrom);
+    repaint();
 }
 
 void ArrangementViewTrackHeaderList::objectOrderChanged (Track* track, int oldIndex, int newIndex, HomogeneousValueTreeObjectArray<Track, CriticalSection>*)
 {
     headers.move (oldIndex, newIndex);
+    repaint();
 }
 
 void ArrangementViewTrackHeaderList::valueTreePropertyChanged (ValueTree& tree, const Identifier& property)

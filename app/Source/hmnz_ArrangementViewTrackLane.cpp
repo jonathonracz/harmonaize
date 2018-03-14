@@ -36,6 +36,7 @@ ArrangementViewTrackLane::~ArrangementViewTrackLane()
 
 void ArrangementViewTrackLane::editChanged (Edit* oldEdit)
 {
+    clips.clear();
     getEdit()->arrangementViewModel.getState().addListener (this);
 }
 
@@ -60,7 +61,9 @@ void ArrangementViewTrackLane::paint (Graphics& g)
 
 void ArrangementViewTrackLane::objectAdded (Clip* clip, int, HomogeneousValueTreeObjectArray<Clip>*)
 {
-    addAndMakeVisible (new ArrangementViewTrackLaneClip (clip));
+    ArrangementViewTrackLaneClip* newClip = new ArrangementViewTrackLaneClip (clip);
+    clips.add (newClip);
+    addAndMakeVisible (newClip);
 }
 
 void ArrangementViewTrackLane::objectRemoved (Clip* clip, int, HomogeneousValueTreeObjectArray<Clip>*)
@@ -68,6 +71,7 @@ void ArrangementViewTrackLane::objectRemoved (Clip* clip, int, HomogeneousValueT
     ArrangementViewTrackLaneClip* childToRemove = getChildForClip (clip);
     jassert (childToRemove);
     removeChildComponent (childToRemove);
+    clips.removeObject (childToRemove);
 }
 
 void ArrangementViewTrackLane::valueTreePropertyChanged (ValueTree&, const Identifier& property)

@@ -20,7 +20,7 @@ class ClipList  : public ValueTreeObject<IDs::ClipList>,
                   public ValueTree::Listener
 {
 public:
-    ClipList (const ValueTree& v, UndoManager* um, Track* _track)
+    ClipList (const ValueTree& v, UndoManager* um, Track& _track)
         : ValueTreeObject (v, um), clips (v, um, _track)
     {
         getState().addListener (this);

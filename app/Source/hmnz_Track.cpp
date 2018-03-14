@@ -11,7 +11,7 @@
 #include "hmnz_Track.h"
 #include "hmnz_Application.h"
 
-Track::Track (const ValueTree& v, UndoManager* um, Edit* const _edit)
+Track::Track (const ValueTree& v, UndoManager* um, Edit& _edit)
     : ValueTreeObject (v, um),
       name (getState(), IDs::TrackProps::Name, getUndoManager(), "New Track"),
       color (getState(), IDs::TrackProps::Color, getUndoManager(), Utility::randomColor()),
@@ -19,7 +19,7 @@ Track::Track (const ValueTree& v, UndoManager* um, Edit* const _edit)
       height (getState(), IDs::TrackProps::Height, nullptr, 16),
       recordArmed (getState(), IDs::TrackProps::RecordArmed, nullptr, false),
       edit (_edit),
-      clipList (getState().getOrCreateChildWithName (IDs::ClipList, nullptr), getUndoManager(), this)
+      clipList (getState().getOrCreateChildWithName (IDs::ClipList, nullptr), getUndoManager(), *this)
 {
     // May not entirely prevent allocation in the audio callback, but it will
     // at least provide a good starting point. 2048 is what's used internally
@@ -68,11 +68,11 @@ void Track::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
     if (currentPosition.isPlaying)
     {
         auto beatForSample = [&](int64 sample) -> double {
-            return edit->masterTrack.tempo.beat (sample / playbackSource.getActiveSampleRate());
+            return edit.masterTrack.tempo.beat (sample / playbackSource.getActiveSampleRate());
         };
 
         auto sampleForBeat = [&](double beat) -> int64 {
-            return static_cast<int64> (edit->masterTrack.tempo.time (beat) * playbackSource.getActiveSampleRate());
+            return static_cast<int64> (edit.masterTrack.tempo.time (beat) * playbackSource.getActiveSampleRate());
         };
 
         AudioPlayHead::CurrentPositionInfo positionInfo;
@@ -118,7 +118,7 @@ MidiMessageSequence Track::getMidiMessageSequence() const
     MidiMessageSequence ret;
     for (Clip* clip : clipList.clips)
     {
-        if (clip->type == IDs::ClipProps::Types::Midi)
+        if (clip->type == IDs::ClipProps::Types::Midi && clip->midiMessageSequenceModel.midiMessages.size() > 0)
         {
             ret.addSequence (clip->getMidiMessageSequence(), 0.0);
         }
@@ -137,11 +137,8 @@ void Track::updateMidiReadCache()
     HMNZ_ASSERT_IS_ON_MESSAGE_THREAD
     MidiMessageSequence newReadCache = getMidiMessageSequence();
 
-    if (edit->getPlaybackLock())
-    {
-        std::lock_guard<std::mutex> (*edit->getPlaybackLock());
-        midiReadCache.swapWith (newReadCache);
-    }
+    const CriticalSection::ScopedLockType lock (HarmonaizeApplication::getDeviceManager().getAudioCallbackLock());
+    midiReadCache.swapWith (newReadCache);
 }
 
 void Track::flushMidiWriteBackQueue()
