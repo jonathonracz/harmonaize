@@ -11,16 +11,15 @@
 #include "hmnz_Clip.h"
 #include "hmnz_Track.h"
 
-Clip::Clip (const ValueTree& v, UndoManager* um, Track* _track)
+Clip::Clip (const ValueTree& v, UndoManager* um, Track& _track)
     : ValueTreeObject (v, um),
       start (getState(), IDs::ClipProps::Start, getUndoManager(), std::numeric_limits<double>::lowest()),
       length (getState(), IDs::ClipProps::Length, getUndoManager(), 0.0),
-      color (getState(), IDs::ClipProps::Color, getUndoManager(), _track ? _track->color : Colours::pink),
-      type (getState(), IDs::TrackProps::Type, getUndoManager(), _track ? defaultClipTypeForTrackType (_track->type) : IDs::ClipProps::Types::Midi),
+      color (getState(), IDs::ClipProps::Color, getUndoManager(), _track.color),
+      type (getState(), IDs::TrackProps::Type, getUndoManager(), defaultClipTypeForTrackType (_track.type)),
+      track (_track),
       midiMessageSequenceModel (getState().getOrCreateChildWithName (MidiMessageSequenceModel::identifier, nullptr), getUndoManager())
 {
-    track = _track;
-
     if (midiMessageSequenceModel.midiMessages.size() > 0)
     {
         adjustBoundsToFitMessageTimestamp (midiMessageSequenceModel.midiMessages.getFirst()->timestamp);
@@ -97,8 +96,8 @@ Identifier Clip::defaultClipTypeForTrackType (const Identifier& trackType)
 ValueTree Clip::createState (double start, double length, const MidiMessageSequence& sequence, const Colour& color)
 {
     ValueTree ret = createState (start, length, IDs::ClipProps::Types::Midi, color);
-    Clip clipObject (ret, nullptr, nullptr);
-    clipObject.setMidiMessageSequence (sequence, 0.0, true);
+    MidiMessageSequenceModel midiSeq (ret.getOrCreateChildWithName (MidiMessageSequenceModel::identifier, nullptr), nullptr);
+    midiSeq.addMidiMessageSequence (sequence);
 
     return ret;
 }

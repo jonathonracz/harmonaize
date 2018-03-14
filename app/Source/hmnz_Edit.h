@@ -40,9 +40,6 @@ public:
     MidiFile exportToMidi() const;
     void importFromMidi (const MidiFile& midiFile, int trackOffset, double timeOffset);
 
-    std::mutex* getPlaybackLock() const { return playbackLock; }
-    void setPlaybackLock (std::mutex* _playbackLock) { playbackLock = _playbackLock; }
-
     MidiKeyboardState& getMidiKeyboardState() { return keyboardState; }
 
 private:
@@ -55,8 +52,6 @@ public:
     TrackList trackList;
 
 private:
-    std::mutex* playbackLock;
-
     MidiKeyboardState keyboardState;
 
     void convertTimestampsFromBeatsToTicks (MidiMessageSequence& sequence) const;

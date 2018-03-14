@@ -24,13 +24,9 @@ public:
     {
         jassert (v.isValid());
         jassert (v.getType() == identifier);
-        DBG ("ValueTreeObject " << identifier << " CONSTRUCT");
     }
 
-    virtual ~ValueTreeObject()
-    {
-        DBG ("ValueTreeObject " << identifier << " DELETE");
-    }
+    virtual ~ValueTreeObject() = default;
 
     ValueTree& getState()
     {

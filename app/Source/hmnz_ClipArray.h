@@ -16,10 +16,10 @@
 class ClipArray    : public HomogeneousValueTreeObjectArray<Clip>
 {
 public:
-    ClipArray (const ValueTree& v, UndoManager* um, Track* track);
+    ClipArray (const ValueTree& v, UndoManager* um, Track& track);
 
 private:
-    WeakReference<Track> track;
+    Track& track;
     Clip* createNewObject (const ValueTree& v, UndoManager* um) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ClipArray)

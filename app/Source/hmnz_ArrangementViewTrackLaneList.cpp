@@ -17,6 +17,7 @@ void ArrangementViewTrackLaneList::editChanged (Edit* oldEdit)
         oldEdit->trackList.tracks.removeListener (this);
 
     removeAllChildren();
+    lanes.clear();
 
     if (getEdit())
     {
@@ -38,6 +39,7 @@ void ArrangementViewTrackLaneList::resized()
     for (int i = 0; i < lanes.size(); ++i)
     {
         lanes[i]->setBounds (0, currentPosition, getWidth(), lanes[i]->getRepresentedTrack()->height.get());
+        currentPosition += getEdit()->trackList.tracks[i]->height.get();
     }
 }
 
@@ -46,6 +48,7 @@ void ArrangementViewTrackLaneList::objectAdded (Track* track, int insertionIndex
     ArrangementViewTrackLane* newLane = new ArrangementViewTrackLane (track);
     lanes.add (newLane);
     addAndMakeVisible (newLane);
+    repaint();
 }
 
 void ArrangementViewTrackLaneList::objectRemoved (Track* track, int indexRemovedFrom, HomogeneousValueTreeObjectArray<Track, CriticalSection>*)
@@ -53,11 +56,13 @@ void ArrangementViewTrackLaneList::objectRemoved (Track* track, int indexRemoved
     jassert (lanes[indexRemovedFrom]->getRepresentedTrack() == track);
     removeChildComponent (lanes[indexRemovedFrom]);
     lanes.remove (indexRemovedFrom);
+    repaint();
 }
 
 void ArrangementViewTrackLaneList::objectOrderChanged (Track* track, int oldIndex, int newIndex, HomogeneousValueTreeObjectArray<Track, CriticalSection>*)
 {
     lanes.move (oldIndex, newIndex);
+    repaint();
 }
 
 void ArrangementViewTrackLaneList::valueTreePropertyChanged (ValueTree& tree, const Identifier& property)

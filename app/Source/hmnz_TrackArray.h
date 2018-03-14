@@ -16,10 +16,10 @@
 class TrackArray    : public HomogeneousValueTreeObjectArray<Track, CriticalSection>
 {
 public:
-    TrackArray (const ValueTree& v, UndoManager* um, Edit* edit);
+    TrackArray (const ValueTree& v, UndoManager* um, Edit& edit);
 
 private:
-    WeakReference<Edit> const edit;
+    Edit& edit;
     Track* createNewObject (const ValueTree& v, UndoManager* um) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackArray)
