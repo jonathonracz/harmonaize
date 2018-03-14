@@ -18,7 +18,7 @@ class Track;
 class Clip  : public ValueTreeObject<IDs::Clip>
 {
 public:
-    Clip (const ValueTree& v, UndoManager* um, Track* track);
+    Clip (const ValueTree& v, UndoManager* um, Track& track);
 
     MidiMessageSequence getMidiMessageSequence (double timeDelta = 0.0) const;
 
@@ -43,9 +43,10 @@ public:
     CachedValue<Colour> color;
     CachedValue<Identifier> type;
 
-private:
-    WeakReference<Track> track;
     MidiMessageSequenceModel midiMessageSequenceModel;
+
+private:
+    Track& track;
 
     void adjustBoundsToFitMessageTimestamp (double timestamp);
 

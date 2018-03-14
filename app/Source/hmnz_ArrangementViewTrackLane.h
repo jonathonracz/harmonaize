@@ -28,12 +28,13 @@ public:
 
 private:
     Track* track;
+    OwnedArray<ArrangementViewTrackLaneClip> clips;
 
     ArrangementViewTrackLaneClip* getChildForClip (Clip* clip);
 
     void editChanged (Edit* oldEdit) override;
 
-    void paint (Graphics&) override;
+    void resized() override;
 
     void objectAdded (Clip*, int, HomogeneousValueTreeObjectArray<Clip>*) override;
     void objectRemoved (Clip*, int, HomogeneousValueTreeObjectArray<Clip>*) override;

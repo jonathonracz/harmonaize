@@ -16,13 +16,15 @@ namespace CommandIDs
     {
         newProject              = 0x300000,
         openProject             = 0x300001,
-        saveProject             = 0x300003,
-        saveProjectAs           = 0x300004,
         
         showPreferences         = 0x300020,
+        showDebugger            = 0x300021,
         
         undo                    = 0x300040,
         redo                    = 0x300041,
+
+        scaleUp                 = 0x300050,
+        scaleDown               = 0x300051,
         
         lastCommandIDEntry
     };

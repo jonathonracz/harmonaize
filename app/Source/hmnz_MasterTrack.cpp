@@ -12,9 +12,9 @@
 
 MasterTrack::MasterTrack (const ValueTree& v, UndoManager* um)
     : ValueTreeObject (v, um),
-      tempo (getState().getOrCreateChildWithName (Tempo::identifier, nullptr), getUndoManager()),
-      timeSignature (getState().getOrCreateChildWithName (TimeSignature::identifier, nullptr), getUndoManager()),
-      keySignature (getState().getOrCreateChildWithName (KeySignature::identifier, nullptr), getUndoManager())
+      tempo (this->getState().getOrCreateChildWithName (Tempo::identifier, nullptr), getUndoManager()),
+      timeSignature (this->getState().getOrCreateChildWithName (TimeSignature::identifier, nullptr), getUndoManager()),
+      keySignature (this->getState().getOrCreateChildWithName (KeySignature::identifier, nullptr), getUndoManager())
 {
 }
 

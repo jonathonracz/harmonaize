@@ -14,6 +14,7 @@
 #include "hmnz_EditView.h"
 #include "hmnz_PlaybackEngine.h"
 #include "hmnz_CommandIDs.h"
+#include "hmnz_Application.h"
 
 class EditWindow    : public DocumentWindow,
                       public MenuBarModel,
@@ -22,7 +23,7 @@ class EditWindow    : public DocumentWindow,
 public:
     EditWindow();
     ~EditWindow();
-    
+
     StringArray getMenuBarNames() override;
     PopupMenu getMenuForIndex (int topLevelMenuIndex, const String& menuName) override;
     void menuItemSelected (int menuItemID, int topLevelMenuIndex) override;

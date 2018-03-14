@@ -11,7 +11,7 @@
 #include "hmnz_ClipArray.h"
 #include "hmnz_Track.h"
 
-ClipArray::ClipArray (const ValueTree& v, UndoManager* um, Track* _track) :
+ClipArray::ClipArray (const ValueTree& v, UndoManager* um, Track& _track) :
     HomogeneousValueTreeObjectArray<Clip> (v, um), track (_track)
 {
 

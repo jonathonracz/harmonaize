@@ -12,7 +12,7 @@
 
 #include "hmnz_ArrangementViewTopBar.h"
 #include "hmnz_ArrangementViewTimeline.h"
-#include "hmnz_ArrangementViewTrackHeaderList.h"
+#include "hmnz_ArrangementViewTrackList.h"
 
 class Track;
 
@@ -24,7 +24,7 @@ public:
 private:
     ArrangementViewTopBar topBar;
     ArrangementViewTimeline timeline;
-    ArrangementViewTrackHeaderList headerList;
+    ArrangementViewTrackList trackList;
     double verticalScrollAccumulator = 0.0;
 
     void editChanged (Edit*) override;

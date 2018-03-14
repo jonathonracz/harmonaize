@@ -22,9 +22,13 @@ EditView::~EditView()
 
 void EditView::setEdit (Edit* _edit)
 {
+    keyboard.reset();
+
     if (edit)
     {
         edit->getState().removeListener (this);
+        arrangementView.setEdit (nullptr);
+        transportView.setEdit (nullptr);
     }
 
     edit = _edit;
@@ -33,10 +37,10 @@ void EditView::setEdit (Edit* _edit)
     {
         transportView.setEdit (edit);
         arrangementView.setEdit (edit);
-        edit->getState().addListener (this);
         keyboard = std::unique_ptr<MidiKeyboardComponent> (new MidiKeyboardComponent (
                 edit->getMidiKeyboardState(), MidiKeyboardComponent::Orientation::horizontalKeyboard));
         addAndMakeVisible (*keyboard);
+        edit->getState().addListener (this);
         keyboard->setKeyWidth(53);
         keyboard->setLowestVisibleKey(60);
         resized(); // Re-layout everything.

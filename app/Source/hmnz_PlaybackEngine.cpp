@@ -38,7 +38,6 @@ void PlaybackEngine::setEdit (Edit* _edit)
     if (edit)
     {
         edit->getState().removeListener (this);
-        edit->setPlaybackLock (nullptr);
         edit->trackList.tracks.removeListener (this);
     }
 
@@ -51,7 +50,6 @@ void PlaybackEngine::setEdit (Edit* _edit)
     {
         output.setSource (nullptr);
         output.setSource (this);
-        edit->setPlaybackLock (&callbackLock);
         edit->trackList.tracks.addListener (this);
         edit->getState().addListener (this);
         updatePositionInfo();
@@ -261,6 +259,6 @@ void PlaybackEngine::valueTreePropertyChanged (ValueTree& tree, const Identifier
 
 void PlaybackEngine::objectAdded (Track* track, int, HomogeneousValueTreeObjectArray<Track, CriticalSection>*)
 {
-    const std::lock_guard<std::mutex> lock (getCallbackLock());
+    const CriticalSection::ScopedLockType lock (HarmonaizeApplication::getDeviceManager().getAudioCallbackLock());
     track->prepareToPlay (getActiveSamplesPerBlockExpected(), getActiveSampleRate());
 }

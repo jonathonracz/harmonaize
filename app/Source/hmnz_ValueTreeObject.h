@@ -49,16 +49,11 @@ public:
         return ValueTree (identifier);
     }
 
-    operator ValueTree()
-    {
-        return getState();
-    }
-
     static constexpr const Identifier& identifier = identifierType;
 
 private:
     ValueTree state;
     UndoManager* undoManager;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ValueTreeObject)
+    JUCE_DECLARE_NON_COPYABLE (ValueTreeObject)
 };

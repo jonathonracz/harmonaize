@@ -58,8 +58,6 @@ public:
     void setPositionSecond (double second);
     void setPositionBeat (double beat);
 
-    std::mutex& getCallbackLock() { return callbackLock; }
-
 private:
     struct CurrentPositionInfo  : public AudioPlayHead::CurrentPositionInfo
     {
