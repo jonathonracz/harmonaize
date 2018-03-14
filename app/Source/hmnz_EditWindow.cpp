@@ -55,6 +55,7 @@ StringArray EditWindow::getMenuBarNames()
     StringArray names;
     names.add ("File");
     names.add ("Edit");
+    names.add ("View");
     return names;
 }
 
@@ -79,6 +80,13 @@ PopupMenu EditWindow::getMenuForIndex (int topLevelMenuIndex, const String& /*me
         menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::undo);
         menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::redo);
     }
+
+    else if (topLevelMenuIndex == 2)
+    {
+        PopupMenu viewMenu;
+        menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::scaleUp);
+        menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::scaleDown);
+    }
     
     return menu;
 }
@@ -96,7 +104,9 @@ void EditWindow::getAllCommands (Array<CommandID>& commands)
         CommandIDs::showPreferences,
         CommandIDs::showDebugger,
         CommandIDs::undo,
-        CommandIDs::redo
+        CommandIDs::redo,
+        CommandIDs::scaleUp,
+        CommandIDs::scaleDown
     };
     
     commands.addArray (ids, numElementsInArray (ids));
@@ -142,7 +152,17 @@ void EditWindow::getCommandInfo (const CommandID commandID, ApplicationCommandIn
             result.setInfo ("Redo", String(), category, 0);
             result.defaultKeypresses.add (KeyPress ('z', ModifierKeys::shiftModifier | ModifierKeys::commandModifier, 0));
             break;
-            
+
+        case CommandIDs::scaleUp:
+            result.setInfo ("Scale Up", String(), category, 0);
+            result.addDefaultKeypress ('=', ModifierKeys::commandModifier);
+            break;
+
+        case CommandIDs::scaleDown:
+            result.setInfo ("Scale Down", String(), category, 0);
+            result.addDefaultKeypress ('-', ModifierKeys::commandModifier);
+            break;
+
         default:
             break;
     }
@@ -191,6 +211,16 @@ bool EditWindow::perform (const InvocationInfo& info)
         }
         case CommandIDs::redo:
         {
+            break;
+        }
+        case CommandIDs::scaleUp:
+        {
+            HarmonaizeApplication::getApp().preferencesView->scaleUp();
+            break;
+        }
+        case CommandIDs::scaleDown:
+        {
+            HarmonaizeApplication::getApp().preferencesView->scaleDown();
             break;
         }
         default:

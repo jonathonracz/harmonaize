@@ -22,6 +22,9 @@ namespace CommandIDs
         
         undo                    = 0x300040,
         redo                    = 0x300041,
+
+        scaleUp                 = 0x300050,
+        scaleDown               = 0x300051,
         
         lastCommandIDEntry
     };
