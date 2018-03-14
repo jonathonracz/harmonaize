@@ -24,7 +24,8 @@ TransportView::TransportView()
     timeLabel.addListener (this);
     beatLabel.addListener (this);
     tempoSlider.addListener (this);
-    timeSignatureLabel.addListener (this);
+    timeSignatureNumerator.addListener (this);
+    timeSignatureDenominator.addListener (this);
     keySignatureComboBox.addListener (this);
 
     goToBeginningButton.setButtonText (translate ("Go to beginning"));
@@ -41,7 +42,7 @@ TransportView::TransportView()
     timeText.setEditable (false);
     beatText.setEditable (false);
     tempoText.setEditable (false);
-//    timeSignatureText.setText (translate ("Time"));
+    timeSignatureText.setText (translate ("Time"), NotificationType::dontSendNotification);
     keySignatureText.setText (translate ("Key"), NotificationType::dontSendNotification);
 
     stopPlayButton.setClickingTogglesState (true);
@@ -56,7 +57,8 @@ TransportView::TransportView()
     addAndMakeVisible (timeLabel);
     addAndMakeVisible (beatLabel);
     addAndMakeVisible (tempoSlider);
-    addAndMakeVisible (timeSignatureLabel);
+    addAndMakeVisible (timeSignatureNumerator);
+    addAndMakeVisible (timeSignatureDenominator);
     addAndMakeVisible (keySignatureComboBox);
 
     addAndMakeVisible (timeText);
@@ -102,42 +104,60 @@ void TransportView::resized()
 
     FlexBox text;
     text.flexDirection = FlexBox::Direction::row;
-    timeText.setJustificationType(Justification::centred);
-    beatText.setJustificationType(Justification::centred);
-    tempoText.setJustificationType(Justification::centred);
-    keySignatureText.setJustificationType(Justification::centred);
+    timeText.setJustificationType (Justification::centred);
+    beatText.setJustificationType (Justification::centred);
+    tempoText.setJustificationType (Justification::centred);
+    keySignatureText.setJustificationType (Justification::centred);
+    timeSignatureText.setJustificationType (Justification::centred);
     Font font = Font (20);
     timeText.setFont (font);
     beatText.setFont (font);
     tempoText.setFont (font);
     keySignatureText.setFont (font);
+    timeSignatureText.setFont (font);
     FlexItem timeT = FlexItem (timeText).withFlex (0.5f);
     FlexItem beatT = FlexItem (beatText).withFlex (0.5f);
     FlexItem tempoT = FlexItem (tempoText).withFlex (0.5f);
     FlexItem keySigT = FlexItem (keySignatureText).withFlex (0.5f);
+    FlexItem timeSigT = FlexItem (timeSignatureText).withFlex (0.5f);
     text.items.add (FlexItem().withFlex (1.0f));
     text.items.add (timeT);
     text.items.add (beatT);
     text.items.add (tempoT);
-    //text.items.add (FlexItem (timeSignatureText).withFlex (1.0f));
+    text.items.add (timeSigT);
     text.items.add (keySigT);
     text.items.add (FlexItem().withFlex (1.0f));
 
     FlexBox labels;
     labels.flexDirection = FlexBox::Direction::row;
-    timeLabel.setJustificationType(Justification::centred);
-    beatLabel.setJustificationType(Justification::centred);
+    timeLabel.setJustificationType (Justification::centred);
+    beatLabel.setJustificationType (Justification::centred);
+    timeSignatureNumerator.setJustificationType (Justification::centred);
+    timeSignatureDenominator.setJustificationType (Justification::centred);
     timeLabel.setFont (font);
-    beatLabel.setFont (font); 
+    beatLabel.setFont (font);
+    timeSignatureNumerator.setFont (font);
+    timeSignatureNumerator.setEditable (true);
+    timeSignatureDenominator.setFont (font);
+    timeSignatureDenominator.setEditable (true);
     FlexItem timeL = FlexItem (timeLabel).withFlex (0.5f);
     FlexItem beatL = FlexItem (beatLabel).withFlex (0.5f);
     FlexItem tempoL = FlexItem (tempoSlider).withFlex (0.5f);
     FlexItem keySigL = FlexItem (keySignatureComboBox).withFlex (0.5f);
+    
+    FlexBox timeSig;
+    timeSig.flexDirection = FlexBox::Direction::column;
+    FlexItem timeSigN = FlexItem (timeSignatureNumerator).withFlex (0.5f);
+    FlexItem timeSigD = FlexItem (timeSignatureDenominator).withFlex (0.5f);
+    timeSig.items.add (timeSigN);
+    timeSig.items.add (timeSigD);
+    FlexItem timeSigFlex = FlexItem (timeSig).withFlex (0.5f);
+    
     labels.items.add (FlexItem().withFlex (1.0f));
     labels.items.add (timeL);
     labels.items.add (beatL);
     labels.items.add (tempoL);
-    //labels.items.add (FlexItem (timeSignatureLabel).withFlex (1.0f));
+    labels.items.add (timeSigFlex);
     labels.items.add (keySigL);
     labels.items.add (FlexItem().withFlex (1.0f));
 
@@ -228,6 +248,14 @@ void TransportView::valueTreePropertyChanged (ValueTree& treeChanged, const Iden
         {
             tempoSlider.setValue (transport.playHeadTempo, NotificationType::dontSendNotification);
         }
+        else if (property == transport.playHeadTimeSigNumerator.getPropertyID())
+        {
+            timeSignatureNumerator.setText (String (transport.playHeadTimeSigNumerator), NotificationType::dontSendNotification);
+        }
+        else if (property == transport.playHeadTimeSigDenominator.getPropertyID())
+        {
+            timeSignatureDenominator.setText (String (transport.playHeadTimeSigDenominator), NotificationType::dontSendNotification);
+        }
     }
 }
 
@@ -298,4 +326,24 @@ void TransportView::sliderValueChanged (Slider* slider)
     int val = slider->getValue();
     slider->setValue (val);
     edit->transport.playHeadTempo = val;
+}
+
+void TransportView::labelTextChanged(Label* label)
+{
+    if (label == &timeSignatureNumerator)
+    {
+        String val = label->getText();
+        if (val.getIntValue() != 0)
+            edit->transport.playHeadTimeSigNumerator = val.getIntValue();
+        else
+            label->setText(String (edit->transport.playHeadTimeSigNumerator), NotificationType::dontSendNotification);
+    }
+    else if (label == &timeSignatureDenominator)
+    {
+        String val = label->getText();
+        if (val.getIntValue() != 0)
+            edit->transport.playHeadTimeSigDenominator = val.getIntValue();
+        else
+            label->setText(String (edit->transport.playHeadTimeSigDenominator), NotificationType::dontSendNotification);
+    }
 }
