@@ -45,7 +45,7 @@ public:
     void saveState();
     void newProject();
     File openProject();
-    void changeFile(File file);
+    void changeFile (File file);
 
 private:
     JUCE_DECLARE_WEAK_REFERENCEABLE (Edit)
