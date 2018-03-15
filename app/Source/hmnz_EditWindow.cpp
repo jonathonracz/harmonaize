@@ -181,7 +181,8 @@ bool EditWindow::perform (const InvocationInfo& info)
         case CommandIDs::openProject:
         {
             File file = currentEdit.get()->openProject();
-            currentEdit.get()->changeFile(file);
+            // Two seperate function calls because currentEdit.reset() gets called
+            currentEdit.get()->changeFile (file);
             break;
         }
         case CommandIDs::showPreferences:

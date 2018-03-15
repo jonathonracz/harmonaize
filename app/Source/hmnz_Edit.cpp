@@ -139,11 +139,11 @@ File Edit::openProject()
     XmlElement* e = XmlDocument::parse (file);
     ValueTree valueTree = ValueTree::fromXml (*e);
     delete e;
-    HarmonaizeApplication::getApp().editWindow->setEdit(valueTree);
+    HarmonaizeApplication::getApp().editWindow->setEdit (valueTree);
     return file;
 }
 
-void Edit::changeFile(File file)
+void Edit::changeFile (File file)
 {
     state = file;
 }
