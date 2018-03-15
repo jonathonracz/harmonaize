@@ -50,7 +50,7 @@ def getMidiInfo(FileAttributes, messages):
 	note_counts = {}
 
 	tempo = FileAttributes['tempo']
-	current_beat = 0
+	current_beat = 1
 
 	for message in messages:
 		if message.type == 'note_on':
