@@ -174,14 +174,20 @@ bool EditWindow::perform (const InvocationInfo& info)
     {
         case CommandIDs::newProject:
         {
-            //            if (graphHolder != nullptr && graphHolder->graph != nullptr && graphHolder->graph->saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
-            //                graphHolder->graph->newDocument();
+            Edit* edit = currentEdit.get();
+            edit->newProject();
             break;
         }
         case CommandIDs::openProject:
         {
-            //            if (graphHolder != nullptr && graphHolder->graph != nullptr && graphHolder->graph->saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
-            //                graphHolder->graph->loadFromUserSpecifiedFile (true);
+            FileChooser fileChooser ("Open Project");
+            fileChooser.browseForFileToOpen();
+            File file = fileChooser.getResult();
+            currentEdit.get()->openProject(file);
+            XmlElement* e = XmlDocument::parse(file);
+            ValueTree valueTree = ValueTree::fromXml(*e);
+            delete e;
+            setEdit (valueTree);
             break;
         }
         case CommandIDs::showPreferences:
