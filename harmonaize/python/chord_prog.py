@@ -44,6 +44,43 @@ class ChordProg():
 		self.tempo = FileAttributes['tempo']
 		self.groove = FileAttributes['groove']
 
+		self.num_reps = 4
+		self.beat_map = FileAttributes['beat_map']
+		self.time_signature = FileAttributes['time_signature']
+
+	def genMmaFileWithExactChords(self):
+		beat_map = self.beat_map
+
+		measures = []
+		measure = []
+		beat_num = 1
+
+		while beat_num <= max(beat_map.keys()):
+			if beat_num in beat_map:
+				if len(beat_map[beat_num]) > 1:
+					measure.append(beat_map[beat_num][0] + '7')
+				else:
+					measure.append(beat_map[beat_num][0])
+			else:
+				measure.append('/')
+
+			if beat_num % self.time_signature[0] == 0:
+				measures.append(measure)
+				measure = []
+
+			beat_num += 1
+
+		file = open(self.filename, 'w')
+		self.writeMMAHeader(file)
+
+		for _ in range(self.num_reps):
+			for measure_num, measure_notes in enumerate(measures):
+				file.write(str(measure_num + 1))
+				for note in measure_notes:
+					file.write(" " + note)
+				file.write('\n')
+
+		file.close()
 
 	def intervalJump(self, interval):
 		newNote = (self.keyMap[self.tonic] + self.semitones[interval]) % 12
