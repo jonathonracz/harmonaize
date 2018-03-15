@@ -111,3 +111,27 @@ void Edit::convertTimestampsFromBeatsToTicks (MidiMessageSequence& sequence) con
         event->message.setTimeStamp (newTimestamp);
     }
 }
+
+void Edit::saveState()
+{
+    if (state.exists())
+    {
+        ValueTree currentState = getState();
+        XmlElement* xml = currentState.createXml();
+        xml->writeToFile(state, "");
+        delete xml;
+    }
+}
+
+void Edit::newProject()
+{
+    FileChooser fileChooser("New Project");
+    fileChooser.browseForFileToSave (true);
+    state = fileChooser.getResult();
+    state.create();
+}
+
+void Edit::openProject(File file)
+{
+    state = file;
+}
