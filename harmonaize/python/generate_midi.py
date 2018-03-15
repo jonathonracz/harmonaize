@@ -4,7 +4,6 @@ import os
 import sys
 import mido
 
-from parse_midi import parseMidi
 from chord_prog import ChordProg
 from midi_parser import MidiParser
 from groove_selector import GrooveSelector
@@ -76,4 +75,4 @@ def genMidi(path_to_fakebook):
 
 if __name__ == '__main__':
 	midi_file = mido.MidiFile('../../app/Design/test.mid')
-	genAccompaniment2(midi_file)
+	genAccompaniment(midi_file)
