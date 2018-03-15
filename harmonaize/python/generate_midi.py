@@ -31,15 +31,6 @@ def genAccompaniment(midi=None):
 	genMidi("../midiinterchange/generated_files/accomp.mma")
 	return mido.MidiFile("../midiinterchange/generated_files/accomp.mid")
 
-def genAccompaniment_Deprecated(midi=None):
-	FileAttributes = parseMidi(midi)
-	generator = ChordProg(FileAttributes, "generated_files/accomp.mma")
-	generator.generateMMAFormat()
-
-	genMidi("generated_files/accomp.mma")
-
-	return mido.MidiFile("generated_files/accomp.mid")
-
 def genMultipleAccompaniments(midi=None):
 	FileAttributes1 = parseMidi(midi)
 	FileAttributes2 = parseMidi(midi)
