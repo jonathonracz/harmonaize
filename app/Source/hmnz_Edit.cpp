@@ -118,20 +118,32 @@ void Edit::saveState()
     {
         ValueTree currentState = getState();
         XmlElement* xml = currentState.createXml();
-        xml->writeToFile(state, "");
+        xml->writeToFile (state, "");
         delete xml;
     }
 }
 
 void Edit::newProject()
 {
-    FileChooser fileChooser("New Project");
+    FileChooser fileChooser ("New Project");
     fileChooser.browseForFileToSave (true);
     state = fileChooser.getResult();
     state.create();
 }
 
-void Edit::openProject(File file)
+File Edit::openProject()
+{
+    FileChooser fileChooser ("Open Project");
+    fileChooser.browseForFileToOpen();
+    File file = fileChooser.getResult();
+    XmlElement* e = XmlDocument::parse (file);
+    ValueTree valueTree = ValueTree::fromXml (*e);
+    delete e;
+    HarmonaizeApplication::getApp().editWindow->setEdit(valueTree);
+    return file;
+}
+
+void Edit::changeFile(File file)
 {
     state = file;
 }
