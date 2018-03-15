@@ -73,12 +73,17 @@ class ChordProg():
 		file = open(self.filename, 'w')
 		self.writeMMAHeader(file)
 
+		measure_num = 1
+		
 		for _ in range(self.num_reps):
-			for measure_num, measure_notes in enumerate(measures):
-				file.write(str(measure_num + 1))
+			for measure_notes in measures:
+
+				file.write(str(measure_num))
 				for note in measure_notes:
 					file.write(" " + note)
 				file.write('\n')
+
+				measure_num += 1
 
 		file.close()
 
