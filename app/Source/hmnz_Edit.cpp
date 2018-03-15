@@ -111,3 +111,42 @@ void Edit::convertTimestampsFromBeatsToTicks (MidiMessageSequence& sequence) con
         event->message.setTimeStamp (newTimestamp);
     }
 }
+
+void Edit::saveState()
+{
+    if (state.exists())
+    {
+        ValueTree currentState = getState().createCopy();
+        ValueTree transport = currentState.getChildWithName("Transport");
+        transport.setProperty ("PlayState", 0, nullptr);
+        transport.setProperty ("RecordEnabled", 0, nullptr);
+        XmlElement* xml = currentState.createXml();
+        xml->writeToFile (state, "");
+        delete xml;
+    }
+}
+
+void Edit::newProject()
+{
+    FileChooser fileChooser ("New Project");
+    fileChooser.browseForFileToSave (true);
+    state = fileChooser.getResult();
+    state.create();
+}
+
+File Edit::openProject()
+{
+    FileChooser fileChooser ("Open Project");
+    fileChooser.browseForFileToOpen();
+    File file = fileChooser.getResult();
+    XmlElement* e = XmlDocument::parse (file);
+    ValueTree valueTree = ValueTree::fromXml (*e);
+    delete e;
+    HarmonaizeApplication::getApp().editWindow->setEdit (valueTree);
+    return file;
+}
+
+void Edit::changeFile (File file)
+{
+    state = file;
+}

@@ -174,14 +174,15 @@ bool EditWindow::perform (const InvocationInfo& info)
     {
         case CommandIDs::newProject:
         {
-            //            if (graphHolder != nullptr && graphHolder->graph != nullptr && graphHolder->graph->saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
-            //                graphHolder->graph->newDocument();
+            Edit* edit = currentEdit.get();
+            edit->newProject();
             break;
         }
         case CommandIDs::openProject:
         {
-            //            if (graphHolder != nullptr && graphHolder->graph != nullptr && graphHolder->graph->saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
-            //                graphHolder->graph->loadFromUserSpecifiedFile (true);
+            File file = currentEdit.get()->openProject();
+            // Two seperate function calls because currentEdit.reset() gets called
+            currentEdit.get()->changeFile (file);
             break;
         }
         case CommandIDs::showPreferences:
