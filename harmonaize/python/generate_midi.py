@@ -3,11 +3,36 @@
 import os
 import sys
 import mido
+
 from parse_midi import parseMidi
 from chord_prog import ChordProg
+from midi_parser import MidiParser
+from groove_selector import GrooveSelector
+
 from grooves import GROOVES
 
 def genAccompaniment(midi=None):
+	parser = MidiParser(midi)
+
+	note_counts, beat_map = parser.getMidiInfo()
+	selector = GrooveSelector(parser.getTempo(), parser.getTimeSignature())
+
+	FileAttributes = {
+		'tempo': parser.getTempo(),
+		'tonic': parser.getTonic(),
+		'time_tignature': parser.getTimeSignature(),
+		'note_counts': note_counts,
+		'beat_map': beat_map,
+		'groove': selector.select_groove(),
+	}
+
+	generator = ChordProg(FileAttributes, "../midiinterchange/generated_files/accomp.mma")
+	generator.generateMMAFormat()
+
+	genMidi("../midiinterchange/generated_files/accomp.mma")
+	return mido.MidiFile("../midiinterchange/generated_files/accomp.mid")
+
+def genAccompaniment_Deprecated(midi=None):
 	FileAttributes = parseMidi(midi)
 	generator = ChordProg(FileAttributes, "generated_files/accomp.mma")
 	generator.generateMMAFormat()
@@ -51,4 +76,4 @@ def genMidi(path_to_fakebook):
 
 if __name__ == '__main__':
 	midi_file = mido.MidiFile('../../app/Design/test.mid')
-	genAccompaniment(midi_file)
+	genAccompaniment2(midi_file)
