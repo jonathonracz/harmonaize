@@ -1,9 +1,9 @@
 import mido
 import random
 import math
+
 from grooves import GROOVES
 from midi_notes import MODDED_NOTES
-from collections import defaultdict
 
 def parseMidi(midi):
 	messages = midi.tracks[0]
