@@ -42,6 +42,11 @@ public:
 
     MidiKeyboardState& getMidiKeyboardState() { return keyboardState; }
 
+    void saveState();
+    void newProject();
+    File openProject();
+    void changeFile (File file);
+
 private:
     JUCE_DECLARE_WEAK_REFERENCEABLE (Edit)
 
@@ -53,6 +58,8 @@ public:
 
 private:
     MidiKeyboardState keyboardState;
+
+    File state;
 
     void convertTimestampsFromBeatsToTicks (MidiMessageSequence& sequence) const;
 
