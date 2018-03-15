@@ -180,14 +180,8 @@ bool EditWindow::perform (const InvocationInfo& info)
         }
         case CommandIDs::openProject:
         {
-            FileChooser fileChooser ("Open Project");
-            fileChooser.browseForFileToOpen();
-            File file = fileChooser.getResult();
-            currentEdit.get()->openProject(file);
-            XmlElement* e = XmlDocument::parse(file);
-            ValueTree valueTree = ValueTree::fromXml(*e);
-            delete e;
-            setEdit (valueTree);
+            File file = currentEdit.get()->openProject();
+            currentEdit.get()->changeFile(file);
             break;
         }
         case CommandIDs::showPreferences:
