@@ -116,7 +116,10 @@ void Edit::saveState()
 {
     if (state.exists())
     {
-        ValueTree currentState = getState();
+        ValueTree currentState = getState().createCopy();
+        ValueTree transport = currentState.getChildWithName("Transport");
+        transport.setProperty ("PlayState", 0, nullptr);
+        transport.setProperty ("RecordEnabled", 0, nullptr);
         XmlElement* xml = currentState.createXml();
         xml->writeToFile (state, "");
         delete xml;
