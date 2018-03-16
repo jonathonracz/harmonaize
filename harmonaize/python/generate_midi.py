@@ -25,10 +25,10 @@ def genAccompaniment(midi=None):
 		'groove': selector.select_groove(),
 	}
 
-	generator = ChordProg(FileAttributes, "../midiinterchange/generated_files/accomp.mma")
+	generator = ChordProg(FileAttributes, "generated_files/accomp.mma")
 	generator.generateMMAFormat()
 
-	genMidi("../midiinterchange/generated_files/accomp.mma")
+	genMidi("generated_files/accomp.mma")
 	return mido.MidiFile("../midiinterchange/generated_files/accomp.mid")
 
 def genMultipleAccompaniments(midi=None):

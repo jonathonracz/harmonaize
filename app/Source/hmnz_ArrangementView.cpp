@@ -12,27 +12,18 @@
 #include "hmnz_ArrangementViewModel.h"
 #include "hmnz_Edit.h"
 
-ArrangementView::ArrangementView()
+ArrangementView::ArrangementView (Edit& _edit)
+    : edit (_edit), topBar (_edit), grid (_edit), trackList (_edit)
 {
     addAndMakeVisible (topBar);
-    addAndMakeVisible (timeline);
+    addAndMakeVisible (grid);
     addAndMakeVisible (trackList);
-}
-
-void ArrangementView::editChanged (Edit* oldEdit)
-{
-    topBar.setEdit (getEdit());
-    timeline.setEdit (getEdit());
-    trackList.setEdit (getEdit());
 }
 
 void ArrangementView::resized()
 {
     const int topBarHeight = 28;
-    if (!getEdit())
-        return;
-
-    ArrangementViewModel& model = getEdit()->arrangementViewModel;
+    ArrangementViewModel& model = edit.arrangementViewModel;
 
     FlexBox layout;
     layout.flexDirection = FlexBox::Direction::row;
@@ -40,7 +31,7 @@ void ArrangementView::resized()
     FlexBox timelineGroup;
     timelineGroup.flexDirection = FlexBox::Direction::column;
     timelineGroup.items.add (FlexItem (topBar).withHeight (topBarHeight));
-    timelineGroup.items.add (FlexItem (timeline).withFlex (1.0f));
+    timelineGroup.items.add (FlexItem (grid).withFlex (1.0f));
 
     layout.items.add (FlexItem (timelineGroup).withFlex (1.0f));
     layout.items.add (FlexItem ().withWidth (model.headerWidth.get()));
@@ -51,10 +42,7 @@ void ArrangementView::resized()
 
 void ArrangementView::mouseWheelMove (const MouseEvent& event, const MouseWheelDetails& wheel)
 {
-    if (!getEdit())
-        return;
-
-    ArrangementViewModel& model = getEdit()->arrangementViewModel;
+    ArrangementViewModel& model = edit.arrangementViewModel;
     NormalisableRange<double> remapper (model.timeStart, model.timeEnd);
     const double mouseSensitivity = 1.0f / 5.0f;
     double timeToMove = remapper.getRange().getLength() * (wheel.deltaX * mouseSensitivity);
@@ -78,11 +66,8 @@ void ArrangementView::mouseWheelMove (const MouseEvent& event, const MouseWheelD
 
 void ArrangementView::mouseMagnify (const MouseEvent& event, float scaleFactor)
 {
-    if (!getEdit())
-        return;
-
     scaleFactor = 1.0f / scaleFactor; // Invert the scale.
-    ArrangementViewModel& model = getEdit()->arrangementViewModel;
+    ArrangementViewModel& model = edit.arrangementViewModel;
     NormalisableRange<double> remapper (model.timeStart, model.timeEnd);
     // Factor: this is an arbitrary number to change the responsiveness of magnifying.
     const double magnifyIncrease = 1.0;
@@ -94,13 +79,5 @@ void ArrangementView::mouseMagnify (const MouseEvent& event, float scaleFactor)
     {
         model.timeStart = newStart;
         model.timeEnd = newEnd;
-    }
-}
-
-void ArrangementView::valueTreePropertyChanged (ValueTree& tree, const Identifier& property)
-{
-    if (tree == getEdit()->arrangementViewModel.getState())
-    {
-        repaint();
     }
 }

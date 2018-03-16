@@ -18,13 +18,11 @@ class EditView  : public Component,
                   public ValueTree::Listener
 {
 public:
-    EditView();
+    EditView (Edit& edit);
     ~EditView();
 
-    void setEdit (Edit* edit);
-
 private:
-    WeakReference<Edit> edit;
+    Edit& edit;
 
     TransportView transportView;
     ArrangementView arrangementView;
