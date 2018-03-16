@@ -250,7 +250,7 @@ void EditWindow::setEdit (const ValueTree& edit)
 
 void EditWindow::saveState()
 {
-    if (this && state.exists())
+    if (state.exists())
     {
         ValueTree currentState = currentEdit.get()->getState().createCopy();
         ValueTree transport = currentState.getChildWithName("Transport");
