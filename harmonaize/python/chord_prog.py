@@ -105,7 +105,10 @@ class ChordProg():
 
 	def getNextChord(self, chords, notes):
 		print(chords, notes)
-		return notes[0]
+		if len(chords) % 2 == 1:
+			return '/'
+		else:
+			return notes[0]
 
 	def intervalJump(self, interval):
 		newNote = (self.keyMap[self.tonic] + self.semitones[interval]) % 12
