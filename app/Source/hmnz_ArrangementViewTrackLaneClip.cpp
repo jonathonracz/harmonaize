@@ -33,7 +33,7 @@ void ArrangementViewTrackLaneClip::updateBounds()
 
 void ArrangementViewTrackLaneClip::paint (Graphics& g)
 {
-    g.fillAll (Colours::white);
+    g.fillAll (clip.color);
 }
 
 void ArrangementViewTrackLaneClip::valueTreePropertyChanged (ValueTree&, const Identifier& property)
