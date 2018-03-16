@@ -173,15 +173,12 @@ bool EditWindow::perform (const InvocationInfo& info)
     {
         case CommandIDs::newProject:
         {
-            Edit* edit = currentEdit.get();
-            edit->newProject();
+            newProject();
             break;
         }
         case CommandIDs::openProject:
         {
-            File file = currentEdit.get()->openProject();
-            // Two seperate function calls because currentEdit.reset() gets called
-            currentEdit.get()->changeFile (file);
+            openProject();
             break;
         }
         case CommandIDs::showPreferences:
@@ -249,4 +246,43 @@ void EditWindow::setEdit (const ValueTree& edit)
         playbackEngine.setEdit (currentEdit.get());
         setContentOwned (new EditView (*currentEdit), false);
     }
+}
+
+void EditWindow::saveState()
+{
+    if (this && state.exists())
+    {
+        ValueTree currentState = currentEdit.get()->getState().createCopy();
+        ValueTree transport = currentState.getChildWithName("Transport");
+        transport.setProperty ("PlayState", 0, nullptr);
+        transport.setProperty ("RecordEnabled", 0, nullptr);
+        XmlElement* xml = currentState.createXml();
+        xml->writeToFile (state, "");
+        delete xml;
+    }
+}
+
+void EditWindow::newProject()
+{
+    FileChooser fileChooser ("New Project");
+    fileChooser.browseForFileToSave (true);
+    state = fileChooser.getResult();
+    state.create();
+}
+
+void EditWindow::openProject()
+{
+    FileChooser fileChooser ("Open Project");
+    fileChooser.browseForFileToOpen();
+    File file = fileChooser.getResult();
+    XmlElement* e = XmlDocument::parse (file);
+    ValueTree valueTree = ValueTree::fromXml (*e);
+    delete e;
+    setEdit(valueTree);
+    state = file;
+}
+
+void EditWindow::changeFile (File file)
+{
+    state = file;
 }

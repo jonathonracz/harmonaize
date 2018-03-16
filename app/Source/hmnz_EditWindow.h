@@ -34,12 +34,19 @@ public:
 
     void setEdit (const ValueTree& edit);
 
+    void saveState();
+    void newProject();
+    void openProject();
+    void changeFile (File file);
+
 private:
     PlaybackEngine playbackEngine;
     std::unique_ptr<EditView> editView;
     std::unique_ptr<Edit> currentEdit;
     std::unique_ptr<UndoManager> undoManager;
     jcf::ValueTreeDebugger editDebugger;
+
+    File state;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditWindow)
 };
