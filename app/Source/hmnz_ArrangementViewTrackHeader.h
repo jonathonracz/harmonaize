@@ -10,22 +10,27 @@
 
 #pragma once
 
-#include "hmnz_ArrangementViewComponent.h"
+#include "JuceHeader.h"
 
 class Track;
 
-class ArrangementViewTrackHeader  : public ArrangementViewComponent
+class ArrangementViewTrackHeader  : public Component,
+                                    public ValueTree::Listener
 {
 public:
-    ArrangementViewTrackHeader (Track* track);
-
-    Track* getRepresentedTrack() const { return track; }
+    ArrangementViewTrackHeader (Track& track);
+    ~ArrangementViewTrackHeader();
 
 private:
-    WeakReference<Track> track;
+    Track& track;
 
     void paint (Graphics&) override;
-    jcf::AdvancedLeakDetector leakDetector;
+
+    void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
+    void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
+    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
+    void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
+    void valueTreeParentChanged (ValueTree&) override {}
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementViewTrackHeader)
 };

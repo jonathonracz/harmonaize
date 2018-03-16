@@ -10,24 +10,29 @@
 
 #pragma once
 
-#include "hmnz_ArrangementViewComponent.h"
+#include "hmnz_ArrangementViewTimelineComponent.h"
 
 class Clip;
 
-class ArrangementViewTrackLaneClip  : public ArrangementViewComponent
+class ArrangementViewTrackLaneClip  : public ArrangementViewTimelineComponent,
+                                      public ValueTree::Listener
 {
 public:
-    ArrangementViewTrackLaneClip (Clip* clip);
+    ArrangementViewTrackLaneClip (Clip& clip);
     ~ArrangementViewTrackLaneClip();
 
-    Clip* getRepresentedClip() const { return clip; }
+    Clip& getRepresentedClip() const { return clip; }
 
 private:
-    Clip* clip;
+    Clip& clip;
 
     void paint (Graphics&) override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
+    void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
+    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
+    void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
+    void valueTreeParentChanged (ValueTree&) override {}
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementViewTrackLaneClip)
 };

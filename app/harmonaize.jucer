@@ -24,14 +24,10 @@
             file="Source/hmnz_ArrangementView.cpp"/>
       <FILE id="E8saIS" name="hmnz_ArrangementView.h" compile="0" resource="0"
             file="Source/hmnz_ArrangementView.h"/>
-      <FILE id="WYKWjA" name="hmnz_ArrangementViewComponent.cpp" compile="1"
-            resource="0" file="Source/hmnz_ArrangementViewComponent.cpp"/>
-      <FILE id="Usmz7j" name="hmnz_ArrangementViewComponent.h" compile="0"
-            resource="0" file="Source/hmnz_ArrangementViewComponent.h"/>
-      <FILE id="Zn9QTm" name="hmnz_ArrangementViewTimeline.cpp" compile="1"
-            resource="0" file="Source/hmnz_ArrangementViewTimeline.cpp"/>
-      <FILE id="hj5PLa" name="hmnz_ArrangementViewTimeline.h" compile="0"
-            resource="0" file="Source/hmnz_ArrangementViewTimeline.h"/>
+      <FILE id="WYKWjA" name="hmnz_ArrangementViewTimelineComponent.cpp"
+            compile="1" resource="0" file="Source/hmnz_ArrangementViewTimelineComponent.cpp"/>
+      <FILE id="Usmz7j" name="hmnz_ArrangementViewTimelineComponent.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewTimelineComponent.h"/>
       <FILE id="zcctXj" name="hmnz_ArrangementViewTimelineGrid.cpp" compile="1"
             resource="0" file="Source/hmnz_ArrangementViewTimelineGrid.cpp"/>
       <FILE id="Tn717Q" name="hmnz_ArrangementViewTimelineGrid.h" compile="0"

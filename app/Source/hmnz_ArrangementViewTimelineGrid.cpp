@@ -11,16 +11,22 @@
 #include "hmnz_ArrangementViewTimelineGrid.h"
 #include "hmnz_Edit.h"
 
-void ArrangementViewTimelineGrid::resized()
+ArrangementViewTimelineGrid::ArrangementViewTimelineGrid (Edit& edit)
+    : ArrangementViewTimelineComponent (edit)
 {
+    edit.transport.getState().addListener (this);
+    edit.arrangementViewModel.getState().addListener (this);
+}
+
+ArrangementViewTimelineGrid::~ArrangementViewTimelineGrid()
+{
+    edit.transport.getState().removeListener (this);
+    edit.arrangementViewModel.getState().removeListener (this);
 }
 
 void ArrangementViewTimelineGrid::paint (Graphics& g)
 {
-    if (!getEdit())
-        return;
-
-    ArrangementViewModel& model = getEdit()->arrangementViewModel;
+    const ArrangementViewModel& model = edit.arrangementViewModel;
     NormalisableRange<double> remapper = getBeatRemapper();
     const int minimumLineSpacing = 14.0; // Arbitrary - controls how close lines can get before the grid size increases
     double linesPerBeat = getLinesPerBeatForMinimumLineSpacing (minimumLineSpacing);
@@ -28,7 +34,7 @@ void ArrangementViewTimelineGrid::paint (Graphics& g)
     double beatValue = Utility::floorToNearestInterval (remapper.start, linesPerBeat);
     while (beatValue <= remapper.end)
     {
-        TimeSignature& timeSignature = getEdit()->masterTrack.timeSignature;
+        const TimeSignature& timeSignature = edit.masterTrack.timeSignature;
         const double beatsInBar = timeSignature.getNumeratorAtBeat (beatValue);
         const double bar = timeSignature.barForBeat (beatValue);
         const double beat = std::floor (timeSignature.beatInBar (beatValue));
@@ -42,7 +48,7 @@ void ArrangementViewTimelineGrid::paint (Graphics& g)
         beatValue += linesPerBeat;
     }
 
-    double transportBeat = getEdit()->transport.playHeadBeat;
+    double transportBeat = edit.transport.playHeadBeat;
     if (transportBeat >= model.timeStart)
     {
         g.setColour (Colours::blue);
@@ -54,12 +60,14 @@ void ArrangementViewTimelineGrid::paint (Graphics& g)
 
 void ArrangementViewTimelineGrid::valueTreePropertyChanged (ValueTree& tree, const Identifier& property)
 {
-    if (tree == getEdit()->transport.getState())
+    if (property == edit.transport.playHeadBeat.getPropertyID())
     {
-        if (property == getEdit()->transport.playHeadBeat.getPropertyID())
-        {
-            Rectangle<int> expectedPlayHeadBounds = Rectangle<int> (getXPosForBeat (getEdit()->transport.playHeadBeat.get()), 0, 2, getHeight());
-            repaint (expectedPlayHeadBounds.getUnion (lastPaintedPlayHeadBounds));
-        }
+        Rectangle<int> expectedPlayHeadBounds = Rectangle<int> (getXPosForBeat (edit.transport.playHeadBeat.get()), 0, 2, getHeight());
+        repaint (expectedPlayHeadBounds.getUnion (lastPaintedPlayHeadBounds));
+    }
+    else if (property == edit.arrangementViewModel.timeStart.getPropertyID() ||
+             property == edit.arrangementViewModel.timeEnd.getPropertyID())
+    {
+        repaint();
     }
 }

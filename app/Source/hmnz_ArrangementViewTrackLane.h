@@ -10,29 +10,26 @@
 
 #pragma once
 
-#include "hmnz_ArrangementViewComponent.h"
+#include "hmnz_ArrangementViewTimelineComponent.h"
 #include "hmnz_HomogeneousValueTreeObjectArray.h"
 
 class Track;
 class Clip;
 class ArrangementViewTrackLaneClip;
 
-class ArrangementViewTrackLane  : public ArrangementViewComponent,
-                                  public HomogeneousValueTreeObjectArray<Clip>::Listener
+class ArrangementViewTrackLane  : public ArrangementViewTimelineComponent,
+                                  public HomogeneousValueTreeObjectArray<Clip>::Listener,
+                                  public ValueTree::Listener
 {
 public:
-    ArrangementViewTrackLane (Track* track);
+    ArrangementViewTrackLane (Track& track);
     ~ArrangementViewTrackLane();
 
-    Track* getRepresentedTrack() const { return track; }
-
 private:
-    Track* track;
+    Track& track;
     OwnedArray<ArrangementViewTrackLaneClip> clips;
 
     ArrangementViewTrackLaneClip* getChildForClip (Clip* clip);
-
-    void editChanged (Edit* oldEdit) override;
 
     void resized() override;
 
@@ -40,6 +37,10 @@ private:
     void objectRemoved (Clip*, int, HomogeneousValueTreeObjectArray<Clip>*) override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
+    void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
+    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
+    void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
+    void valueTreeParentChanged (ValueTree&) override {}
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementViewTrackLane)
 };
