@@ -11,29 +11,27 @@
 #pragma once
 
 #include "hmnz_ArrangementViewTopBar.h"
-#include "hmnz_ArrangementViewTimeline.h"
+#include "hmnz_ArrangementViewTimelineGrid.h"
 #include "hmnz_ArrangementViewTrackList.h"
 
 class Track;
 
-class ArrangementView   : public ArrangementViewComponent
+class ArrangementView   : public Component
 {
 public:
-    ArrangementView();
+    ArrangementView (Edit& edit);
 
 private:
+    Edit& edit;
+
     ArrangementViewTopBar topBar;
-    ArrangementViewTimeline timeline;
+    ArrangementViewTimelineGrid grid;
     ArrangementViewTrackList trackList;
     double verticalScrollAccumulator = 0.0;
-
-    void editChanged (Edit*) override;
 
     void resized() override;
     void mouseWheelMove (const MouseEvent&, const MouseWheelDetails&) override;
     void mouseMagnify (const MouseEvent&, float) override;
-
-    void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementView)
 };

@@ -13,7 +13,8 @@
 #include "hmnz_Edit.h"
 #include "../../harmonaize/midiinterchange/hmnz_MidiInterchange.h"
 
-TransportView::TransportView()
+TransportView::TransportView (Edit& _edit)
+    : edit (_edit)
 {
     goToBeginningButton.addListener (this);
     stopPlayButton.addListener (this);
@@ -45,6 +46,13 @@ TransportView::TransportView()
     timeSignatureText.setText (translate ("Time"), NotificationType::dontSendNotification);
     keySignatureText.setText (translate ("Key"), NotificationType::dontSendNotification);
 
+    tempoSlider.setColour (Slider::ColourIds::textBoxOutlineColourId, Colours::transparentWhite);
+    tempoSlider.setTextBoxStyle (Slider::TextBoxBelow, 0, 80, 25);
+    tempoSlider.setRange (1, 200);
+    tempoSlider.setTextValueSuffix (" BPM");
+    StringArray items = KeySignature::getKeyDescriptions();
+    keySignatureComboBox.addItemList (items, 1);
+
     stopPlayButton.setClickingTogglesState (true);
     recordButton.setClickingTogglesState (true);
 
@@ -66,35 +74,23 @@ TransportView::TransportView()
     addAndMakeVisible (tempoText);
     addAndMakeVisible (timeSignatureText);
     addAndMakeVisible (keySignatureText);
+
+    edit.transport.getState().addListener (this);
+
+    edit.transport.getState().sendPropertyChangeMessage (edit.transport.playState.getPropertyID());
+    edit.transport.getState().sendPropertyChangeMessage (edit.transport.recordEnabled.getPropertyID());
+    edit.transport.getState().sendPropertyChangeMessage (edit.transport.playHeadTime.getPropertyID());
+    edit.transport.getState().sendPropertyChangeMessage (edit.transport.playHeadBeat.getPropertyID());
+    edit.transport.getState().sendPropertyChangeMessage (edit.transport.playHeadTempo.getPropertyID());
+    edit.transport.getState().sendPropertyChangeMessage (edit.transport.playHeadTimeSigNumerator.getPropertyID());
+    edit.transport.getState().sendPropertyChangeMessage (edit.transport.playHeadTimeSigDenominator.getPropertyID());
+    edit.transport.getState().sendPropertyChangeMessage (edit.transport.playHeadKeySigNumSharpsOrFlats.getPropertyID());
+    edit.transport.getState().sendPropertyChangeMessage (edit.transport.playHeadKeySigIsMinor.getPropertyID());
 }
 
-void TransportView::setEdit (Edit* _edit)
+TransportView::~TransportView()
 {
-    if (edit)
-        edit->getState().removeListener (this);
-
-    edit = _edit;
-
-    if (edit)
-    {
-        edit->getState().addListener (this);
-        tempoSlider.setColour (Slider::ColourIds::textBoxOutlineColourId, Colours::transparentWhite);
-        tempoSlider.setTextBoxStyle (Slider::TextBoxBelow, 0, 80, 25);
-        tempoSlider.setRange (1, 200);
-        tempoSlider.setTextValueSuffix (" BPM");
-        StringArray items = KeySignature::getKeyDescriptions();
-        keySignatureComboBox.addItemList (items, 1);
-
-        edit->transport.getState().sendPropertyChangeMessage (edit->transport.playState.getPropertyID());
-        edit->transport.getState().sendPropertyChangeMessage (edit->transport.recordEnabled.getPropertyID());
-        edit->transport.getState().sendPropertyChangeMessage (edit->transport.playHeadTime.getPropertyID());
-        edit->transport.getState().sendPropertyChangeMessage (edit->transport.playHeadBeat.getPropertyID());
-        edit->transport.getState().sendPropertyChangeMessage (edit->transport.playHeadTempo.getPropertyID());
-        edit->transport.getState().sendPropertyChangeMessage (edit->transport.playHeadTimeSigNumerator.getPropertyID());
-        edit->transport.getState().sendPropertyChangeMessage (edit->transport.playHeadTimeSigDenominator.getPropertyID());
-        edit->transport.getState().sendPropertyChangeMessage (edit->transport.playHeadKeySigNumSharpsOrFlats.getPropertyID());
-        edit->transport.getState().sendPropertyChangeMessage (edit->transport.playHeadKeySigIsMinor.getPropertyID());
-    }
+    edit.transport.getState().removeListener (this);
 }
 
 void TransportView::resized()
@@ -197,10 +193,9 @@ void TransportView::paint (Graphics& g)
 
 void TransportView::valueTreePropertyChanged (ValueTree& treeChanged, const Identifier& property)
 {
-    edit->saveState();
-    if (treeChanged == edit->transport.getState())
+    if (treeChanged == edit.transport.getState())
     {
-        Transport& transport = edit->transport;
+        Transport& transport = edit.transport;
         if (property == transport.playState.getPropertyID())
         {
             if (int (treeChanged[property]) == Transport::State::playing)
@@ -262,10 +257,7 @@ void TransportView::valueTreePropertyChanged (ValueTree& treeChanged, const Iden
 
 void TransportView::buttonClicked (Button* button)
 {
-    if (!edit)
-        return;
-
-    Transport& transport = edit->transport;
+    Transport& transport = edit.transport;
     if (button == &goToBeginningButton)
     {
         transport.playHeadTime = 0.0f;
@@ -273,7 +265,7 @@ void TransportView::buttonClicked (Button* button)
     else if (button == &stopPlayButton)
     {
         transport.playState = button->getToggleState();
-        if (button->getToggleState() == false)
+        if (!button->getToggleState())
             transport.recordEnabled = button->getToggleState();
     }
     else if (button == &recordButton)
@@ -285,20 +277,20 @@ void TransportView::buttonClicked (Button* button)
     {
         // TODO: This belongs in some sort of arrangement controller, not transport.
         // TODO: Also, this is stupidly written and hacky
-        int indexToRemove = Utility::getIndexOfImmediateChildWithName (edit->getState(), Track::identifier);
+        int indexToRemove = Utility::getIndexOfImmediateChildWithName (edit.getState(), Track::identifier);
         while (indexToRemove >= 0)
         {
-            edit->getState().removeChild (indexToRemove, transport.getUndoManager());
-            indexToRemove = Utility::getIndexOfImmediateChildWithName (edit->getState(), Track::identifier);
+            edit.getState().removeChild (indexToRemove, transport.getUndoManager());
+            indexToRemove = Utility::getIndexOfImmediateChildWithName (edit.getState(), Track::identifier);
         }
 
-        edit->getState().addChild (Track::createDefaultState(), -1, transport.getUndoManager());
+        edit.getState().addChild (Track::createDefaultState(), -1, transport.getUndoManager());
     }
     else if (button == &generateAccompanimentButton)
     {
-        MidiFile midiFile = edit->exportToMidi();
+        MidiFile midiFile = edit.exportToMidi();
         midiFile = Interchange::callPython (midiFile);
-        edit->importFromMidi (midiFile, 1, 0.0);
+        edit.importFromMidi (midiFile, 1, 0.0);
     }
 }
 
@@ -315,18 +307,17 @@ void TransportView::buttonStateChanged (Button* button)
 
 void TransportView::comboBoxChanged (ComboBox* comboBox)
 {
-    jassert (edit);
     String val = comboBox->getText();
     std::pair<int, bool> key = KeySignature::createRepresentationFromDescription (val);
-    edit->transport.playHeadKeySigNumSharpsOrFlats = key.first;
-    edit->transport.playHeadKeySigIsMinor = key.second;
+    edit.transport.playHeadKeySigNumSharpsOrFlats = key.first;
+    edit.transport.playHeadKeySigIsMinor = key.second;
 }
 
 void TransportView::sliderValueChanged (Slider* slider)
 {
-    int val = slider->getValue();
+    int val = static_cast<int> (slider->getValue());
     slider->setValue (val);
-    edit->transport.playHeadTempo = val;
+    edit.transport.playHeadTempo = val;
 }
 
 void TransportView::labelTextChanged(Label* label)
@@ -335,16 +326,16 @@ void TransportView::labelTextChanged(Label* label)
     {
         String val = label->getText();
         if (val.getIntValue() != 0)
-            edit->transport.playHeadTimeSigNumerator = val.getIntValue();
+            edit.transport.playHeadTimeSigNumerator = val.getIntValue();
         else
-            label->setText(String (edit->transport.playHeadTimeSigNumerator), NotificationType::dontSendNotification);
+            label->setText(String (edit.transport.playHeadTimeSigNumerator), NotificationType::dontSendNotification);
     }
     else if (label == &timeSignatureDenominator)
     {
         String val = label->getText();
         if (val.getIntValue() != 0)
-            edit->transport.playHeadTimeSigDenominator = val.getIntValue();
+            edit.transport.playHeadTimeSigDenominator = val.getIntValue();
         else
-            label->setText(String (edit->transport.playHeadTimeSigDenominator), NotificationType::dontSendNotification);
+            label->setText(String (edit.transport.playHeadTimeSigDenominator), NotificationType::dontSendNotification);
     }
 }

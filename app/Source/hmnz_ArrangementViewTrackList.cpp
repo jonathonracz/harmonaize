@@ -9,52 +9,45 @@
 */
 
 #include "hmnz_ArrangementViewTrackList.h"
-#include "hmnz_ArrangementViewTrack.h"
 #include "hmnz_Edit.h"
 
-void ArrangementViewTrackList::editChanged (Edit* oldEdit)
+ArrangementViewTrackList::ArrangementViewTrackList (Edit& _edit)
+    : edit (_edit)
 {
-    if (oldEdit)
-        oldEdit->trackList.tracks.removeListener (this);
+    edit.arrangementViewModel.getState().addListener (this);
+    edit.trackList.getState().addListener (this);
 
-    removeAllChildren();
-    tracks.clear();
+    for (int i = 0; i < edit.trackList.tracks.size(); ++i)
+        objectAdded (edit.trackList.tracks[i], i, &edit.trackList.tracks);
+}
 
-    if (getEdit())
-    {
-        for (int i = 0; i < getEdit()->trackList.tracks.size(); ++i)
-        {
-            objectAdded (getEdit()->trackList.tracks[i], i, &(getEdit()->trackList.tracks));
-        }
-
-        getEdit()->trackList.tracks.addListener (this);
-    }
+ArrangementViewTrackList::~ArrangementViewTrackList()
+{
+    edit.arrangementViewModel.getState().removeListener (this);
+    edit.trackList.getState().removeListener (this);
 }
 
 void ArrangementViewTrackList::resized()
 {
-    if (!getEdit())
-        return;
-
-    int currentPosition = getEdit()->arrangementViewModel.scrollPosition.get();
+    int currentPosition = edit.arrangementViewModel.scrollPosition.get();
     for (int i = 0; i < tracks.size(); ++i)
     {
-        tracks[i]->setBounds (0, currentPosition, getWidth(), tracks[i]->getRepresentedTrack()->height.get());
-        currentPosition += getEdit()->trackList.tracks[i]->height.get();
+        tracks[i]->setBounds (0, currentPosition, getWidth(), tracks[i]->getRepresentedTrack().height.get());
+        currentPosition += edit.trackList.tracks[i]->height.get();
     }
 }
 
 void ArrangementViewTrackList::objectAdded (Track* track, int insertionIndex, HomogeneousValueTreeObjectArray<Track, CriticalSection>*)
 {
-    ArrangementViewTrack* newTrack = new ArrangementViewTrack (track);
-    tracks.add (newTrack);
+    ArrangementViewTrack* newTrack = new ArrangementViewTrack (*track);
+    tracks.insert (insertionIndex, newTrack);
     addAndMakeVisible (newTrack);
     repaint();
 }
 
 void ArrangementViewTrackList::objectRemoved (Track* track, int indexRemovedFrom, HomogeneousValueTreeObjectArray<Track, CriticalSection>*)
 {
-    jassert (tracks[indexRemovedFrom]->getRepresentedTrack() == track);
+    jassert (&tracks[indexRemovedFrom]->getRepresentedTrack() == track);
     removeChildComponent (tracks[indexRemovedFrom]);
     tracks.remove (indexRemovedFrom);
     repaint();
@@ -68,7 +61,7 @@ void ArrangementViewTrackList::objectOrderChanged (Track* track, int oldIndex, i
 
 void ArrangementViewTrackList::valueTreePropertyChanged (ValueTree& tree, const Identifier& property)
 {
-    if (property == getEdit()->arrangementViewModel.scrollPosition.getPropertyID() ||
+    if (property == edit.arrangementViewModel.scrollPosition.getPropertyID() ||
         property == IDs::TrackProps::Height)
     {
         // TODO: This could be more elegant

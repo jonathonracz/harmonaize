@@ -44,10 +44,9 @@ public:
     CachedValue<Identifier> type;
 
     MidiMessageSequenceModel midiMessageSequenceModel;
-
-private:
     Track& track;
 
+private:
     void adjustBoundsToFitMessageTimestamp (double timestamp);
 
     JUCE_DECLARE_WEAK_REFERENCEABLE (Clip)

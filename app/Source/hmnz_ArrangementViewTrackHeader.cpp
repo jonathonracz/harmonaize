@@ -11,12 +11,23 @@
 #include "hmnz_ArrangementViewTrackHeader.h"
 #include "hmnz_Track.h"
 
-ArrangementViewTrackHeader::ArrangementViewTrackHeader (Track* _track)
+ArrangementViewTrackHeader::ArrangementViewTrackHeader (Track& _track)
     : track (_track)
 {
+    track.getState().addListener (this);
+}
+
+ArrangementViewTrackHeader::~ArrangementViewTrackHeader()
+{
+    track.getState().removeListener (this);
 }
 
 void ArrangementViewTrackHeader::paint (Graphics& g)
 {
-    g.fillAll (track->color);
+    g.fillAll (track.color);
+}
+
+void ArrangementViewTrackHeader::valueTreePropertyChanged (ValueTree&, const Identifier& property)
+{
+
 }

@@ -11,12 +11,20 @@
 #include "hmnz_ArrangementViewTopBar.h"
 #include "hmnz_Edit.h"
 
+ArrangementViewTopBar::ArrangementViewTopBar (Edit& edit)
+    : ArrangementViewTimelineComponent (edit)
+{
+    edit.arrangementViewModel.getState().addListener (this);
+}
+
+ArrangementViewTopBar::~ArrangementViewTopBar()
+{
+    edit.arrangementViewModel.getState().removeListener (this);
+}
+
 void ArrangementViewTopBar::paint (Graphics& g)
 {
-    if (!getEdit())
-        return;
-
-    ArrangementViewModel& model = getEdit()->arrangementViewModel;
+    const ArrangementViewModel& model = edit.arrangementViewModel;
     NormalisableRange<double> remapper (model.timeStart, model.timeEnd);
     const double minimumLineSpacing = 14.0; // Arbitrary - controls how close lines can get before the grid size increases
     double linesPerBeat = getLinesPerBeatForMinimumLineSpacing (minimumLineSpacing);
@@ -24,7 +32,7 @@ void ArrangementViewTopBar::paint (Graphics& g)
     double beatValue = Utility::floorToNearestInterval (remapper.start, linesPerBeat);
     while (beatValue <= remapper.end)
     {
-        TimeSignature& timeSignature = getEdit()->masterTrack.timeSignature;
+        const TimeSignature& timeSignature = edit.masterTrack.timeSignature;
         const double beatsInBar = timeSignature.getNumeratorAtBeat (beatValue);
         const double bar = timeSignature.barForBeat (beatValue);
         const double beat = std::floor (timeSignature.beatInBar (beatValue));
@@ -57,8 +65,8 @@ void ArrangementViewTopBar::paint (Graphics& g)
         beatValue += linesPerBeat;
     }
 
-    double transportBeat = getEdit()->transport.playHeadBeat;
     /*
+    double transportBeat = edit.transport.playHeadBeat;
     if (transportBeat >= model.timeStart)
     {
         g.setColour (Colours::blue);
@@ -71,17 +79,20 @@ void ArrangementViewTopBar::paint (Graphics& g)
 
 void ArrangementViewTopBar::mouseDown (const MouseEvent& event)
 {
-    if (!getEdit())
-        return;
-
-    getEdit()->transport.playHeadBeat = getBeatForXPos (static_cast<int> (event.position.x));
+    edit.transport.playHeadBeat = getBeatForXPos (static_cast<int> (event.position.x));
 }
 
 void ArrangementViewTopBar::mouseDrag (const MouseEvent& event)
 {
-    if (!getEdit())
-        return;
-
     int position = std::max (std::min (getWidth(), static_cast<int> (event.position.x)), 0);
-    getEdit()->transport.playHeadBeat = getBeatForXPos (position);
+    edit.transport.playHeadBeat = getBeatForXPos (position);
+}
+
+void ArrangementViewTopBar::valueTreePropertyChanged (ValueTree&, const Identifier& property)
+{
+    if (property == edit.arrangementViewModel.timeStart.getPropertyID() ||
+        property == edit.arrangementViewModel.timeEnd.getPropertyID())
+    {
+        repaint();
+    }
 }
