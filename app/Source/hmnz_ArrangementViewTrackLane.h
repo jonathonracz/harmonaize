@@ -30,6 +30,8 @@ private:
     OwnedArray<ArrangementViewTrackLaneClip> clips;
 
     ArrangementViewTrackLaneClip* getChildForClip (Clip* clip);
+    void updateClipComponentBounds (ArrangementViewTrackLaneClip* clip);
+    void updateAllClipComponentBounds();
 
     void resized() override;
 
