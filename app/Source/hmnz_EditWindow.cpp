@@ -229,7 +229,7 @@ void EditWindow::setEdit (const ValueTree& edit)
     if (currentEdit.get())
     {
         clearContentComponent();
-        playbackEngine.setEdit (nullptr);
+        playbackEngine.reset();
         ValueTree nullTree;
         editDebugger.setSource (nullTree);
         currentEdit.reset();
@@ -239,11 +239,10 @@ void EditWindow::setEdit (const ValueTree& edit)
     if (edit.getType() == IDs::Edit)
     {
         undoManager = std::unique_ptr<UndoManager> (new UndoManager);
-        Edit* newEdit = new Edit (edit, undoManager.get());
-        currentEdit = std::unique_ptr<Edit> (newEdit);
+        currentEdit = std::unique_ptr<Edit> (new Edit (edit, undoManager.get()));
         editDebugger.setSource (currentEdit->getState());
         editDebugger.setVisible (false);
-        playbackEngine.setEdit (currentEdit.get());
+        playbackEngine = std::unique_ptr<PlaybackEngine> (new PlaybackEngine (*currentEdit));
         setContentOwned (new EditView (*currentEdit), false);
     }
 }
@@ -285,4 +284,25 @@ void EditWindow::openProject()
 void EditWindow::changeFile (File file)
 {
     state = file;
+}
+
+void EditWindow::valueTreePropertyChanged (ValueTree& tree, const Identifier&)
+{
+    if (tree != currentEdit->transport.getState())
+        saveState();
+}
+
+void EditWindow::valueTreeChildAdded (ValueTree&, ValueTree&)
+{
+    saveState();
+}
+
+void EditWindow::valueTreeChildRemoved (ValueTree&, ValueTree&, int)
+{
+    saveState();
+}
+
+void EditWindow::valueTreeChildOrderChanged (ValueTree&, int, int)
+{
+    saveState();
 }

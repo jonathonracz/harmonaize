@@ -42,9 +42,6 @@ public:
 
     MidiKeyboardState& getMidiKeyboardState() { return keyboardState; }
 
-private:
-    JUCE_DECLARE_WEAK_REFERENCEABLE (Edit)
-
 public:
     MasterTrack masterTrack;
     Transport transport;

@@ -18,7 +18,8 @@
 
 class EditWindow    : public DocumentWindow,
                       public MenuBarModel,
-                      public ApplicationCommandTarget
+                      public ApplicationCommandTarget,
+                      public ValueTree::Listener
 {
 public:
     EditWindow();
@@ -40,13 +41,18 @@ public:
     void changeFile (File file);
 
 private:
-    PlaybackEngine playbackEngine;
-    std::unique_ptr<EditView> editView;
+    std::unique_ptr<PlaybackEngine> playbackEngine;
     std::unique_ptr<Edit> currentEdit;
     std::unique_ptr<UndoManager> undoManager;
     jcf::ValueTreeDebugger editDebugger;
 
     File state;
+
+    void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
+    void valueTreeChildAdded (ValueTree&, ValueTree&) override;
+    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override;
+    void valueTreeChildOrderChanged (ValueTree&, int, int) override;
+    void valueTreeParentChanged (ValueTree&) override { jassertfalse; }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditWindow)
 };
