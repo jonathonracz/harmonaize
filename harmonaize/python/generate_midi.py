@@ -19,7 +19,7 @@ def genAccompaniment(midi=None):
 	FileAttributes = {
 		'tempo': parser.getTempo(),
 		'tonic': parser.getTonic(),
-		'time_tignature': parser.getTimeSignature(),
+		'time_signature': parser.getTimeSignature(),
 		'note_counts': note_counts,
 		'beat_map': beat_map,
 		'groove': selector.select_groove(),
