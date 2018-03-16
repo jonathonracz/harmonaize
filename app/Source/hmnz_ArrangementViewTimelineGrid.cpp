@@ -47,25 +47,11 @@ void ArrangementViewTimelineGrid::paint (Graphics& g)
         g.fillRect (Rectangle<int> (xPos, 0, 1, getHeight()));
         beatValue += linesPerBeat;
     }
-
-    double transportBeat = edit.transport.playHeadBeat;
-    if (transportBeat >= model.timeStart)
-    {
-        g.setColour (Colours::blue);
-        int transportPos = getXPosForBeat (transportBeat);
-        lastPaintedPlayHeadBounds = Rectangle<int> (transportPos, 0, 2, getHeight());
-        g.fillRect (lastPaintedPlayHeadBounds);
-    }
 }
 
 void ArrangementViewTimelineGrid::valueTreePropertyChanged (ValueTree& tree, const Identifier& property)
 {
-    if (property == edit.transport.playHeadBeat.getPropertyID())
-    {
-        Rectangle<int> expectedPlayHeadBounds = Rectangle<int> (getXPosForBeat (edit.transport.playHeadBeat.get()), 0, 2, getHeight());
-        repaint (expectedPlayHeadBounds.getUnion (lastPaintedPlayHeadBounds));
-    }
-    else if (property == edit.arrangementViewModel.timeStart.getPropertyID() ||
+    if (property == edit.arrangementViewModel.timeStart.getPropertyID() ||
              property == edit.arrangementViewModel.timeEnd.getPropertyID())
     {
         repaint();

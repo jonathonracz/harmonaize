@@ -12,6 +12,10 @@
             file="Source/hmnz_PlaybackEngine.h"/>
     </GROUP>
     <GROUP id="{4C57DD66-0DB0-A254-59EF-09BAA05140B1}" name="GUI">
+      <FILE id="qF78Z6" name="hmnz_ArrangementViewPlayHead.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewPlayHead.cpp"/>
+      <FILE id="iPUeZF" name="hmnz_ArrangementViewPlayHead.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewPlayHead.h"/>
       <FILE id="QVsY2J" name="hmnz_ArrangementViewTrack.cpp" compile="1"
             resource="0" file="Source/hmnz_ArrangementViewTrack.cpp"/>
       <FILE id="q45wJi" name="hmnz_ArrangementViewTrack.h" compile="0" resource="0"

@@ -1,8 +1,8 @@
 /*
   ==============================================================================
 
-    hmnz_ArrangementViewTimelineGrid.h
-    Created: 7 Mar 2018 1:09:19pm
+    hmnz_ArrangementViewPlayHead.h
+    Created: 16 Mar 2018 4:15:45pm
     Author:  Jonathon Racz
 
   ==============================================================================
@@ -12,15 +12,26 @@
 
 #include "hmnz_ArrangementViewTimelineComponent.h"
 
-class ArrangementViewTimelineGrid   : public ArrangementViewTimelineComponent,
-                                      public ValueTree::Listener
+class ArrangementViewPlayHead   : public ArrangementViewTimelineComponent,
+                                  public ValueTree::Listener
 {
 public:
-    ArrangementViewTimelineGrid (Edit& edit);
-    ~ArrangementViewTimelineGrid();
+    class PlayHeadComponent : public Component
+    {
+    protected:
+        void paint (Graphics& g) override
+        {
+            g.fillAll (Colours::yellow);
+        }
+    };
+
+    ArrangementViewPlayHead (Edit& edit);
+    ~ArrangementViewPlayHead();
 
 private:
-    void paint (Graphics&) override;
+    std::unique_ptr<PlayHeadComponent> playHeadComponent;
+
+    void resized() override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
     void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
@@ -28,5 +39,5 @@ private:
     void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
     void valueTreeParentChanged (ValueTree&) override {}
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementViewTimelineGrid)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementViewPlayHead)
 };
