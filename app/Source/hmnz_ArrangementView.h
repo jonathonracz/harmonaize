@@ -13,6 +13,7 @@
 #include "hmnz_ArrangementViewTopBar.h"
 #include "hmnz_ArrangementViewTimelineGrid.h"
 #include "hmnz_ArrangementViewTrackList.h"
+#include "hmnz_ArrangementViewPlayHead.h"
 
 class Track;
 
@@ -27,6 +28,7 @@ private:
     ArrangementViewTopBar topBar;
     ArrangementViewTimelineGrid grid;
     ArrangementViewTrackList trackList;
+    ArrangementViewPlayHead playHead;
     double verticalScrollAccumulator = 0.0;
 
     void resized() override;

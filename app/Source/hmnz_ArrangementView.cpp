@@ -13,11 +13,12 @@
 #include "hmnz_Edit.h"
 
 ArrangementView::ArrangementView (Edit& _edit)
-    : edit (_edit), topBar (_edit), grid (_edit), trackList (_edit)
+    : edit (_edit), topBar (_edit), grid (_edit), trackList (_edit), playHead (_edit)
 {
     addAndMakeVisible (topBar);
     addAndMakeVisible (grid);
     addAndMakeVisible (trackList);
+    addAndMakeVisible (playHead);
 }
 
 void ArrangementView::resized()
@@ -38,6 +39,10 @@ void ArrangementView::resized()
 
     layout.performLayout (getLocalBounds());
     trackList.setBounds (getLocalBounds().withTop (topBar.getHeight()));
+
+    Point<int> playHeadTopLeft = topBar.getBounds().getTopLeft();
+    Point<int> playHeadBottomRight = grid.getBounds().getBottomRight();
+    playHead.setBounds (Rectangle<int> (playHeadTopLeft, playHeadBottomRight));
 }
 
 void ArrangementView::mouseWheelMove (const MouseEvent& event, const MouseWheelDetails& wheel)

@@ -20,6 +20,7 @@
 		39EAA080A2C4CD64973757CB = {isa = PBXBuildFile; fileRef = B50BB0F25E2440E915806855; };
 		77C595DB2D5EE51856C6F849 = {isa = PBXBuildFile; fileRef = FD7F1601DE6497D38A60D756; };
 		5618CA053B0221932F546168 = {isa = PBXBuildFile; fileRef = BA9FB4ED25D33CEF7FB1FAD7; };
+		046DB51F2DEC6CE806C9D480 = {isa = PBXBuildFile; fileRef = A02579374C11CEDCDE135C12; };
 		FA43B6C4CFCDE32382A042FA = {isa = PBXBuildFile; fileRef = AD53B69C56236405EE314AE9; };
 		3E3C5763948860151ABCA7BD = {isa = PBXBuildFile; fileRef = 760E4D1D0CDCBB11E9ADEBB4; };
 		99C5EC74A2CFE9784713A140 = {isa = PBXBuildFile; fileRef = FB015D99BFB559B155740A06; };
@@ -85,6 +86,7 @@
 		437F302650991C6AAC24263B = {isa = PBXFileReference; lastKnownFileType = file; name = "jcf_advanced_leak_detector"; path = "../../Source/External/juce_toys/jcf_advanced_leak_detector"; sourceTree = "SOURCE_ROOT"; };
 		48D645C14EC9B414F26B0A46 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ValueTreeObject.h"; path = "../../Source/hmnz_ValueTreeObject.h"; sourceTree = "SOURCE_ROOT"; };
 		4A3CD452DD8D7FDE44CADD18 = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_core"; path = "../../../harmonaize/external/JUCE/modules/juce_core"; sourceTree = "SOURCE_ROOT"; };
+		5002B5E065F08B7CFD2E4303 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ArrangementViewPlayHead.h"; path = "../../Source/hmnz_ArrangementViewPlayHead.h"; sourceTree = "SOURCE_ROOT"; };
 		5071DB09A019B46C6B99476F = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ArrangementViewTrackLaneClip.h"; path = "../../Source/hmnz_ArrangementViewTrackLaneClip.h"; sourceTree = "SOURCE_ROOT"; };
 		525FBD5208C354D1978AAEFE = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_Transport.cpp"; path = "../../Source/hmnz_Transport.cpp"; sourceTree = "SOURCE_ROOT"; };
 		531ECE08431D18810017CE98 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "include_juce_audio_basics.mm"; path = "../../JuceLibraryCode/include_juce_audio_basics.mm"; sourceTree = "SOURCE_ROOT"; };
@@ -124,6 +126,7 @@
 		9759EEC252C27D71DE2BD98C = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_CacheValueWrappers.h"; path = "../../Source/hmnz_CacheValueWrappers.h"; sourceTree = "SOURCE_ROOT"; };
 		9E770BC47207B878E3F6CC71 = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_audio_devices"; path = "../../../harmonaize/external/JUCE/modules/juce_audio_devices"; sourceTree = "SOURCE_ROOT"; };
 		9F23EEFB0EB3D12267D4C12C = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_Edit.h"; path = "../../Source/hmnz_Edit.h"; sourceTree = "SOURCE_ROOT"; };
+		A02579374C11CEDCDE135C12 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_ArrangementViewPlayHead.cpp"; path = "../../Source/hmnz_ArrangementViewPlayHead.cpp"; sourceTree = "SOURCE_ROOT"; };
 		A06F7C32299A5AEA5BC00D5A = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_NonHomogeneousValueTreeObjectArray.h"; path = "../../Source/hmnz_NonHomogeneousValueTreeObjectArray.h"; sourceTree = "SOURCE_ROOT"; };
 		A0D81578E2AD87DDBB1041EB = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "include_juce_audio_formats.mm"; path = "../../JuceLibraryCode/include_juce_audio_formats.mm"; sourceTree = "SOURCE_ROOT"; };
 		A0DCA2E161B9C1A952F22081 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ValueTreeObjectWithArrayUnitTest.h"; path = "../../Source/hmnz_ValueTreeObjectWithArrayUnitTest.h"; sourceTree = "SOURCE_ROOT"; };
@@ -173,6 +176,8 @@
 					BA9FB4ED25D33CEF7FB1FAD7,
 					7D6E10D8F88B203A7519916B, ); name = Playback; sourceTree = "<group>"; };
 		7B84D3D14D615AF4871C3521 = {isa = PBXGroup; children = (
+					A02579374C11CEDCDE135C12,
+					5002B5E065F08B7CFD2E4303,
 					AD53B69C56236405EE314AE9,
 					5D9D913F9CA604989292C25D,
 					760E4D1D0CDCBB11E9ADEBB4,
@@ -457,6 +462,7 @@
 					77C595DB2D5EE51856C6F849, ); runOnlyForDeploymentPostprocessing = 0; };
 		81FDE27828439CAB92A26650 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (
 					5618CA053B0221932F546168,
+					046DB51F2DEC6CE806C9D480,
 					FA43B6C4CFCDE32382A042FA,
 					3E3C5763948860151ABCA7BD,
 					99C5EC74A2CFE9784713A140,
