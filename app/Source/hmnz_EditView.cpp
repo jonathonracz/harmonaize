@@ -10,41 +10,20 @@
 
 #include "hmnz_EditView.h"
 
-EditView::EditView()
+EditView::EditView (Edit& _edit)
+    : edit (_edit), transportView (_edit), arrangementView (_edit),
+      keyboard (new MidiKeyboardComponent (_edit.getMidiKeyboardState(), MidiKeyboardComponent::Orientation::horizontalKeyboard))
 {
     addAndMakeVisible (transportView);
     addAndMakeVisible (arrangementView);
+    addAndMakeVisible (keyboard.get());
+
+    keyboard->setKeyWidth(53);
+    keyboard->setLowestVisibleKey(60);
 }
 
 EditView::~EditView()
 {
-}
-
-void EditView::setEdit (Edit* _edit)
-{
-    keyboard.reset();
-
-    if (edit)
-    {
-        edit->getState().removeListener (this);
-        arrangementView.setEdit (nullptr);
-        transportView.setEdit (nullptr);
-    }
-
-    edit = _edit;
-
-    if (edit)
-    {
-        transportView.setEdit (edit);
-        arrangementView.setEdit (edit);
-        keyboard = std::unique_ptr<MidiKeyboardComponent> (new MidiKeyboardComponent (
-                edit->getMidiKeyboardState(), MidiKeyboardComponent::Orientation::horizontalKeyboard));
-        addAndMakeVisible (*keyboard);
-        edit->getState().addListener (this);
-        keyboard->setKeyWidth(53);
-        keyboard->setLowestVisibleKey(60);
-        resized(); // Re-layout everything.
-    }
 }
 
 void EditView::resized()
@@ -52,12 +31,9 @@ void EditView::resized()
     FlexBox mainBox;
     mainBox.flexDirection = FlexBox::Direction::column;
 
-    if (edit)
-    {
-        mainBox.items.add (FlexItem (transportView).withFlex (1.0f));
-        mainBox.items.add (FlexItem (arrangementView).withFlex (1.0f));
-        mainBox.items.add (FlexItem (*keyboard).withFlex (1.0f));
-    }
+    mainBox.items.add (FlexItem (transportView).withFlex (1.0f));
+    mainBox.items.add (FlexItem (arrangementView).withFlex (1.0f));
+    mainBox.items.add (FlexItem (*keyboard).withFlex (1.0f));
 
     mainBox.performLayout (getLocalBounds());
 }

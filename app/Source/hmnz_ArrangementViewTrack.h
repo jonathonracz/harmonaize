@@ -10,26 +10,29 @@
 
 #pragma once
 
-#include "hmnz_ArrangementViewComponent.h"
 #include "hmnz_ArrangementViewTrackHeader.h"
 #include "hmnz_ArrangementViewTrackLane.h"
 
-class ArrangementViewTrack  : public ArrangementViewComponent
+class ArrangementViewTrack  : public Component,
+                              public ValueTree::Listener
 {
 public:
-    ArrangementViewTrack (Track* representedTrack);
+    ArrangementViewTrack (Track& representedTrack);
+    ~ArrangementViewTrack();
 
-    Track* getRepresentedTrack() const { return track; }
+    Track& getRepresentedTrack() const { return track; }
 
 private:
-    Track* track;
+    Track& track;
 
     ArrangementViewTrackHeader header;
     ArrangementViewTrackLane lane;
 
-    void editChanged (Edit*) override;
-
     void resized() override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
+    void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
+    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
+    void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
+    void valueTreeParentChanged (ValueTree&) override {}
 };

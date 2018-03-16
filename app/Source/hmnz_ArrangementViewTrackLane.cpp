@@ -14,24 +14,22 @@
 #include "hmnz_ArrangementViewModel.h"
 #include "hmnz_Edit.h"
 
-ArrangementViewTrackLane::ArrangementViewTrackLane (Track* _track)
-    : track (_track)
+ArrangementViewTrackLane::ArrangementViewTrackLane (Track& _track)
+    : ArrangementViewTimelineComponent (_track.edit), track (_track)
 {
-    jassert (track);
-    track->clipList.clips.addListener (this);
-    track->getState().addListener (this);
+    track.clipList.clips.addListener (this);
+    track.getState().addListener (this);
+    track.edit.arrangementViewModel.getState().addListener (this);
 
-    for (int i = 0; i < track->clipList.clips.size(); ++i)
-        objectAdded (track->clipList.clips[i], i, &(track->clipList.clips));
+    for (int i = 0; i < track.clipList.clips.size(); ++i)
+        objectAdded (track.clipList.clips[i], i, &(track.clipList.clips));
 }
 
 ArrangementViewTrackLane::~ArrangementViewTrackLane()
 {
-    if (getEdit())
-    {
-        getEdit()->arrangementViewModel.getState().removeListener (this);
-        track->getState().removeListener (this);
-    }
+    track.clipList.clips.removeListener (this);
+    track.getState().removeListener (this);
+    track.edit.arrangementViewModel.getState().removeListener (this);
 }
 
 ArrangementViewTrackLaneClip* ArrangementViewTrackLane::getChildForClip (Clip* clip)
@@ -40,7 +38,7 @@ ArrangementViewTrackLaneClip* ArrangementViewTrackLane::getChildForClip (Clip* c
     {
         if (ArrangementViewTrackLaneClip* clipComp = dynamic_cast<ArrangementViewTrackLaneClip*> (comp))
         {
-            if (clipComp->getRepresentedClip() == clip)
+            if (&clipComp->getRepresentedClip() == clip)
                 return clipComp;
         }
     }
@@ -48,24 +46,19 @@ ArrangementViewTrackLaneClip* ArrangementViewTrackLane::getChildForClip (Clip* c
     return nullptr;
 }
 
-void ArrangementViewTrackLane::editChanged (Edit* oldEdit)
-{
-    clips.clear();
-    getEdit()->arrangementViewModel.getState().addListener (this);
-}
-
 void ArrangementViewTrackLane::resized()
 {
     for (ArrangementViewTrackLaneClip* clip : clips)
     {
-        //Rectangle<int> newClipBounds =
-        //clip->setBounds (<#int x#>, <#int y#>, <#int width#>, <#int height#>)
+        Rectangle<int> newClipBounds = Rectangle<int>().withTop (0).withBottom (getHeight());
+        newClipBounds.setLeft (getXPosForBeat (clip->getRepresentedClip().start.get()));
+        newClipBounds.setRight (getXPosForBeat (clip->getRepresentedClip().start.get() + clip->getRepresentedClip().length.get()));
     }
 }
 
 void ArrangementViewTrackLane::objectAdded (Clip* clip, int, HomogeneousValueTreeObjectArray<Clip>*)
 {
-    ArrangementViewTrackLaneClip* newClip = new ArrangementViewTrackLaneClip (clip);
+    ArrangementViewTrackLaneClip* newClip = new ArrangementViewTrackLaneClip (*clip);
     clips.add (newClip);
     addAndMakeVisible (newClip);
 }
@@ -80,19 +73,8 @@ void ArrangementViewTrackLane::objectRemoved (Clip* clip, int, HomogeneousValueT
 
 void ArrangementViewTrackLane::valueTreePropertyChanged (ValueTree&, const Identifier& property)
 {
-    if (property == track->height.getPropertyID())
-    {
-
-        for (Component* child : getChildren())
-        {
-            if (ArrangementViewTrackLaneClip* clip = dynamic_cast<ArrangementViewTrackLaneClip*> (child))
-            {
-                clip->setBounds (clip->getBounds().withHeight (track->height.get()));
-            }
-        }
-    }
-    if (property == getEdit()->arrangementViewModel.timeEnd.getPropertyID() ||
-        property == getEdit()->arrangementViewModel.timeStart.getPropertyID())
+    if (property == track.edit.arrangementViewModel.timeEnd.getPropertyID() ||
+        property == track.edit.arrangementViewModel.timeStart.getPropertyID())
     {
         resized();
         repaint();

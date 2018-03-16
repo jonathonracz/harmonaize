@@ -10,19 +10,21 @@
 
 #pragma once
 
-#include "hmnz_ArrangementViewComponent.h"
+#include "hmnz_ArrangementViewTimelineComponent.h"
 
-class ArrangementViewTopBar : public ArrangementViewComponent
+class ArrangementViewTopBar : public ArrangementViewTimelineComponent,
+                              public ValueTree::Listener
 {
 public:
-    ArrangementViewTopBar() = default;
+    ArrangementViewTopBar (Edit& edit);
+    ~ArrangementViewTopBar();
 
 private:
     void paint (Graphics&) override;
     void mouseDown (const MouseEvent&) override;
     void mouseDrag (const MouseEvent&) override;
 
-    void valueTreePropertyChanged (ValueTree&, const Identifier&) override {}
+    void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
     void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
     void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
     void valueTreeChildOrderChanged (ValueTree&, int, int) override {}

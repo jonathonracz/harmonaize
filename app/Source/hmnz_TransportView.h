@@ -22,12 +22,11 @@ class TransportView : public Component,
                       public Slider::Listener
 {
 public:
-    TransportView();
-
-    void setEdit (Edit* edit);
+    TransportView (Edit& edit);
+    ~TransportView();
 
 private:
-    WeakReference<Edit> edit;
+    Edit& edit;
 
     TextButton goToBeginningButton;
     TextButton stopPlayButton;
