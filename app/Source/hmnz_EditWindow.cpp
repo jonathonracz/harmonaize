@@ -19,7 +19,6 @@ EditWindow::EditWindow()
     setUsingNativeTitleBar (true);
     setResizeLimits (800, 600, std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
     setResizable (true, false);
-    setContentOwned (new EditView(), false);
     centreWithSize (getWidth(), getHeight());
     setVisible (true);
     
@@ -199,10 +198,7 @@ bool EditWindow::perform (const InvocationInfo& info)
         case CommandIDs::showDebugger:
         {
         #if JUCE_DEBUG
-            if (editDebugger.isVisible())
-                editDebugger.setVisible (false);
-            else
-                editDebugger.setVisible (true);
+            editDebugger.setVisible (!editDebugger.isVisible());
             break;
         #endif
         }
@@ -235,7 +231,7 @@ void EditWindow::setEdit (const ValueTree& edit)
 {
     if (currentEdit.get())
     {
-        static_cast<EditView*> (getContentComponent())->setEdit (nullptr);
+        clearContentComponent();
         playbackEngine.setEdit (nullptr);
         ValueTree nullTree;
         editDebugger.setSource (nullTree);
@@ -251,6 +247,6 @@ void EditWindow::setEdit (const ValueTree& edit)
         editDebugger.setSource (currentEdit->getState());
         editDebugger.setVisible (false);
         playbackEngine.setEdit (currentEdit.get());
-        static_cast<EditView*> (getContentComponent())->setEdit (currentEdit.get());
+        setContentOwned (new EditView (*currentEdit), false);
     }
 }

@@ -1,6 +1,8 @@
 # Python Chord Progression Generation
 # Adam Heins
 
+import math
+
 class ChordProg():
 	def __init__(self, FileAttributes, filename):
 		self.keyMap = {
@@ -44,6 +46,66 @@ class ChordProg():
 		self.tempo = FileAttributes['tempo']
 		self.groove = FileAttributes['groove']
 
+		self.num_reps = 4
+		self.beat_map = FileAttributes['beat_map']
+		self.time_signature = FileAttributes['time_signature']
+
+	def genMmaFileWithExactChords(self):
+		beat_map = self.condenseBeatMap(self.beat_map)
+
+		measures = []
+		measure = []
+		beat_num = 1
+
+		for beat, note_list in beat_map.items():
+			if beat_num in beat_map:
+				measure.append(self.getNextChord(measure, note_list))
+			else:
+				measure.append('/')
+
+			if beat_num % self.time_signature[0] == 0:
+				measures.append(measure)
+				measure = []
+
+			beat_num += 1
+
+		file = open(self.filename, 'w')
+		self.writeMMAHeader(file)
+
+		measure_num = 1
+
+		for _ in range(self.num_reps):
+			for measure_notes in measures:
+
+				file.write(str(measure_num))
+				for note in measure_notes:
+					file.write(" " + note)
+				file.write('\n')
+
+				measure_num += 1
+
+		file.close()
+
+	def condenseBeatMap(self, beat_map):
+		print(beat_map)
+		new_map = {}
+		current_beat = 1
+		for beat, note_list in beat_map.items():
+			if beat - current_beat >= 1:
+				current_beat += math.floor(beat - current_beat)
+
+			if current_beat in new_map:
+				for note in note_list:
+					new_map[current_beat].append(note)
+			else:
+				new_map[current_beat] = note_list
+
+		print(new_map)
+		return new_map
+
+	def getNextChord(self, chords, notes):
+		print(chords, notes)
+		return notes[0]
 
 	def intervalJump(self, interval):
 		newNote = (self.keyMap[self.tonic] + self.semitones[interval]) % 12

@@ -17,8 +17,8 @@ Clip::Clip (const ValueTree& v, UndoManager* um, Track& _track)
       length (getState(), IDs::ClipProps::Length, getUndoManager(), 0.0),
       color (getState(), IDs::ClipProps::Color, getUndoManager(), _track.color),
       type (getState(), IDs::TrackProps::Type, getUndoManager(), defaultClipTypeForTrackType (_track.type)),
-      track (_track),
-      midiMessageSequenceModel (getState().getOrCreateChildWithName (MidiMessageSequenceModel::identifier, nullptr), getUndoManager())
+      midiMessageSequenceModel (getState().getOrCreateChildWithName (MidiMessageSequenceModel::identifier, nullptr), getUndoManager()),
+      track (_track)
 {
     if (midiMessageSequenceModel.midiMessages.size() > 0)
     {
