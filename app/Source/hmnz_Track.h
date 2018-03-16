@@ -44,11 +44,6 @@ public:
     CachedValue<SPSCAtomicWrapper<bool>> recordArmed;
 
     Edit& edit;
-
-private:
-    JUCE_DECLARE_WEAK_REFERENCEABLE (Track)
-
-public:
     ClipList clipList;
 
 private:

@@ -194,7 +194,6 @@ void TransportView::paint (Graphics& g)
 
 void TransportView::valueTreePropertyChanged (ValueTree& treeChanged, const Identifier& property)
 {
-    HarmonaizeApplication::getApp().editWindow->saveState();
     if (treeChanged == edit.transport.getState())
     {
         Transport& transport = edit.transport;
