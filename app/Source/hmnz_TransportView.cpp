@@ -11,6 +11,7 @@
 #include "hmnz_TransportView.h"
 #include "hmnz_Transport.h"
 #include "hmnz_Edit.h"
+#include "hmnz_Application.h"
 #include "../../harmonaize/midiinterchange/hmnz_MidiInterchange.h"
 
 TransportView::TransportView (Edit& _edit)
@@ -193,6 +194,7 @@ void TransportView::paint (Graphics& g)
 
 void TransportView::valueTreePropertyChanged (ValueTree& treeChanged, const Identifier& property)
 {
+    HarmonaizeApplication::getApp().editWindow->saveState();
     if (treeChanged == edit.transport.getState())
     {
         Transport& transport = edit.transport;
