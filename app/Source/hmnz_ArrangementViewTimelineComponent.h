@@ -19,13 +19,13 @@ class ArrangementViewTimelineComponent  : public Component
 public:
     ArrangementViewTimelineComponent (Edit& edit);
 
-protected:
-    Edit& edit;
-
     NormalisableRange<double> getBeatRemapper() const;
     int getXPosForBeat (double beat) const;
     double getBeatForXPos (int xPos) const;
     double getLinesPerBeatForMinimumLineSpacing (int minimumLineSpacing) const;
+
+protected:
+    Edit& edit;
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementViewTimelineComponent)

@@ -10,10 +10,9 @@
 
 #include "hmnz_ArrangementViewTrackLaneClip.h"
 #include "hmnz_Clip.h"
-#include "hmnz_Track.h"
 
 ArrangementViewTrackLaneClip::ArrangementViewTrackLaneClip (Clip& _clip)
-    : ArrangementViewTimelineComponent (_clip.track.edit), clip (_clip)
+    : clip (_clip)
 {
     clip.getState().addListener (this);
 }
@@ -23,6 +22,15 @@ ArrangementViewTrackLaneClip::~ArrangementViewTrackLaneClip()
     clip.getState().removeListener (this);
 }
 
+void ArrangementViewTrackLaneClip::updateBounds()
+{
+    ArrangementViewTimelineComponent* timelineParent = static_cast<ArrangementViewTimelineComponent*> (getParentComponent());
+    double start = getRepresentedClip().start.get();
+    double length = getRepresentedClip().length.get();
+    Rectangle<int> bounds (Point<int> (timelineParent->getXPosForBeat (start), 0), Point<int> (timelineParent->getXPosForBeat (start + length), timelineParent->getHeight()));
+    setBounds (bounds);
+}
+
 void ArrangementViewTrackLaneClip::paint (Graphics& g)
 {
     g.fillAll (Colours::white);
@@ -30,14 +38,9 @@ void ArrangementViewTrackLaneClip::paint (Graphics& g)
 
 void ArrangementViewTrackLaneClip::valueTreePropertyChanged (ValueTree&, const Identifier& property)
 {
-    if (property == clip.start.getPropertyID())
+    if (property == clip.start.getPropertyID() ||
+        property == clip.length.getPropertyID())
     {
-        int newXPos = getXPosForBeat (clip.start.get());
-        setBounds (getBounds().withLeft (newXPos));
-    }
-    else if (property == clip.length.getPropertyID())
-    {
-        int newXPos = getXPosForBeat (clip.start.get() + clip.length.get());
-        setBounds (getBounds().withRight (newXPos));
+        updateBounds();
     }
 }

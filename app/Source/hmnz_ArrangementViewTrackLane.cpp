@@ -46,21 +46,29 @@ ArrangementViewTrackLaneClip* ArrangementViewTrackLane::getChildForClip (Clip* c
     return nullptr;
 }
 
-void ArrangementViewTrackLane::resized()
+void ArrangementViewTrackLane::updateClipComponentBounds (ArrangementViewTrackLaneClip* clip)
+{
+    clip->updateBounds();
+}
+
+void ArrangementViewTrackLane::updateAllClipComponentBounds()
 {
     for (ArrangementViewTrackLaneClip* clip : clips)
-    {
-        Rectangle<int> newClipBounds = Rectangle<int>().withTop (0).withBottom (getHeight());
-        newClipBounds.setLeft (getXPosForBeat (clip->getRepresentedClip().start.get()));
-        newClipBounds.setRight (getXPosForBeat (clip->getRepresentedClip().start.get() + clip->getRepresentedClip().length.get()));
-    }
+        updateClipComponentBounds (clip);
+}
+
+void ArrangementViewTrackLane::resized()
+{
+    updateAllClipComponentBounds();
 }
 
 void ArrangementViewTrackLane::objectAdded (Clip* clip, int, HomogeneousValueTreeObjectArray<Clip>*)
 {
     ArrangementViewTrackLaneClip* newClip = new ArrangementViewTrackLaneClip (*clip);
     clips.add (newClip);
-    addAndMakeVisible (newClip);
+    addChildComponent (newClip);
+    updateClipComponentBounds (newClip);
+    newClip->setVisible (true);
 }
 
 void ArrangementViewTrackLane::objectRemoved (Clip* clip, int, HomogeneousValueTreeObjectArray<Clip>*)
@@ -76,7 +84,7 @@ void ArrangementViewTrackLane::valueTreePropertyChanged (ValueTree&, const Ident
     if (property == track.edit.arrangementViewModel.timeEnd.getPropertyID() ||
         property == track.edit.arrangementViewModel.timeStart.getPropertyID())
     {
-        resized();
+        updateAllClipComponentBounds();
         repaint();
     }
 }
