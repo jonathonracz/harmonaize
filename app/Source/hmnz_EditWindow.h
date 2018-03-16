@@ -36,6 +36,7 @@ public:
 
 private:
     PlaybackEngine playbackEngine;
+    std::unique_ptr<EditView> editView;
     std::unique_ptr<Edit> currentEdit;
     std::unique_ptr<UndoManager> undoManager;
     jcf::ValueTreeDebugger editDebugger;
