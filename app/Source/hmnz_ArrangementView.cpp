@@ -76,9 +76,13 @@ void ArrangementView::mouseWheelMove (const MouseEvent& event, const MouseWheelD
     }
 
     // Magic number is an arbitrary factor to increase scrolling speed
+    int lastTrackOffset = 0;
+    for (int i = 0; i < edit.trackList.tracks.size() - 1; ++i)
+        lastTrackOffset += edit.trackList.tracks[i]->height.get();
+
     float verticalScrollDelta = 20.0f * (wheel.isReversed ? -wheel.deltaY : wheel.deltaY);
     verticalScrollAccumulator += verticalScrollDelta;
-    verticalScrollAccumulator = std::max (0.0, verticalScrollAccumulator);
+    verticalScrollAccumulator = std::max (static_cast<double> (-lastTrackOffset), std::min (0.0, verticalScrollAccumulator));
     model.scrollPosition = static_cast<int> (verticalScrollAccumulator);
 }
 
