@@ -39,7 +39,7 @@ void ArrangementViewTrack::resized()
     layout.items.add (FlexItem (flexBox).withFlex (1.0f));
     layout.items.add (FlexItem (heightResizer).withHeight (2));
 
-    layout.performLayout (getBounds());
+    layout.performLayout (getLocalBounds());
 }
 
 void ArrangementViewTrack::valueTreePropertyChanged (ValueTree&, const Identifier& property)

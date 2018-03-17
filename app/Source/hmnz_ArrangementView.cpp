@@ -54,7 +54,7 @@ void ArrangementView::resized()
         Point<int> playHeadBottomRight = grid.getBounds().getBottomRight();
         playHead.setBounds (Rectangle<int> (playHeadTopLeft, playHeadBottomRight));
     }
-    
+
     headerResizer.setBounds (grid.getWidth(), 0, 2, getHeight()); // TODO: Hardcoded size constant
 }
 

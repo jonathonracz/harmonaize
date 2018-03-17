@@ -42,6 +42,7 @@ void ArrangementViewTrackList::objectAdded (Track* track, int insertionIndex, Ho
     ArrangementViewTrack* newTrack = new ArrangementViewTrack (*track);
     tracks.insert (insertionIndex, newTrack);
     addAndMakeVisible (newTrack);
+    resized();
     repaint();
 }
 
@@ -50,12 +51,14 @@ void ArrangementViewTrackList::objectRemoved (Track* track, int indexRemovedFrom
     jassert (&tracks[indexRemovedFrom]->getRepresentedTrack() == track);
     removeChildComponent (tracks[indexRemovedFrom]);
     tracks.remove (indexRemovedFrom);
+    resized();
     repaint();
 }
 
 void ArrangementViewTrackList::objectOrderChanged (Track* track, int oldIndex, int newIndex, HomogeneousValueTreeObjectArray<Track, CriticalSection>*)
 {
     tracks.move (oldIndex, newIndex);
+    resized();
     repaint();
 }
 
@@ -68,5 +71,4 @@ void ArrangementViewTrackList::valueTreePropertyChanged (ValueTree& tree, const 
         resized();
         repaint();
     }
-
 }
