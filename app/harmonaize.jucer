@@ -12,6 +12,14 @@
             file="Source/hmnz_PlaybackEngine.h"/>
     </GROUP>
     <GROUP id="{4C57DD66-0DB0-A254-59EF-09BAA05140B1}" name="GUI">
+      <FILE id="Go2CrJ" name="hmnz_ArrangementViewHeaderResizer.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewHeaderResizer.cpp"/>
+      <FILE id="CKmMAJ" name="hmnz_ArrangementViewHeaderResizer.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewHeaderResizer.h"/>
+      <FILE id="lSQl7u" name="hmnz_ArrangementViewTrackResizer.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewTrackResizer.cpp"/>
+      <FILE id="O7hxGs" name="hmnz_ArrangementViewTrackResizer.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewTrackResizer.h"/>
       <FILE id="qF78Z6" name="hmnz_ArrangementViewPlayHead.cpp" compile="1"
             resource="0" file="Source/hmnz_ArrangementViewPlayHead.cpp"/>
       <FILE id="iPUeZF" name="hmnz_ArrangementViewPlayHead.h" compile="0"

@@ -20,6 +20,8 @@
 		39EAA080A2C4CD64973757CB = {isa = PBXBuildFile; fileRef = B50BB0F25E2440E915806855; };
 		77C595DB2D5EE51856C6F849 = {isa = PBXBuildFile; fileRef = FD7F1601DE6497D38A60D756; };
 		5618CA053B0221932F546168 = {isa = PBXBuildFile; fileRef = BA9FB4ED25D33CEF7FB1FAD7; };
+		4460A35DA791674C28743FCB = {isa = PBXBuildFile; fileRef = 8CFFBA0C1703AB237F64EAB9; };
+		125E9D187D55B01A8BF9B799 = {isa = PBXBuildFile; fileRef = AD9AE6C82379841E308C0A2C; };
 		046DB51F2DEC6CE806C9D480 = {isa = PBXBuildFile; fileRef = A02579374C11CEDCDE135C12; };
 		FA43B6C4CFCDE32382A042FA = {isa = PBXBuildFile; fileRef = AD53B69C56236405EE314AE9; };
 		3E3C5763948860151ABCA7BD = {isa = PBXBuildFile; fileRef = 760E4D1D0CDCBB11E9ADEBB4; };
@@ -62,6 +64,7 @@
 		050FF7CF7CABBC2A5B5A9CFC = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = /usr/local/opt/python3/Frameworks/Python.framework; sourceTree = "<absolute>"; };
 		0625FB6A75F65FCA40EFF2E6 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_EditView.cpp"; path = "../../Source/hmnz_EditView.cpp"; sourceTree = "SOURCE_ROOT"; };
 		08390396B8D675039444FB82 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_Clip.cpp"; path = "../../Source/hmnz_Clip.cpp"; sourceTree = "SOURCE_ROOT"; };
+		0C9094102F819C1DDEE015F8 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ArrangementViewHeaderResizer.h"; path = "../../Source/hmnz_ArrangementViewHeaderResizer.h"; sourceTree = "SOURCE_ROOT"; };
 		0FA222D3E84C912A161C935C = {isa = PBXFileReference; lastKnownFileType = file; name = "jcf_debug"; path = "../../Source/External/juce_toys/jcf_debug"; sourceTree = "SOURCE_ROOT"; };
 		113BB3F244B850B76157F955 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ValueTreeObjectUnitTest.h"; path = "../../Source/hmnz_ValueTreeObjectUnitTest.h"; sourceTree = "SOURCE_ROOT"; };
 		15665F0BB406EBC696190730 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ArrangementView.h"; path = "../../Source/hmnz_ArrangementView.h"; sourceTree = "SOURCE_ROOT"; };
@@ -118,8 +121,10 @@
 		884BC0999DC8A43549CD7A4E = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_audio_utils"; path = "../../../harmonaize/external/JUCE/modules/juce_audio_utils"; sourceTree = "SOURCE_ROOT"; };
 		8C126220B8456629268B727A = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_data_structures"; path = "../../../harmonaize/external/JUCE/modules/juce_data_structures"; sourceTree = "SOURCE_ROOT"; };
 		8C12789EAB8AA1433C68B99E = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_Identifiers.cpp"; path = "../../Source/hmnz_Identifiers.cpp"; sourceTree = "SOURCE_ROOT"; };
+		8CFFBA0C1703AB237F64EAB9 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_ArrangementViewHeaderResizer.cpp"; path = "../../Source/hmnz_ArrangementViewHeaderResizer.cpp"; sourceTree = "SOURCE_ROOT"; };
 		8D0A44853497795D2D1B5E05 = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = harmonaize.app; sourceTree = "BUILT_PRODUCTS_DIR"; };
 		8F4675BD91E6E03800FCF753 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_TrackArray.cpp"; path = "../../Source/hmnz_TrackArray.cpp"; sourceTree = "SOURCE_ROOT"; };
+		8F58E6775380F477A77CE581 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ArrangementViewTrackResizer.h"; path = "../../Source/hmnz_ArrangementViewTrackResizer.h"; sourceTree = "SOURCE_ROOT"; };
 		90A2E4A79EB082631A19729F = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
 		9448C70A6167CE623D2376D8 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_Clip.h"; path = "../../Source/hmnz_Clip.h"; sourceTree = "SOURCE_ROOT"; };
 		96360020F57BDCD005A047C4 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -136,6 +141,7 @@
 		AB08A2B5E0322EE1C5888C78 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_ArrangementViewTopBar.cpp"; path = "../../Source/hmnz_ArrangementViewTopBar.cpp"; sourceTree = "SOURCE_ROOT"; };
 		AC56ACA56BE9A30C13A4DFA4 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ArrayIterator.h"; path = "../../Source/hmnz_ArrayIterator.h"; sourceTree = "SOURCE_ROOT"; };
 		AD53B69C56236405EE314AE9 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_ArrangementViewTrack.cpp"; path = "../../Source/hmnz_ArrangementViewTrack.cpp"; sourceTree = "SOURCE_ROOT"; };
+		AD9AE6C82379841E308C0A2C = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_ArrangementViewTrackResizer.cpp"; path = "../../Source/hmnz_ArrangementViewTrackResizer.cpp"; sourceTree = "SOURCE_ROOT"; };
 		AE5EC804E6F4A6399249D716 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_MidiMessageSequenceModel.h"; path = "../../Source/hmnz_MidiMessageSequenceModel.h"; sourceTree = "SOURCE_ROOT"; };
 		AEEEE136556E3F2846FF1FA8 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ArrangementViewTrackHeader.h"; path = "../../Source/hmnz_ArrangementViewTrackHeader.h"; sourceTree = "SOURCE_ROOT"; };
 		B003B371038CF243B3040006 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "include_juce_data_structures.mm"; path = "../../JuceLibraryCode/include_juce_data_structures.mm"; sourceTree = "SOURCE_ROOT"; };
@@ -176,6 +182,10 @@
 					BA9FB4ED25D33CEF7FB1FAD7,
 					7D6E10D8F88B203A7519916B, ); name = Playback; sourceTree = "<group>"; };
 		7B84D3D14D615AF4871C3521 = {isa = PBXGroup; children = (
+					8CFFBA0C1703AB237F64EAB9,
+					0C9094102F819C1DDEE015F8,
+					AD9AE6C82379841E308C0A2C,
+					8F58E6775380F477A77CE581,
 					A02579374C11CEDCDE135C12,
 					5002B5E065F08B7CFD2E4303,
 					AD53B69C56236405EE314AE9,
@@ -462,6 +472,8 @@
 					77C595DB2D5EE51856C6F849, ); runOnlyForDeploymentPostprocessing = 0; };
 		81FDE27828439CAB92A26650 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (
 					5618CA053B0221932F546168,
+					4460A35DA791674C28743FCB,
+					125E9D187D55B01A8BF9B799,
 					046DB51F2DEC6CE806C9D480,
 					FA43B6C4CFCDE32382A042FA,
 					3E3C5763948860151ABCA7BD,
