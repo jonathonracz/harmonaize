@@ -13,17 +13,26 @@
 #include "hmnz_Edit.h"
 
 ArrangementView::ArrangementView (Edit& _edit)
-    : edit (_edit), topBar (_edit), grid (_edit), trackList (_edit), playHead (_edit)
+    : edit (_edit), topBar (_edit), grid (_edit), trackList (_edit),
+      playHead (_edit), headerResizer (_edit)
 {
     addAndMakeVisible (topBar);
     addAndMakeVisible (grid);
     addAndMakeVisible (trackList);
     addAndMakeVisible (playHead);
+    addAndMakeVisible (headerResizer);
+
+    edit.arrangementViewModel.getState().addListener (this);
+}
+
+ArrangementView::~ArrangementView()
+{
+    edit.arrangementViewModel.getState().removeListener (this);
 }
 
 void ArrangementView::resized()
 {
-    const int topBarHeight = 28;
+    const int topBarHeight = 28; // TODO: Hardcoded size constant
     ArrangementViewModel& model = edit.arrangementViewModel;
 
     FlexBox layout;
@@ -38,11 +47,15 @@ void ArrangementView::resized()
     layout.items.add (FlexItem ().withWidth (model.headerWidth.get()));
 
     layout.performLayout (getLocalBounds());
-    trackList.setBounds (getLocalBounds().withTop (topBar.getHeight()));
 
-    Point<int> playHeadTopLeft = topBar.getBounds().getTopLeft();
-    Point<int> playHeadBottomRight = grid.getBounds().getBottomRight();
-    playHead.setBounds (Rectangle<int> (playHeadTopLeft, playHeadBottomRight));
+    trackList.setBounds (getLocalBounds().withTop (topBar.getHeight()));
+    {
+        Point<int> playHeadTopLeft = topBar.getBounds().getTopLeft();
+        Point<int> playHeadBottomRight = grid.getBounds().getBottomRight();
+        playHead.setBounds (Rectangle<int> (playHeadTopLeft, playHeadBottomRight));
+    }
+    
+    headerResizer.setBounds (grid.getWidth(), 0, 2, getHeight()); // TODO: Hardcoded size constant
 }
 
 void ArrangementView::mouseWheelMove (const MouseEvent& event, const MouseWheelDetails& wheel)
@@ -84,5 +97,14 @@ void ArrangementView::mouseMagnify (const MouseEvent& event, float scaleFactor)
     {
         model.timeStart = newStart;
         model.timeEnd = newEnd;
+    }
+}
+
+void ArrangementView::valueTreePropertyChanged (ValueTree&, const Identifier& property)
+{
+    if (property == edit.arrangementViewModel.headerWidth.getPropertyID())
+    {
+        resized();
+        repaint();
     }
 }

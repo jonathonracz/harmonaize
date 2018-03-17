@@ -13,11 +13,12 @@
 
 ArrangementViewTrack::ArrangementViewTrack (Track& representedTrack)
     : track (representedTrack), header (representedTrack),
-      lane (representedTrack)
+      lane (representedTrack), heightResizer (representedTrack)
 {
     track.edit.arrangementViewModel.getState().addListener (this);
     addAndMakeVisible (header);
     addAndMakeVisible (lane);
+    addAndMakeVisible (heightResizer);
 }
 
 ArrangementViewTrack::~ArrangementViewTrack()
@@ -27,11 +28,18 @@ ArrangementViewTrack::~ArrangementViewTrack()
 
 void ArrangementViewTrack::resized()
 {
+    FlexBox layout;
+    layout.flexDirection = FlexBox::Direction::column;
+
     FlexBox flexBox;
     flexBox.flexDirection = FlexBox::Direction::row;
     flexBox.items.add (FlexItem (lane).withFlex (1.0f));
     flexBox.items.add (FlexItem (header).withWidth (static_cast<int> (track.edit.arrangementViewModel.headerWidth.get())));
-    flexBox.performLayout (getBounds());
+
+    layout.items.add (FlexItem (flexBox).withFlex (1.0f));
+    layout.items.add (FlexItem (heightResizer).withHeight (2));
+
+    layout.performLayout (getBounds());
 }
 
 void ArrangementViewTrack::valueTreePropertyChanged (ValueTree&, const Identifier& property)
