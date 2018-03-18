@@ -23,7 +23,6 @@ Edit::Edit (const ValueTree& v, UndoManager* um)
     if (trackList.tracks.size() == 0)
     {
         trackList.tracks.insertStateAtObjectIndex (Track::createDefaultState(), -1);
-        trackList.tracks.insertStateAtObjectIndex (Track::createDefaultState(), -1);
     }
 }
 

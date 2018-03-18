@@ -5,6 +5,9 @@
               cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.1"
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark">
   <MAINGROUP id="TpvEFM" name="harmonaize">
+    <GROUP id="{EBA6D256-AB9F-0FDF-FF12-7B37C747D39F}" name="Binary">
+      <FILE id="HOW6YQ" name="appicon.png" compile="0" resource="1" file="Design/appicon.png"/>
+    </GROUP>
     <GROUP id="{8E9CA3BB-0F7E-92E6-FD6F-57F2308CE58F}" name="Playback">
       <FILE id="eBlIyT" name="hmnz_PlaybackEngine.cpp" compile="1" resource="0"
             file="Source/hmnz_PlaybackEngine.cpp"/>
@@ -159,7 +162,8 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="" extraFrameworks="/usr/local/opt/python3/Frameworks/Python"
-               extraLinkerFlags="-L/usr/local/opt/python3/Frameworks/Python.framework/Versions/3.6/lib/python3.6/config-3.6m-darwin -lpython3.6m -ldl -framework CoreFoundation">
+               extraLinkerFlags="-L/usr/local/opt/python3/Frameworks/Python.framework/Versions/3.6/lib/python3.6/config-3.6m-darwin -lpython3.6m -ldl -framework CoreFoundation"
+               bigIcon="HOW6YQ" smallIcon="HOW6YQ">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" enablePluginBinaryCopyStep="1" isDebug="1" optimisation="1"
                        linkTimeOptimisation="0" targetName="harmonaize" headerPath="/usr/local/opt/python3/Frameworks/Python.framework/Versions/3.6/Headers"/>
