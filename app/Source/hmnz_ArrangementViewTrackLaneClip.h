@@ -28,6 +28,7 @@ private:
     Clip& clip;
 
     void paint (Graphics&) override;
+    void mouseDrag (const MouseEvent& event) override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
     void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
