@@ -11,24 +11,25 @@
 #include "hmnz_ArrangementViewTimelineGrid.h"
 #include "hmnz_Edit.h"
 
-ArrangementViewTimelineGrid::ArrangementViewTimelineGrid (Edit& edit)
-    : ArrangementViewTimelineComponent (edit)
+ArrangementViewTimelineGrid::ArrangementViewTimelineGrid (Edit& _edit, CachedValue<double>& timeStart, CachedValue<double>& timeEnd)
+    : ArrangementViewTimelineComponent (timeStart, timeEnd), edit (_edit)
 {
-    edit.transport.getState().addListener (this);
-    edit.arrangementViewModel.getState().addListener (this);
+    edit.masterTrack.timeSignature.getState().addListener (this);
+    timeStart.getValueTree().addListener (this);
+    timeEnd.getValueTree().addListener (this);
 }
 
 ArrangementViewTimelineGrid::~ArrangementViewTimelineGrid()
 {
-    edit.transport.getState().removeListener (this);
-    edit.arrangementViewModel.getState().removeListener (this);
+    edit.masterTrack.timeSignature.getState().removeListener (this);
+    timeStart.getValueTree().removeListener (this);
+    timeEnd.getValueTree().removeListener (this);
 }
 
 void ArrangementViewTimelineGrid::paint (Graphics& g)
 {
-    const ArrangementViewModel& model = edit.arrangementViewModel;
     NormalisableRange<double> remapper = getBeatRemapper();
-    const int minimumLineSpacing = 14.0; // Arbitrary - controls how close lines can get before the grid size increases
+    const int minimumLineSpacing = 14; // TODO: Arbitrary - controls how close lines can get before the grid size increases
     double linesPerBeat = getLinesPerBeatForMinimumLineSpacing (minimumLineSpacing);
 
     double beatValue = Utility::floorToNearestInterval (remapper.start, linesPerBeat);
@@ -51,8 +52,9 @@ void ArrangementViewTimelineGrid::paint (Graphics& g)
 
 void ArrangementViewTimelineGrid::valueTreePropertyChanged (ValueTree& tree, const Identifier& property)
 {
-    if (property == edit.arrangementViewModel.timeStart.getPropertyID() ||
-             property == edit.arrangementViewModel.timeEnd.getPropertyID())
+    if (tree == edit.masterTrack.getState() ||
+        property == timeStart.getPropertyID() ||
+        property == timeEnd.getPropertyID())
     {
         repaint();
     }

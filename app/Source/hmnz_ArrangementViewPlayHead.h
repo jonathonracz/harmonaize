@@ -25,11 +25,14 @@ public:
         }
     };
 
-    ArrangementViewPlayHead (Edit& edit);
+    ArrangementViewPlayHead (Edit& edit, CachedValue<double>& timeStart, CachedValue<double>& timeEnd);
     ~ArrangementViewPlayHead();
 
 private:
+    Edit& edit;
     std::unique_ptr<PlayHeadComponent> playHeadComponent;
+
+    void updatePlayHeadPosition();
 
     void resized() override;
 

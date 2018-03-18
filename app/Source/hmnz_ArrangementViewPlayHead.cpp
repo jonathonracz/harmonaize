@@ -11,21 +11,23 @@
 #include "hmnz_ArrangementViewPlayHead.h"
 #include "hmnz_Edit.h"
 
-ArrangementViewPlayHead::ArrangementViewPlayHead (Edit& edit)
-    : ArrangementViewTimelineComponent (edit)
+ArrangementViewPlayHead::ArrangementViewPlayHead (Edit& _edit, CachedValue<double>& timeStart, CachedValue<double>& timeEnd)
+    : ArrangementViewTimelineComponent (timeStart, timeEnd), edit (_edit)
 {
     playHeadComponent = std::unique_ptr<PlayHeadComponent> (new PlayHeadComponent);
     playHeadComponent->setBounds (0, 0, 1, getHeight());
     addAndMakeVisible (*playHeadComponent);
     setInterceptsMouseClicks (false, false);
     edit.transport.getState().addListener (this);
-    edit.arrangementViewModel.getState().addListener (this);
+    timeStart.getValueTree().addListener (this);
+    timeEnd.getValueTree().addListener (this);
 }
 
 ArrangementViewPlayHead::~ArrangementViewPlayHead()
 {
     edit.transport.getState().removeListener (this);
-    edit.arrangementViewModel.getState().removeListener (this);
+    timeStart.getValueTree().removeListener (this);
+    timeEnd.getValueTree().removeListener (this);
 }
 
 void ArrangementViewPlayHead::resized()
@@ -34,12 +36,17 @@ void ArrangementViewPlayHead::resized()
     edit.transport.getState().sendPropertyChangeMessage (edit.transport.playHeadBeat.getPropertyID());
 }
 
+void ArrangementViewPlayHead::updatePlayHeadPosition()
+{
+    playHeadComponent->setCentrePosition (getXPosForBeat (edit.transport.playHeadBeat.get()), getHeight() / 2);
+}
+
 void ArrangementViewPlayHead::valueTreePropertyChanged (ValueTree&, const Identifier& property)
 {
     if (property == edit.transport.playHeadBeat.getPropertyID() ||
-        property == edit.arrangementViewModel.timeStart.getPropertyID() ||
-        property == edit.arrangementViewModel.timeEnd.getPropertyID())
+        property == timeStart.getPropertyID() ||
+        property == timeEnd.getPropertyID())
     {
-        playHeadComponent->setCentrePosition (getXPosForBeat (edit.transport.playHeadBeat.get()), getHeight() / 2);
+        updatePlayHeadPosition();
     }
 }

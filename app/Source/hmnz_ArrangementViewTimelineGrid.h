@@ -16,10 +16,12 @@ class ArrangementViewTimelineGrid   : public ArrangementViewTimelineComponent,
                                       public ValueTree::Listener
 {
 public:
-    ArrangementViewTimelineGrid (Edit& edit);
+    ArrangementViewTimelineGrid (Edit& edit, CachedValue<double>& timeStart, CachedValue<double>& timeEnd);
     ~ArrangementViewTimelineGrid();
 
 private:
+    Edit& edit;
+
     void paint (Graphics&) override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
