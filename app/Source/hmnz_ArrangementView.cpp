@@ -13,8 +13,18 @@
 #include "hmnz_Edit.h"
 
 ArrangementView::ArrangementView (Edit& _edit)
-    : edit (_edit), topBar (_edit), grid (_edit), trackList (_edit),
-      playHead (_edit), headerResizer (_edit)
+    : edit (_edit),
+      topBar (_edit,
+          _edit.arrangementViewModel.timeStart,
+          _edit.arrangementViewModel.timeEnd),
+      grid (_edit,
+          _edit.arrangementViewModel.timeStart,
+          _edit.arrangementViewModel.timeEnd),
+      trackList (_edit),
+      playHead (_edit,
+          _edit.arrangementViewModel.timeStart,
+          _edit.arrangementViewModel.timeEnd),
+      headerResizer (_edit)
 {
     addAndMakeVisible (topBar);
     addAndMakeVisible (grid);

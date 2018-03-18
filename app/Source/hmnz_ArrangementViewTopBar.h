@@ -16,10 +16,12 @@ class ArrangementViewTopBar : public ArrangementViewTimelineComponent,
                               public ValueTree::Listener
 {
 public:
-    ArrangementViewTopBar (Edit& edit);
+    ArrangementViewTopBar (Edit& edit, CachedValue<double>& timeStart, CachedValue<double>& timeEnd);
     ~ArrangementViewTopBar();
 
 private:
+    Edit& edit;
+
     void paint (Graphics&) override;
     void mouseDown (const MouseEvent&) override;
     void mouseDrag (const MouseEvent&) override;
