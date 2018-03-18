@@ -36,6 +36,11 @@ void ArrangementViewTrackLaneClip::paint (Graphics& g)
     g.fillAll (clip.color);
 }
 
+void ArrangementViewTrackLaneClip::mouseDrag (const MouseEvent& event)
+{
+
+}
+
 void ArrangementViewTrackLaneClip::valueTreePropertyChanged (ValueTree&, const Identifier& property)
 {
     if (property == clip.start.getPropertyID() ||
