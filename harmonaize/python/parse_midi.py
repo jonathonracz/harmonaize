@@ -6,7 +6,8 @@ from midi_notes import MODDED_NOTES
 from collections import defaultdict
 
 def parseMidi(midi):
-	messages = midi.tracks[0]
+	meta_messages = midi.tracks[0]
+	note_messages = midi.tracks[1]
 
 	FileAttributes = {
 		'tempo': 0,
@@ -15,13 +16,13 @@ def parseMidi(midi):
 		'groove': '60srock',
 	}
 
-	time_sig_msg = getMessageWithType(messages, 'time_signature')
+	time_sig_msg = getMessageWithType(meta_messages, 'time_signature')
 	FileAttributes['time_signature'] = (time_sig_msg.numerator, time_sig_msg.denominator)
-	FileAttributes['tempo'] = mido.tempo2bpm(getMessageWithType(messages, 'set_tempo').tempo)
-	FileAttributes['tonic'] = getMessageWithType(messages, 'key_signature').key
+	FileAttributes['tempo'] = mido.tempo2bpm(getMessageWithType(meta_messages, 'set_tempo').tempo)
+	FileAttributes['tonic'] = getMessageWithType(meta_messages, 'key_signature').key
 	FileAttributes['groove'] = chooseBestGroove(FileAttributes['tempo'], FileAttributes['time_signature'])
 
-	note_counts, beat_map = getMidiInfo(FileAttributes, messages)
+	note_counts, beat_map = getMidiInfo(FileAttributes, note_messages)
 
 	FileAttributes['note_counts'] = note_counts
 	FileAttributes['beat_map'] = beat_map
@@ -55,7 +56,7 @@ def getMidiInfo(FileAttributes, messages):
 	for message in messages:
 		if message.type == 'note_on':
 
-			beat_value = round((message.time * tempo / 1000 / 60) * 12) / 12
+			beat_value = round(message.time * tempo / 1000 / 60)
 			current_beat += beat_value
 			note = MODDED_NOTES[message.note % 12]
 			if current_beat not in beat_map:
