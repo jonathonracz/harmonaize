@@ -11,14 +11,14 @@
 #include "hmnz_ArrangementViewTimelineComponent.h"
 #include "hmnz_Edit.h"
 
-ArrangementViewTimelineComponent::ArrangementViewTimelineComponent (Edit& _edit)
-    : edit (_edit)
+ArrangementViewTimelineComponent::ArrangementViewTimelineComponent (CachedValue<double>& _timeStart, CachedValue<double>& _timeEnd)
+    : timeStart (_timeStart), timeEnd (_timeEnd)
 {
 }
 
 NormalisableRange<double> ArrangementViewTimelineComponent::getBeatRemapper() const
 {
-    return NormalisableRange<double> (edit.arrangementViewModel.timeStart, edit.arrangementViewModel.timeEnd);
+    return NormalisableRange<double> (timeStart.get(), timeEnd.get());
 }
 
 int ArrangementViewTimelineComponent::getXPosForBeat (double beat) const

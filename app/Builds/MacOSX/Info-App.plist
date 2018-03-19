@@ -6,13 +6,13 @@
     <key>CFBundleExecutable</key>
     <string>${EXECUTABLE_NAME}</string>
     <key>CFBundleIconFile</key>
-    <string></string>
+    <string>Icon.icns</string>
     <key>CFBundleIdentifier</key>
     <string>com.harmonaize.harmonaize</string>
     <key>CFBundleName</key>
-    <string>harmonaize</string>
+    <string>HarmonAIze</string>
     <key>CFBundleDisplayName</key>
-    <string>harmonaize</string>
+    <string>HarmonAIze</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleSignature</key>

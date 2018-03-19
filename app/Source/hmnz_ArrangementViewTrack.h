@@ -12,6 +12,7 @@
 
 #include "hmnz_ArrangementViewTrackHeader.h"
 #include "hmnz_ArrangementViewTrackLane.h"
+#include "hmnz_ArrangementViewTrackResizer.h"
 
 class ArrangementViewTrack  : public Component,
                               public ValueTree::Listener
@@ -27,6 +28,7 @@ private:
 
     ArrangementViewTrackHeader header;
     ArrangementViewTrackLane lane;
+    ArrangementViewTrackResizer heightResizer;
 
     void resized() override;
 

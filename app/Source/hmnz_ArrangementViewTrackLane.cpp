@@ -15,11 +15,14 @@
 #include "hmnz_Edit.h"
 
 ArrangementViewTrackLane::ArrangementViewTrackLane (Track& _track)
-    : ArrangementViewTimelineComponent (_track.edit), track (_track)
+    : ArrangementViewTimelineComponent (
+        _track.edit.arrangementViewModel.timeStart,
+        _track.edit.arrangementViewModel.timeEnd),
+      track (_track)
 {
     track.clipList.clips.addListener (this);
-    track.getState().addListener (this);
-    track.edit.arrangementViewModel.getState().addListener (this);
+    timeStart.getValueTree().addListener (this);
+    timeEnd.getValueTree().addListener (this);
 
     for (int i = 0; i < track.clipList.clips.size(); ++i)
         objectAdded (track.clipList.clips[i], i, &(track.clipList.clips));
@@ -28,8 +31,8 @@ ArrangementViewTrackLane::ArrangementViewTrackLane (Track& _track)
 ArrangementViewTrackLane::~ArrangementViewTrackLane()
 {
     track.clipList.clips.removeListener (this);
-    track.getState().removeListener (this);
-    track.edit.arrangementViewModel.getState().removeListener (this);
+    timeStart.getValueTree().removeListener (this);
+    timeEnd.getValueTree().removeListener (this);
 }
 
 ArrangementViewTrackLaneClip* ArrangementViewTrackLane::getChildForClip (Clip* clip)
@@ -46,21 +49,29 @@ ArrangementViewTrackLaneClip* ArrangementViewTrackLane::getChildForClip (Clip* c
     return nullptr;
 }
 
-void ArrangementViewTrackLane::resized()
+void ArrangementViewTrackLane::updateClipComponentBounds (ArrangementViewTrackLaneClip* clip)
+{
+    clip->updateBounds();
+}
+
+void ArrangementViewTrackLane::updateAllClipComponentBounds()
 {
     for (ArrangementViewTrackLaneClip* clip : clips)
-    {
-        Rectangle<int> newClipBounds = Rectangle<int>().withTop (0).withBottom (getHeight());
-        newClipBounds.setLeft (getXPosForBeat (clip->getRepresentedClip().start.get()));
-        newClipBounds.setRight (getXPosForBeat (clip->getRepresentedClip().start.get() + clip->getRepresentedClip().length.get()));
-    }
+        updateClipComponentBounds (clip);
+}
+
+void ArrangementViewTrackLane::resized()
+{
+    updateAllClipComponentBounds();
 }
 
 void ArrangementViewTrackLane::objectAdded (Clip* clip, int, HomogeneousValueTreeObjectArray<Clip>*)
 {
     ArrangementViewTrackLaneClip* newClip = new ArrangementViewTrackLaneClip (*clip);
     clips.add (newClip);
-    addAndMakeVisible (newClip);
+    addChildComponent (newClip);
+    updateClipComponentBounds (newClip);
+    newClip->setVisible (true);
 }
 
 void ArrangementViewTrackLane::objectRemoved (Clip* clip, int, HomogeneousValueTreeObjectArray<Clip>*)
@@ -73,10 +84,10 @@ void ArrangementViewTrackLane::objectRemoved (Clip* clip, int, HomogeneousValueT
 
 void ArrangementViewTrackLane::valueTreePropertyChanged (ValueTree&, const Identifier& property)
 {
-    if (property == track.edit.arrangementViewModel.timeEnd.getPropertyID() ||
-        property == track.edit.arrangementViewModel.timeStart.getPropertyID())
+    if (property == timeStart.getPropertyID() ||
+        property == timeEnd.getPropertyID())
     {
-        resized();
+        updateAllClipComponentBounds();
         repaint();
     }
 }

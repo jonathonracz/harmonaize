@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="OexI64" name="harmonaize" projectType="guiapp" version="1.0.0"
+<JUCERPROJECT id="OexI64" name="HarmonAIze" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.harmonaize.harmonaize" includeBinaryInAppConfig="1"
               cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.1"
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark">
-  <MAINGROUP id="TpvEFM" name="harmonaize">
+  <MAINGROUP id="TpvEFM" name="HarmonAIze">
+    <GROUP id="{EBA6D256-AB9F-0FDF-FF12-7B37C747D39F}" name="Binary">
+      <FILE id="HOW6YQ" name="appicon.png" compile="0" resource="1" file="Design/appicon.png"/>
+    </GROUP>
     <GROUP id="{8E9CA3BB-0F7E-92E6-FD6F-57F2308CE58F}" name="Playback">
       <FILE id="eBlIyT" name="hmnz_PlaybackEngine.cpp" compile="1" resource="0"
             file="Source/hmnz_PlaybackEngine.cpp"/>
@@ -12,6 +15,18 @@
             file="Source/hmnz_PlaybackEngine.h"/>
     </GROUP>
     <GROUP id="{4C57DD66-0DB0-A254-59EF-09BAA05140B1}" name="GUI">
+      <FILE id="Go2CrJ" name="hmnz_ArrangementViewHeaderResizer.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewHeaderResizer.cpp"/>
+      <FILE id="CKmMAJ" name="hmnz_ArrangementViewHeaderResizer.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewHeaderResizer.h"/>
+      <FILE id="lSQl7u" name="hmnz_ArrangementViewTrackResizer.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewTrackResizer.cpp"/>
+      <FILE id="O7hxGs" name="hmnz_ArrangementViewTrackResizer.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewTrackResizer.h"/>
+      <FILE id="qF78Z6" name="hmnz_ArrangementViewPlayHead.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewPlayHead.cpp"/>
+      <FILE id="iPUeZF" name="hmnz_ArrangementViewPlayHead.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewPlayHead.h"/>
       <FILE id="QVsY2J" name="hmnz_ArrangementViewTrack.cpp" compile="1"
             resource="0" file="Source/hmnz_ArrangementViewTrack.cpp"/>
       <FILE id="q45wJi" name="hmnz_ArrangementViewTrack.h" compile="0" resource="0"
@@ -147,7 +162,8 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="" extraFrameworks="/usr/local/opt/python3/Frameworks/Python"
-               extraLinkerFlags="-L/usr/local/opt/python3/Frameworks/Python.framework/Versions/3.6/lib/python3.6/config-3.6m-darwin -lpython3.6m -ldl -framework CoreFoundation">
+               extraLinkerFlags="-L/usr/local/opt/python3/Frameworks/Python.framework/Versions/3.6/lib/python3.6/config-3.6m-darwin -lpython3.6m -ldl -framework CoreFoundation"
+               bigIcon="HOW6YQ" smallIcon="HOW6YQ">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" enablePluginBinaryCopyStep="1" isDebug="1" optimisation="1"
                        linkTimeOptimisation="0" targetName="harmonaize" headerPath="/usr/local/opt/python3/Frameworks/Python.framework/Versions/3.6/Headers"/>
