@@ -271,7 +271,7 @@ void TransportView::buttonClicked (Button* button)
     {
         transport.playHeadTime = 0.0f;
         transport.playHeadBeat = 0.0f;
-        beatLabel.setText("0", NotificationType::dontSendNotification);
+        beatLabel.setText ("0", NotificationType::dontSendNotification);
     }
     else if (button == &stopPlayButton)
     {
@@ -305,10 +305,10 @@ void TransportView::buttonClicked (Button* button)
     }
     else if (button == &metronomeEnabledButton)
     {
-        if (bool(edit.masterTrack.metronomeEnabled.get()) == false)
-            edit.masterTrack.metronomeEnabled.setValue(true, nullptr);
+        if (edit.masterTrack.metronomeEnabled.get())
+            edit.masterTrack.metronomeEnabled.setValue (false, nullptr);
         else
-            edit.masterTrack.metronomeEnabled.setValue(false, nullptr);
+            edit.masterTrack.metronomeEnabled.setValue (true, nullptr);
     }
 }
 
