@@ -219,20 +219,22 @@ void TransportView::valueTreePropertyChanged (ValueTree& treeChanged, const Iden
         }
         else if (property == transport.playHeadTime.getPropertyID())
         {
-            timeLabel.setText (String ((int)(transport.playHeadTime * 100.0)/100.0), NotificationType::dontSendNotification);
+            timeLabel.setText (String (static_cast<int> (transport.playHeadTime * 100.0) / 100.0), NotificationType::dontSendNotification);
         }
         else if (property == transport.playHeadBeat.getPropertyID())
         {
-            beatLabel.setText (String ((int)(transport.playHeadBeat * 100.0)/100.0), NotificationType::dontSendNotification);
+            beatLabel.setText (String (static_cast<int> (transport.playHeadBeat * 100.0) / 100.0), NotificationType::dontSendNotification);
         }
         else if (property == transport.playHeadKeySigNumSharpsOrFlats.getPropertyID())
         {
             bool minor = transport.playHeadKeySigIsMinor.get();
             int numSharpsOrFlats = transport.playHeadKeySigNumSharpsOrFlats.get();
             String desc = KeySignature::createKeyDescription (numSharpsOrFlats, minor);
-            for (int i = 0; i < keySignatureComboBox.getNumItems(); i++) {
+            for (int i = 0; i < keySignatureComboBox.getNumItems(); i++)
+            {
                 String val = keySignatureComboBox.getItemText (i);
-                if (val == desc) {
+                if (val == desc)
+                {
                     keySignatureComboBox.setSelectedItemIndex (i, NotificationType::dontSendNotification);
                 }
             }
@@ -242,9 +244,11 @@ void TransportView::valueTreePropertyChanged (ValueTree& treeChanged, const Iden
             bool minor = transport.playHeadKeySigIsMinor.get();
             int numSharpsOrFlats = transport.playHeadKeySigNumSharpsOrFlats.get();
             String desc = KeySignature::createKeyDescription (numSharpsOrFlats, minor);
-            for (int i = 0; i < keySignatureComboBox.getNumItems(); i++) {
+            for (int i = 0; i < keySignatureComboBox.getNumItems(); i++)
+            {
                 String val = keySignatureComboBox.getItemText (i);
-                if (val == desc) {
+                if (val == desc)
+                {
                     keySignatureComboBox.setSelectedItemIndex (i, NotificationType::dontSendNotification);
                 }
             }
