@@ -38,7 +38,8 @@ void ArrangementViewPlayHead::resized()
 
 void ArrangementViewPlayHead::updatePlayHeadPosition()
 {
-    playHeadComponent->setCentrePosition (getXPosForBeat (edit.transport.playHeadBeat.get()), getHeight() / 2);
+    double currentBeat = edit.transport.playHeadBeat.get();
+    playHeadComponent->setCentrePosition (getXPosForBeat (currentBeat), getHeight() / 2);
 }
 
 void ArrangementViewPlayHead::valueTreePropertyChanged (ValueTree&, const Identifier& property)
