@@ -9,7 +9,6 @@
 */
 
 #include "hmnz_EditWindow.h"
-#include "hmnz_Application.h"
 
 EditWindow::EditWindow()
     : DocumentWindow (HarmonaizeApplication::getApp().getApplicationName(),
