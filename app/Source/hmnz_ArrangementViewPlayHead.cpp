@@ -44,6 +44,7 @@ void ArrangementViewPlayHead::updatePlayHeadPosition()
 void ArrangementViewPlayHead::valueTreePropertyChanged (ValueTree&, const Identifier& property)
 {
     if (property == edit.transport.playHeadBeat.getPropertyID() ||
+        property == edit.transport.playHeadTime.getPropertyID() ||
         property == timeStart.getPropertyID() ||
         property == timeEnd.getPropertyID())
     {
