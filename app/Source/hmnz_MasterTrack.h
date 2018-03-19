@@ -14,19 +14,22 @@
 #include "hmnz_Tempo.h"
 #include "hmnz_TimeSignature.h"
 #include "hmnz_KeySignature.h"
+#include "hmnz_PlaybackEngine.h"
 
 class Edit;
 
 class MasterTrack   : public ValueTreeObject<IDs::MasterTrack>,
-                      public AudioSource
+                      public PlaybackEngine::PlaybackTarget
 {
 public:
     MasterTrack (const ValueTree& v, UndoManager* um);
     ~MasterTrack() = default;
 
-    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override {}
-    void releaseResources() override {}
-    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override {}
+    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
+    void releaseResources() override;
+    void getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
+        MidiBuffer& incomingMidiBuffer,
+        PlaybackEngine& playbackSource) override;
 
     MidiMessageSequence createMetaEventsSequence() const;
 
@@ -34,6 +37,11 @@ public:
     TimeSignature timeSignature;
     KeySignature keySignature;
 
+    CachedValue<SPSCAtomicWrapper<bool>> metronomeEnabled;
+
 private:
+    MidiBuffer midiBuffer;
+    sfzero::Synth metronome;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MasterTrack)
 };

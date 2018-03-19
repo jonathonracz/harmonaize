@@ -13,16 +13,36 @@
 #include "hmnz_Edit.h"
 
 ArrangementView::ArrangementView (Edit& _edit)
-    : edit (_edit), topBar (_edit), grid (_edit), trackList (_edit)
+    : edit (_edit),
+      topBar (_edit,
+          _edit.arrangementViewModel.timeStart,
+          _edit.arrangementViewModel.timeEnd),
+      grid (_edit,
+          _edit.arrangementViewModel.timeStart,
+          _edit.arrangementViewModel.timeEnd),
+      trackList (_edit),
+      playHead (_edit,
+          _edit.arrangementViewModel.timeStart,
+          _edit.arrangementViewModel.timeEnd),
+      headerResizer (_edit)
 {
     addAndMakeVisible (topBar);
     addAndMakeVisible (grid);
     addAndMakeVisible (trackList);
+    addAndMakeVisible (playHead);
+    addAndMakeVisible (headerResizer);
+
+    edit.arrangementViewModel.getState().addListener (this);
+}
+
+ArrangementView::~ArrangementView()
+{
+    edit.arrangementViewModel.getState().removeListener (this);
 }
 
 void ArrangementView::resized()
 {
-    const int topBarHeight = 28;
+    const int topBarHeight = 28; // TODO: Hardcoded size constant
     ArrangementViewModel& model = edit.arrangementViewModel;
 
     FlexBox layout;
@@ -37,7 +57,15 @@ void ArrangementView::resized()
     layout.items.add (FlexItem ().withWidth (model.headerWidth.get()));
 
     layout.performLayout (getLocalBounds());
+
     trackList.setBounds (getLocalBounds().withTop (topBar.getHeight()));
+    {
+        Point<int> playHeadTopLeft = topBar.getBounds().getTopLeft();
+        Point<int> playHeadBottomRight = grid.getBounds().getBottomRight();
+        playHead.setBounds (Rectangle<int> (playHeadTopLeft, playHeadBottomRight));
+    }
+
+    headerResizer.setBounds (grid.getWidth(), 0, 2, getHeight()); // TODO: Hardcoded size constant
 }
 
 void ArrangementView::mouseWheelMove (const MouseEvent& event, const MouseWheelDetails& wheel)
@@ -58,9 +86,13 @@ void ArrangementView::mouseWheelMove (const MouseEvent& event, const MouseWheelD
     }
 
     // Magic number is an arbitrary factor to increase scrolling speed
+    int lastTrackOffset = 0;
+    for (int i = 0; i < edit.trackList.tracks.size() - 1; ++i)
+        lastTrackOffset += edit.trackList.tracks[i]->height.get();
+
     float verticalScrollDelta = 20.0f * (wheel.isReversed ? -wheel.deltaY : wheel.deltaY);
     verticalScrollAccumulator += verticalScrollDelta;
-    verticalScrollAccumulator = std::max (0.0, verticalScrollAccumulator);
+    verticalScrollAccumulator = std::max (static_cast<double> (-lastTrackOffset), std::min (0.0, verticalScrollAccumulator));
     model.scrollPosition = static_cast<int> (verticalScrollAccumulator);
 }
 
@@ -79,5 +111,14 @@ void ArrangementView::mouseMagnify (const MouseEvent& event, float scaleFactor)
     {
         model.timeStart = newStart;
         model.timeEnd = newEnd;
+    }
+}
+
+void ArrangementView::valueTreePropertyChanged (ValueTree&, const Identifier& property)
+{
+    if (property == edit.arrangementViewModel.headerWidth.getPropertyID())
+    {
+        resized();
+        repaint();
     }
 }

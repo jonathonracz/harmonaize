@@ -17,13 +17,13 @@
 class Track;
 
 class ClipList  : public ValueTreeObject<IDs::ClipList>,
+                  public HomogeneousValueTreeObjectArray<Clip>::Listener,
                   public ValueTree::Listener
 {
 public:
     ClipList (const ValueTree& v, UndoManager* um, Track& _track)
         : ValueTreeObject (v, um), clips (v, um, _track)
     {
-        getState().addListener (this);
     }
 
     Array<Clip*> getClipsForInterval (double start, double end) const
@@ -48,28 +48,26 @@ public:
     ClipArray clips;
 
 private:
+    void objectAdded (Clip* clip, int, HomogeneousValueTreeObjectArray<Clip>*) override
+    {
+        fixClipOverlaps (clip);
+        sortClips();
+    }
+
     void valueTreePropertyChanged (ValueTree& treeChanged, const Identifier& property) override
     {
-        jassert (treeChanged != getState());
         if (treeChanged.getParent() == getState())
         {
             if (property == IDs::ClipProps::Start || property == IDs::ClipProps::Length)
             {
-                fixClipOverlaps (treeChanged);
+                Clip* changedClip = clips[clips.indexOfStateInObjects (treeChanged)];
+                fixClipOverlaps (changedClip);
                 sortClips();
             }
         }
     }
 
-    void valueTreeChildAdded (ValueTree& parent, ValueTree& child) override
-    {
-        if (parent == getState())
-        {
-            fixClipOverlaps (child);
-            sortClips();
-        }
-    }
-
+    void valueTreeChildAdded (ValueTree& parent, ValueTree& child) override {}
     void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
     void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
     void valueTreeParentChanged (ValueTree&) override {}
@@ -91,22 +89,21 @@ private:
         getState().sort (comparator, nullptr, false);
     }
 
-    void fixClipOverlaps (const ValueTree& dominantClip)
+    void fixClipOverlaps (const Clip* dominantClip)
     {
         Array<int> childrenToDelete;
-        Clip* changedChild = clips[getState().indexOf (dominantClip)];
         for (int i = 0; i < clips.size(); ++i)
         {
             Clip* child = clips[i];
-            if (child == changedChild)
+            if (child == dominantClip)
                 continue;
 
-            if (child->start >= changedChild->start && child->length <= changedChild->length)
+            if (child->start >= dominantClip->start && child->length <= dominantClip->length)
                 childrenToDelete.add (i);
-            else if (changedChild->start < (child->start + child->length))
-                child->length.setValue (changedChild->start.get() - child->start.get(), getUndoManager());
-            else if (changedChild->start + changedChild->length > child->start)
-                child->start.setValue (changedChild->start.get() + changedChild->length.get(), getUndoManager());
+            else if (dominantClip->start < (child->start + child->length))
+                child->length.setValue (dominantClip->start.get() - child->start.get(), getUndoManager());
+            else if (dominantClip->start + dominantClip->length > child->start)
+                child->start.setValue (dominantClip->start.get() + dominantClip->length.get(), getUndoManager());
         }
 
         for (int i = childrenToDelete.size() - 1; i >= 0; --i)

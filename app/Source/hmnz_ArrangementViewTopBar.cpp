@@ -11,22 +11,23 @@
 #include "hmnz_ArrangementViewTopBar.h"
 #include "hmnz_Edit.h"
 
-ArrangementViewTopBar::ArrangementViewTopBar (Edit& edit)
-    : ArrangementViewTimelineComponent (edit)
+ArrangementViewTopBar::ArrangementViewTopBar (Edit& _edit, CachedValue<double>& timeStart, CachedValue<double>& timeEnd)
+    : ArrangementViewTimelineComponent (timeStart, timeEnd), edit (_edit)
 {
-    edit.arrangementViewModel.getState().addListener (this);
+    timeStart.getValueTree().addListener (this);
+    timeEnd.getValueTree().addListener (this);
 }
 
 ArrangementViewTopBar::~ArrangementViewTopBar()
 {
-    edit.arrangementViewModel.getState().removeListener (this);
+    timeStart.getValueTree().removeListener (this);
+    timeEnd.getValueTree().removeListener (this);
 }
 
 void ArrangementViewTopBar::paint (Graphics& g)
 {
-    const ArrangementViewModel& model = edit.arrangementViewModel;
-    NormalisableRange<double> remapper (model.timeStart, model.timeEnd);
-    const double minimumLineSpacing = 14.0; // Arbitrary - controls how close lines can get before the grid size increases
+    NormalisableRange<double> remapper (timeStart.get(), timeEnd.get());
+    const int minimumLineSpacing = 14; // Arbitrary - controls how close lines can get before the grid size increases
     double linesPerBeat = getLinesPerBeatForMinimumLineSpacing (minimumLineSpacing);
 
     double beatValue = Utility::floorToNearestInterval (remapper.start, linesPerBeat);
@@ -64,17 +65,6 @@ void ArrangementViewTopBar::paint (Graphics& g)
         }
         beatValue += linesPerBeat;
     }
-
-    /*
-    double transportBeat = edit.transport.playHeadBeat;
-    if (transportBeat >= model.timeStart)
-    {
-        g.setColour (Colours::blue);
-        int transportPos = getXPosForBeat (transportBeat);
-        lastPaintedPlayHeadBounds = Rectangle<int> (transportPos, 0, 2, getHeight());
-        g.fillRect (lastPaintedPlayHeadBounds);
-    }
-     */
 }
 
 void ArrangementViewTopBar::mouseDown (const MouseEvent& event)
@@ -90,8 +80,8 @@ void ArrangementViewTopBar::mouseDrag (const MouseEvent& event)
 
 void ArrangementViewTopBar::valueTreePropertyChanged (ValueTree&, const Identifier& property)
 {
-    if (property == edit.arrangementViewModel.timeStart.getPropertyID() ||
-        property == edit.arrangementViewModel.timeEnd.getPropertyID())
+    if (property == timeStart.getPropertyID() ||
+        property == timeEnd.getPropertyID())
     {
         repaint();
     }
