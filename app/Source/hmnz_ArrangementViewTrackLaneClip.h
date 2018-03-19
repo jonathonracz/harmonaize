@@ -14,7 +14,7 @@
 
 class Clip;
 
-class ArrangementViewTrackLaneClip  : public ArrangementViewTimelineComponent,
+class ArrangementViewTrackLaneClip  : public Component,
                                       public ValueTree::Listener
 {
 public:
@@ -22,11 +22,13 @@ public:
     ~ArrangementViewTrackLaneClip();
 
     Clip& getRepresentedClip() const { return clip; }
+    void updateBounds();
 
 private:
     Clip& clip;
 
     void paint (Graphics&) override;
+    void mouseDrag (const MouseEvent& event) override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
     void valueTreeChildAdded (ValueTree&, ValueTree&) override {}

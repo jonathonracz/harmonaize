@@ -15,7 +15,8 @@
 class Track;
 
 class ArrangementViewTrackHeader  : public Component,
-                                    public ValueTree::Listener
+                                    public ValueTree::Listener,
+                                    public Label::Listener
 {
 public:
     ArrangementViewTrackHeader (Track& track);
@@ -23,7 +24,9 @@ public:
 
 private:
     Track& track;
+    Label name;
 
+    void resized() override;
     void paint (Graphics&) override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
@@ -31,6 +34,9 @@ private:
     void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
     void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
     void valueTreeParentChanged (ValueTree&) override {}
+
+    void labelTextChanged (Label*) override {}
+    void editorHidden (Label *labelThatHasChanged, TextEditor& textEditor) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArrangementViewTrackHeader)
 };

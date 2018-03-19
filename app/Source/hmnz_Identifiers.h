@@ -50,7 +50,19 @@ namespace IDs
         DECLARE_ID (ScrollPosition)
     }
 
+    DECLARE_ID (TrackEditViewModel)
+    namespace TrackEditViewModelProps
+    {
+        DECLARE_ID (TimeStart)
+        DECLARE_ID (TimeEnd)
+        DECLARE_ID (MidiScrollPosition)
+    }
+
     DECLARE_ID (MasterTrack)
+    namespace MasterTrackProps
+    {
+        DECLARE_ID (MetronomeEnabled)
+    }
 
     DECLARE_ID (Tempo)
     namespace TempoProps

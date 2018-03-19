@@ -29,7 +29,7 @@ public:
     CachedValue<double> timeStart;
     CachedValue<double> timeEnd;
     CachedValue<MinMaxConstrainerWrapper<int, 64, 128>> headerWidth;
-    CachedValue<MinMaxConstrainerWrapper<int, 0, std::numeric_limits<int>::max()>> scrollPosition;
+    CachedValue<MinMaxConstrainerWrapper<int, std::numeric_limits<int>::lowest(), 0>> scrollPosition;
 
 private:
     void valueTreePropertyChanged (ValueTree& tree, const Identifier& property) override

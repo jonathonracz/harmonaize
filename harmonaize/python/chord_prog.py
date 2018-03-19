@@ -93,7 +93,6 @@ class ChordProg():
 		file.close()
 
 	def condenseBeatMap(self, beat_map):
-		print(beat_map)
 		new_map = {}
 		current_beat = 1
 		for beat, note_list in beat_map.items():
@@ -106,11 +105,11 @@ class ChordProg():
 			else:
 				new_map[current_beat] = note_list
 
-		print(new_map)
 		return new_map
 
 	def getNextChord(self, chords, notes):
 		print(chords, notes)
+
 		if notes[0] == '/' and len(chords) == 0:
 			return self.tonic
 		if len(chords) % 2 == 1:

@@ -26,6 +26,7 @@ public:
     static AudioDeviceManager& getDeviceManager();
     static AudioFormatManager& getFormatManager();
     static ApplicationCommandManager& getCommandManager();
+    static File getInstrumentsDirectory();
 
     const String getApplicationName() override       { return ProjectInfo::projectName; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }

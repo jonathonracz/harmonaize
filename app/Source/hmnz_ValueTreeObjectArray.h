@@ -135,14 +135,14 @@ public:
         return objects.getLast();
     }
 
-    jdr::ArrayForwardIteratorConst<WeakReference<ObjectType>> begin() const
+    jdr::ArrayForwardIteratorConst<ObjectType*> begin() const
     {
-        return jdr::ArrayForwardIteratorConst<WeakReference<ObjectType>>::begin (objects);
+        return jdr::ArrayForwardIteratorConst<ObjectType*>::begin (objects);
     }
 
-    jdr::ArrayForwardIteratorConst<WeakReference<ObjectType>> end() const
+    jdr::ArrayForwardIteratorConst<ObjectType*> end() const
     {
-        return jdr::ArrayForwardIteratorConst<WeakReference<ObjectType>>::end (objects);
+        return jdr::ArrayForwardIteratorConst<ObjectType*>::end (objects);
     }
 
     const CriticalSectionType& getLock() const
@@ -153,7 +153,7 @@ public:
     using ScopedLockType = typename CriticalSectionType::ScopedLockType;
 
 protected:
-    Array<WeakReference<ObjectType>> objects;
+    Array<ObjectType*> objects;
     ValueTree parent;
     UndoManager* undoManager;
     CriticalSectionType arrayLock;
