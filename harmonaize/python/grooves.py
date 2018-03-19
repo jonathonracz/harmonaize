@@ -1,4 +1,5 @@
 # This file associates existing grooves with their time signature
+# Marc Lashner
 
 GROOVES = {
 	('regular', (4, 4)): [

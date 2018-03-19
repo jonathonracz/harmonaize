@@ -1,4 +1,5 @@
 # This file maps midi note values to the corresponding musical note
+# Marc Lashner
 
 MODDED_NOTES = [
 	'C',

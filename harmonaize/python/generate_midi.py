@@ -3,12 +3,28 @@
 import os
 import sys
 import mido
-from parse_midi import parseMidi
+
 from chord_prog import ChordProg
+from midi_parser import MidiParser
+from groove_selector import GrooveSelector
+
 from grooves import GROOVES
 
 def genAccompaniment(midi=None):
-	FileAttributes = parseMidi(midi)
+	parser = MidiParser(midi)
+
+	note_counts, beat_map = parser.getMidiInfo()
+	selector = GrooveSelector(parser.getTempo(), parser.getTimeSignature())
+
+	FileAttributes = {
+		'tempo': parser.getTempo(),
+		'tonic': parser.getTonic(),
+		'time_signature': parser.getTimeSignature(),
+		'note_counts': note_counts,
+		'beat_map': beat_map,
+		'groove': selector.select_groove(),
+	}
+
 	generator = ChordProg(FileAttributes, "generated_files/accomp.mma")
 
 	if len(FileAttributes['beat_map'].items()) == 0:
@@ -16,10 +32,7 @@ def genAccompaniment(midi=None):
 	else:
 		generator.genMmaFileWithExactChords()
 
-	print(FileAttributes)
-
 	genMidi("generated_files/accomp.mma")
-
 	return mido.MidiFile("generated_files/accomp.mid")
 
 def genMultipleAccompaniments(midi=None):
@@ -53,8 +66,9 @@ def genMultipleAccompaniments(midi=None):
 	return (accomp1, accomp2, accomp3)
 
 def genMidi(path_to_fakebook):
+	os.system('python --version')
 	os.system('../external/mma/mma.py -g && python ../external/mma/mma.py ' + path_to_fakebook)
 
 if __name__ == '__main__':
-	midi_file = mido.MidiFile('../../app/Design/test.mid')
+	midi_file = mido.MidiFile('example.mid')
 	genAccompaniment(midi_file)

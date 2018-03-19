@@ -36,6 +36,7 @@ EditWindow::EditWindow()
 
     ValueTree defaultEdit = Edit::createDefaultState();
     setEdit (defaultEdit);
+    currentEdit.get()->transport.getState().addListener (this);
 }
 
 EditWindow::~EditWindow()
@@ -79,7 +80,6 @@ PopupMenu EditWindow::getMenuForIndex (int topLevelMenuIndex, const String& /*me
         menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::undo);
         menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::redo);
     }
-
     else if (topLevelMenuIndex == 2)
     {
         PopupMenu viewMenu;
@@ -98,7 +98,8 @@ void EditWindow::menuItemSelected (int menuItemID, int /*topLevelMenuIndex*/)
 void EditWindow::getAllCommands (Array<CommandID>& commands)
 {
     // this returns the set of all commands that this target can perform..
-    const CommandID ids[] = { CommandIDs::newProject,
+    const CommandID ids[] = {
+        CommandIDs::newProject,
         CommandIDs::openProject,
         CommandIDs::showPreferences,
         CommandIDs::showDebugger,
@@ -123,17 +124,17 @@ void EditWindow::getCommandInfo (const CommandID commandID, ApplicationCommandIn
     switch (commandID)
     {
         case CommandIDs::newProject:
-            result.setInfo ("New", "Creates a new filter graph file", category, 0);
+            result.setInfo ("New", "Creates a new edit", category, 0);
             result.defaultKeypresses.add(KeyPress('n', ModifierKeys::commandModifier, 0));
             break;
             
         case CommandIDs::openProject:
-            result.setInfo ("Open...", "Opens a filter graph file", category, 0);
+            result.setInfo ("Open...", "Opens an existing edit", category, 0);
             result.defaultKeypresses.add (KeyPress ('o', ModifierKeys::commandModifier, 0));
             break;
             
         case CommandIDs::showPreferences:
-            result.setInfo ("Preferences", String(), category, 0);
+            result.setInfo ("Preferences...", String(), category, 0);
             result.addDefaultKeypress ('p', ModifierKeys::commandModifier);
             break;
             
@@ -173,15 +174,12 @@ bool EditWindow::perform (const InvocationInfo& info)
     {
         case CommandIDs::newProject:
         {
-            Edit* edit = currentEdit.get();
-            edit->newProject();
+            newProject();
             break;
         }
         case CommandIDs::openProject:
         {
-            File file = currentEdit.get()->openProject();
-            // Two seperate function calls because currentEdit.reset() gets called
-            currentEdit.get()->changeFile (file);
+            openProject();
             break;
         }
         case CommandIDs::showPreferences:
@@ -232,7 +230,7 @@ void EditWindow::setEdit (const ValueTree& edit)
     if (currentEdit.get())
     {
         clearContentComponent();
-        playbackEngine.setEdit (nullptr);
+        playbackEngine.reset();
         ValueTree nullTree;
         editDebugger.setSource (nullTree);
         currentEdit.reset();
@@ -242,11 +240,72 @@ void EditWindow::setEdit (const ValueTree& edit)
     if (edit.getType() == IDs::Edit)
     {
         undoManager = std::unique_ptr<UndoManager> (new UndoManager);
-        Edit* newEdit = new Edit (edit, undoManager.get());
-        currentEdit = std::unique_ptr<Edit> (newEdit);
+        currentEdit = std::unique_ptr<Edit> (new Edit (edit, undoManager.get()));
         editDebugger.setSource (currentEdit->getState());
         editDebugger.setVisible (false);
-        playbackEngine.setEdit (currentEdit.get());
+        playbackEngine = std::unique_ptr<PlaybackEngine> (new PlaybackEngine (*currentEdit));
         setContentOwned (new EditView (*currentEdit), false);
     }
+}
+
+void EditWindow::saveState()
+{
+    if (state.exists())
+    {
+        ValueTree currentState = currentEdit.get()->getState().createCopy();
+        ValueTree transport = currentState.getChildWithName("Transport");
+        transport.setProperty ("PlayState", 0, nullptr);
+        transport.setProperty ("RecordEnabled", 0, nullptr);
+        XmlElement* xml = currentState.createXml();
+        xml->writeToFile (state, "");
+        delete xml;
+    }
+}
+
+void EditWindow::newProject()
+{
+    FileChooser fileChooser ("New Project");
+    fileChooser.browseForFileToSave (true);
+    state = fileChooser.getResult();
+    state.create();
+}
+
+void EditWindow::openProject()
+{
+    FileChooser fileChooser ("Open Project");
+    fileChooser.browseForFileToOpen();
+    File file = fileChooser.getResult();
+    if (!file.exists())
+        return;
+    XmlElement* e = XmlDocument::parse (file);
+    ValueTree valueTree = ValueTree::fromXml (*e);
+    delete e;
+    setEdit(valueTree);
+    state = file;
+}
+
+void EditWindow::changeFile (File file)
+{
+    state = file;
+}
+
+void EditWindow::valueTreePropertyChanged (ValueTree& tree, const Identifier&)
+{
+    if (tree == currentEdit->transport.getState())
+        saveState();
+}
+
+void EditWindow::valueTreeChildAdded (ValueTree&, ValueTree&)
+{
+    saveState();
+}
+
+void EditWindow::valueTreeChildRemoved (ValueTree&, ValueTree&, int)
+{
+    saveState();
+}
+
+void EditWindow::valueTreeChildOrderChanged (ValueTree&, int, int)
+{
+    saveState();
 }

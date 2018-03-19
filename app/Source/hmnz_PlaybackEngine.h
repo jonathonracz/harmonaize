@@ -34,11 +34,8 @@ public:
             PlaybackEngine& playbackSource) = 0;
     };
 
-    PlaybackEngine();
+    PlaybackEngine (Edit& edit);
     ~PlaybackEngine();
-
-    Edit* getEdit() const;
-    void setEdit (Edit* edit);
 
     bool canControlTransport() override { return true; }
 
@@ -66,7 +63,7 @@ private:
         bool keySigIsMinor;
     };
 
-    WeakReference<Edit> edit;
+    Edit& edit;
     std::atomic<int64> readPosition = { 0 };
     AudioSourcePlayer output;
     std::mutex callbackLock;
@@ -82,6 +79,8 @@ private:
     MidiBuffer midiStopBuffer;
 
     CurrentPositionInfo updatePositionInfo();
+    template<class Type>
+    void setTransportPropertyValue (const CachedValue<Type>& property, Type value);
 
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
