@@ -1,0 +1,15 @@
+<group> //Begin Group 1
+
+group_label=gr_1
+
+<region>
+sample=metronome-c3.wav
+lokey=55
+hikey=66
+pitch_keycenter=60
+
+<region>
+sample=metronome-c4.wav
+lokey=67
+hikey=78
+pitch_keycenter=72

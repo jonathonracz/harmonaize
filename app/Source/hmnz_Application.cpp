@@ -39,6 +39,18 @@ AudioFormatManager& HarmonaizeApplication::getFormatManager()
     return HarmonaizeApplication::getApp().audioFormatManager;
 }
 
+ApplicationCommandManager& HarmonaizeApplication::getCommandManager()
+{
+    return getApp().commandManager;
+}
+
+File HarmonaizeApplication::getInstrumentsDirectory()
+{
+    File instrumentsDirectory = File::getSpecialLocation (File::SpecialLocationType::currentApplicationFile).getChildFile("../../../../../Source/Instruments");
+    jassert (instrumentsDirectory.isDirectory());
+    return instrumentsDirectory;
+}
+
 void HarmonaizeApplication::initialise (const String& commandLine)
 {
     editWindow = std::unique_ptr<EditWindow> (new EditWindow());
@@ -66,9 +78,4 @@ void HarmonaizeApplication::shutdown()
 void HarmonaizeApplication::systemRequestedQuit()
 {
     quit();
-}
-
-ApplicationCommandManager& HarmonaizeApplication::getCommandManager()
-{
-    return getApp().commandManager;
 }

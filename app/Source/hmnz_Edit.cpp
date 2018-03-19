@@ -98,6 +98,7 @@ void Edit::getNextAudioBlockWithInputs (AudioBuffer<float>& audioBuffer,
         PlaybackEngine& playbackSource)
 {
     keyboardState.processNextMidiBuffer (incomingMidiBuffer, 0, audioBuffer.getNumSamples(), true);
+    masterTrack.getNextAudioBlockWithInputs (audioBuffer, incomingMidiBuffer, playbackSource);
     const TrackArray::ScopedLockType sl (trackList.tracks.getLock());
     for (Track* track : trackList.tracks)
     {

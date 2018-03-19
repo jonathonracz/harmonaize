@@ -57,6 +57,10 @@ namespace IDs
     }
 
     DEFINE_ID (MasterTrack)
+    namespace MasterTrackProps
+    {
+        DEFINE_ID (MetronomeEnabled)
+    }
 
     DEFINE_ID (Tempo)
     namespace TempoProps
