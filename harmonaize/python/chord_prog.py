@@ -2,11 +2,67 @@
 # Adam Heins
 
 import math
+import parse_midi as midiUtil
+import mido
+
+
+# class Chord():
+#     chord_recipes = {'M': ['R', 'M3', 'P5'],
+#                      'm': ['R', 'm3', 'P5'],
+#                      'dim': ['R', 'm3', 'd5'],
+#                      'aug': ['R', 'M3', 'A5'],
+#                      'open5': ['R', 'P5', 'P8'],
+#                      'dim7': ['R', 'm3', 'd5', 'd7'],
+#                      'maj7': ['R', 'M3', 'P5', 'M7'],
+#                      'aug7': ['R', 'M3', 'A5', 'm7'],
+#                      'sus2': ['R', 'P5', 'P8', 'M2'],
+#                      'sus4': ['R', 'P5', 'P8', 'P4']}
+
+#     def __init__(self, root, chord_type='M'):
+#         self.notes = []
+
+#         try:
+#             self.notes.append(root)
+#         except:
+#             raise Exception('Invalid root note supplied.')
+
+#         if chord_type in self.chord_recipes.keys():
+#             self.chord_type = chord_type
+#         else:
+#             raise Exception('Invalid chord type supplied! current valid types: {} '.format(self.chord_recipes.keys()))
+
+#         self.build_chord()
+
+#     def build_chord(self):
+#         self.add_intervals(self.chord_recipes[self.chord_type][1:])
+
+#     def add_intervals(self, intervals):
+#         for i in intervals:
+#             self.notes.append(self.notes[0]+Interval(i))
+
+#     def __repr__(self):
+#         return "Chord(Note({!r}), {!r})".format(str(self.notes[0]), self.chord_type)
+
+#     def __str__(self):
+#         return "{}{}".format(str(self.notes[0]),self.chord_type)
+
+#     def __eq__(self, other):
+#         if len(self.notes) != len(other.notes):
+#             return False
+#         else:
+#             return all(self.notes[i] == other.notes[i] for i in range(len(self.notes)))
+
+
+class Chord():
+	def __init__(self, number, chord_type='M'):
+		self.num = number
+		self.type = chord_type
+
 
 class ChordProg():
 	def __init__(self, FileAttributes, filename):
 		self.keyMap = {
-		 	 'C': 0, 
+			 'C': 0, 
 			 'C#': 1, 'Db': 1,
 			 'D': 2, 
 			 'D#': 3, 'Eb': 3,
@@ -34,10 +90,21 @@ class ChordProg():
 			 11: 'B'}
 
 		self.semitones = {'P1': 0, 'A1':1, 'd2':0, 'm2':1, 'M2':2, 'A2':3,
-                              'd3':3, 'm3':3, 'M3':4, 'A3':5, 'd4':4, 'P4':5,
-                              'A4':6, 'd5':6, 'P5':7, 'A5':8, 'd6':7, 'm6':8,
-                              'M6':9, 'A6':10,'d7':9, 'm7':10, 'M7':11, 'A7':12,
-                              'd8':11, 'P8':12}
+							  'd3':3, 'm3':3, 'M3':4, 'A3':5, 'd4':4, 'P4':5,
+							  'A4':6, 'd5':6, 'P5':7, 'A5':8, 'd6':7, 'm6':8,
+							  'M6':9, 'A6':10,'d7':9, 'm7':10, 'M7':11, 'A7':12,
+							  'd8':11, 'P8':12}
+
+		self.chordRecipes = {'M': ['P1', 'M3', 'P5'],
+					 'm': ['P1', 'm3', 'P5'],
+					 'dim': ['P1', 'm3', 'd5'],
+					 'aug': ['P1', 'M3', 'A5'],
+					 'open5': ['P1', 'P5', 'P8'],
+					 'dim7': ['P1', 'm3', 'd5', 'd7'],
+					 'maj7': ['P1', 'M3', 'P5', 'M7'],
+					 'aug7': ['P1', 'M3', 'A5', 'm7'],
+					 'sus2': ['P1', 'P5', 'P8', 'M2'],
+					 'sus4': ['P1', 'P5', 'P8', 'P4']}                 
 
 		self.majorScale = ['M2', 'M3', 'P4', 'P5', 'M6', 'M7', 'P8']
 		self.tonic = FileAttributes['tonic']
@@ -87,7 +154,6 @@ class ChordProg():
 		file.close()
 
 	def condenseBeatMap(self, beat_map):
-		print(beat_map)
 		new_map = {}
 		current_beat = 1
 		for beat, note_list in beat_map.items():
@@ -100,18 +166,18 @@ class ChordProg():
 			else:
 				new_map[current_beat] = note_list
 
-		print(new_map)
 		return new_map
 
 	def getNextChord(self, chords, notes):
-		print(chords, notes)
 		if len(chords) % 2 == 1:
 			return '/'
 		else:
 			return notes[0]
 
-	def intervalJump(self, interval):
-		newNote = (self.keyMap[self.tonic] + self.semitones[interval]) % 12
+	def intervalJump(self, interval, root=None):
+		if root is None:
+			root = self.tonic
+		newNote = (self.keyMap[root] + self.semitones[interval]) % 12
 		return self.keys[newNote]
 
 	def makeMinor(self, chord):
@@ -146,6 +212,74 @@ class ChordProg():
 		print(chordList)
 		return chordList
 
+
+	def isContainedinChord(self, note, intervalFromTonic, quality):
+		root = self.intervalJump(intervalFromTonic)
+		return note in self.genChord(root, quality)
+
+	def genChord(self, root, quality):
+		return [self.intervalJump(interval, root) for interval in self.chordRecipes[quality]]
+
+
+	def advancedChordProg(self):
+		chordList = []
+		BEATS_PER_MEASURE = 4
+		MEASURE_NUM = 0
+		while(True):
+			measure_cutoff = MEASURE_NUM*BEATS_PER_MEASURE + BEATS_PER_MEASURE
+			result = self.oneMeasureAnalysis(measure_cutoff)
+			if not result[0]:
+				print("Done")
+				print(chordList)
+				return chordList
+
+			if result[1] == "M6":
+				chordList.append(self.makeMinor(self.intervalJump("M6")))
+			else:
+				chordList.append(self.intervalJump(result[1]))
+			MEASURE_NUM = MEASURE_NUM + 1
+
+
+
+	def oneMeasureAnalysis(self, measure_cutoff):
+		INTEREST_CHORDS = [
+							Chord("P1"), 
+							Chord("M3"),
+							Chord("P4"), 
+							Chord("P5"), 
+							Chord("M6", "m")]
+		chord_counts = {}
+
+		# Generate Note List
+		notes = []
+		for beat, note_list in self.beat_map.items():
+			if beat <= measure_cutoff and beat >= measure_cutoff - 4:
+				for note in note_list:
+					notes.append(note)
+
+		# Alert that we're done
+		if not notes:
+			return (False, False)
+
+		# Generate Chord Counts
+		for chord in INTEREST_CHORDS:
+			for note in notes:
+				if self.isContainedinChord(note, chord.num, chord.type):
+					if chord.num not in chord_counts:
+						chord_counts[chord.num] = 1
+					else:
+						chord_counts[chord.num] = chord_counts[chord.num] + 1
+
+		max_count = 0
+		best_chord = "P1"
+		for chord_num, count in chord_counts.items():
+			if count > max_count:
+				max_count = count
+				best_chord = chord_num
+		return (True, best_chord)
+
+
+
 	def writeMMAHeader(self, file):
 		file.write("// Harmonaize Accompaniment\n\n")
 		file.write("Tempo " + str(self.tempo) + "\n")
@@ -156,7 +290,7 @@ class ChordProg():
 		file = open(self.filename, 'w')
 		self.writeMMAHeader(file)
 
-		chordList = self.basicChordProg2()
+		chordList = self.advancedChordProg()
 		for chord in chordList:
 			file.write(str(self.counter) + " " + chord + "\n")
 			self.counter = self.counter + 1
@@ -166,5 +300,8 @@ class ChordProg():
 		
 
 if __name__ == "__main__":
-	generator = ChordProg("C", "generated_files/accomp.mma", 120, "Rhumba")
-	generator.generateMMAFormat()
+	midi = mido.MidiFile("test/MIDI_sample.mid")
+	attributes = midiUtil.parseMidi(midi)
+	generator = ChordProg(attributes, "generated_files/accomp.mma")
+	generator.advancedChordProg()
+	# generator.generateMMAFormat()

@@ -18,11 +18,14 @@ def parseMidi(midi):
 	time_sig_msg = getMessageWithType(messages, 'time_signature')
 	FileAttributes['time_signature'] = (time_sig_msg.numerator, time_sig_msg.denominator)
 	FileAttributes['tempo'] = mido.tempo2bpm(getMessageWithType(messages, 'set_tempo').tempo)
-	FileAttributes['tonic'] = getMessageWithType(messages, 'key_signature').key
+	try:
+		FileAttributes['tonic'] = getMessageWithType(messages, 'key_signature').key
+	except:
+		FileAttributes['tonic'] = 'C'
+
 	FileAttributes['groove'] = chooseBestGroove(FileAttributes['tempo'], FileAttributes['time_signature'])
-
+	messages = midi.tracks[1]
 	note_counts, beat_map = getMidiInfo(FileAttributes, messages)
-
 	FileAttributes['note_counts'] = note_counts
 	FileAttributes['beat_map'] = beat_map
 
@@ -54,14 +57,13 @@ def getMidiInfo(FileAttributes, messages):
 
 	for message in messages:
 		if message.type == 'note_on':
-
 			beat_value = round((message.time * tempo / 1000 / 60) * 12) / 12
 			current_beat += beat_value
 			note = MODDED_NOTES[message.note % 12]
 			if current_beat not in beat_map:
-				beat_map[current_beat] = [note]
+				beat_map[int(current_beat)] = [note]
 			else:
-				beat_map[current_beat].append(note)
+				beat_map[int(current_beat)].append(note)
 
 			if note in note_counts:
 				note_counts[note] += 1
