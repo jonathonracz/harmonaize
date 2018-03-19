@@ -29,7 +29,7 @@ def genAccompaniment(midi=None):
 	generator.generateMMAFormat()
 
 	genMidi("generated_files/accomp.mma")
-	return mido.MidiFile("../midiinterchange/generated_files/accomp.mid")
+	return mido.MidiFile("generated_files/accomp.mid")
 
 def genMultipleAccompaniments(midi=None):
 	FileAttributes1 = parseMidi(midi)
@@ -62,7 +62,7 @@ def genMultipleAccompaniments(midi=None):
 	return (accomp1, accomp2, accomp3)
 
 def genMidi(path_to_fakebook):
-	os.system('../external/mma/mma.py -g && python ../external/mma/mma.py ' + path_to_fakebook)
+	os.system('python ../external/mma/mma.py -G && python ../external/mma/mma.py ' + path_to_fakebook)
 
 if __name__ == '__main__':
 	midi_file = mido.MidiFile('../../app/Design/test.mid')
