@@ -91,6 +91,11 @@ public:
         return std::fmod (beat, numerator.get());
     }
 
+    bool isFirstBeatInBar (double beat) const
+    {
+        return beatInBar (beat) == 0.0;
+    }
+
     double quarterNotesPerBeat (double beat) const
     {
         return 4.0 / getDenominatorAtBeat (beat);
@@ -98,7 +103,7 @@ public:
 
     double beatForStartOfLastBarOfBeat (double beat) const
     {
-        return beat - std::fmod (beat, numerator.get());
+        return beat - beatInBar (beat);
     }
 
     Snapshot getTimeSignatureAtBeat (double beat) const
