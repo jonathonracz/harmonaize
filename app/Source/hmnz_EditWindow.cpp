@@ -80,7 +80,6 @@ PopupMenu EditWindow::getMenuForIndex (int topLevelMenuIndex, const String& /*me
         menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::undo);
         menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::redo);
     }
-
     else if (topLevelMenuIndex == 2)
     {
         PopupMenu viewMenu;
@@ -99,7 +98,8 @@ void EditWindow::menuItemSelected (int menuItemID, int /*topLevelMenuIndex*/)
 void EditWindow::getAllCommands (Array<CommandID>& commands)
 {
     // this returns the set of all commands that this target can perform..
-    const CommandID ids[] = { CommandIDs::newProject,
+    const CommandID ids[] = {
+        CommandIDs::newProject,
         CommandIDs::openProject,
         CommandIDs::showPreferences,
         CommandIDs::showDebugger,
@@ -124,17 +124,17 @@ void EditWindow::getCommandInfo (const CommandID commandID, ApplicationCommandIn
     switch (commandID)
     {
         case CommandIDs::newProject:
-            result.setInfo ("New", "Creates a new filter graph file", category, 0);
+            result.setInfo ("New", "Creates a new edit", category, 0);
             result.defaultKeypresses.add(KeyPress('n', ModifierKeys::commandModifier, 0));
             break;
             
         case CommandIDs::openProject:
-            result.setInfo ("Open...", "Opens a filter graph file", category, 0);
+            result.setInfo ("Open...", "Opens an existing edit", category, 0);
             result.defaultKeypresses.add (KeyPress ('o', ModifierKeys::commandModifier, 0));
             break;
             
         case CommandIDs::showPreferences:
-            result.setInfo ("Preferences", String(), category, 0);
+            result.setInfo ("Preferences...", String(), category, 0);
             result.addDefaultKeypress ('p', ModifierKeys::commandModifier);
             break;
             

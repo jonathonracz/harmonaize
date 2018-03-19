@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="OexI64" name="harmonaize" projectType="guiapp" version="1.0.0"
+<JUCERPROJECT id="OexI64" name="HarmonAIze" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.harmonaize.harmonaize" includeBinaryInAppConfig="1"
               cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.1"
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark">
-  <MAINGROUP id="TpvEFM" name="harmonaize">
+  <MAINGROUP id="TpvEFM" name="HarmonAIze">
     <GROUP id="{EBA6D256-AB9F-0FDF-FF12-7B37C747D39F}" name="Binary">
       <FILE id="HOW6YQ" name="appicon.png" compile="0" resource="1" file="Design/appicon.png"/>
     </GROUP>

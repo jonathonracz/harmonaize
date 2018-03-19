@@ -274,7 +274,7 @@
 					2047F3BFFB2BE3AF145A4C05,
 					2302EBA6E18D82262E58C465,
 					BBC8B9E7C0964C712B3E8FBA,
-					57E71AED0C1D7C90E8C0DED1, ); name = harmonaize; sourceTree = "<group>"; };
+					57E71AED0C1D7C90E8C0DED1, ); name = HarmonAIze; sourceTree = "<group>"; };
 		442A10A6207226193C6E141B = {isa = PBXGroup; children = (
 					437F302650991C6AAC24263B,
 					0FA222D3E84C912A161C935C,
@@ -541,7 +541,7 @@
 		25AE84CEE39AF2A3202FF6A1 = {isa = PBXNativeTarget; buildConfigurationList = CF6BB11AA8902E471AD8B3D0; buildPhases = (
 					6DE43A21281E16BE208DAD21,
 					81FDE27828439CAB92A26650,
-					551ED2426550EA798CEDF063, ); buildRules = ( ); dependencies = (  ); name = "harmonaize - App"; productName = harmonaize; productReference = 8D0A44853497795D2D1B5E05; productType = "com.apple.product-type.application"; };
+					551ED2426550EA798CEDF063, ); buildRules = ( ); dependencies = (  ); name = "HarmonAIze - App"; productName = HarmonAIze; productReference = 8D0A44853497795D2D1B5E05; productType = "com.apple.product-type.application"; };
 		B71BA676BA5C3941DEFFA488 = {isa = PBXProject; buildConfigurationList = E1102E93871B1045907CF3F5; attributes = { LastUpgradeCheck = 0830; ORGANIZATIONNAME = ""; TargetAttributes = { 25AE84CEE39AF2A3202FF6A1 = { SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; }; }; }; compatibilityVersion = "Xcode 3.2"; hasScannedForEncodings = 0; mainGroup = 3A9A95C6EA831C4A84655D30; projectDirPath = ""; projectRoot = ""; targets = (25AE84CEE39AF2A3202FF6A1); };
 	};
 	rootObject = B71BA676BA5C3941DEFFA488;
