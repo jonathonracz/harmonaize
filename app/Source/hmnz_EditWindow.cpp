@@ -36,6 +36,7 @@ EditWindow::EditWindow()
 
     ValueTree defaultEdit = Edit::createDefaultState();
     setEdit (defaultEdit);
+    currentEdit.get()->transport.getState().addListener (this);
 }
 
 EditWindow::~EditWindow()
@@ -274,6 +275,8 @@ void EditWindow::openProject()
     FileChooser fileChooser ("Open Project");
     fileChooser.browseForFileToOpen();
     File file = fileChooser.getResult();
+    if (!file.exists())
+        return;
     XmlElement* e = XmlDocument::parse (file);
     ValueTree valueTree = ValueTree::fromXml (*e);
     delete e;
@@ -288,7 +291,7 @@ void EditWindow::changeFile (File file)
 
 void EditWindow::valueTreePropertyChanged (ValueTree& tree, const Identifier&)
 {
-    if (tree != currentEdit->transport.getState())
+    if (tree == currentEdit->transport.getState())
         saveState();
 }
 

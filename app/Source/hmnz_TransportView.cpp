@@ -20,8 +20,9 @@ TransportView::TransportView (Edit& _edit)
     goToBeginningButton.addListener (this);
     stopPlayButton.addListener (this);
     recordButton.addListener (this);
-    clearButton.addListener(this);
-    generateAccompanimentButton.addListener(this);
+    clearButton.addListener (this);
+    generateAccompanimentButton.addListener (this);
+    metronomeEnabledButton.addListener (this);
 
     timeLabel.addListener (this);
     beatLabel.addListener (this);
@@ -35,8 +36,10 @@ TransportView::TransportView (Edit& _edit)
     recordButton.setButtonText (translate ("Record"));
     clearButton.setButtonText (translate ("Clear"));
     generateAccompanimentButton.setButtonText (translate ("Generate\nAccompaniment"));
+    metronomeEnabledButton.setButtonText (translate ("Metronome"));
     
     recordButton.setColour (TextButton::ColourIds::buttonOnColourId, Colours::red);
+    metronomeEnabledButton.setColour (TextButton::ColourIds::buttonOnColourId, Colours::green);
 
     timeText.setText (translate ("Seconds"), NotificationType::dontSendNotification);
     beatText.setText (translate ("Beat"), NotificationType::dontSendNotification);
@@ -56,12 +59,14 @@ TransportView::TransportView (Edit& _edit)
 
     stopPlayButton.setClickingTogglesState (true);
     recordButton.setClickingTogglesState (true);
+    metronomeEnabledButton.setClickingTogglesState (true);
 
     addAndMakeVisible (goToBeginningButton);
     addAndMakeVisible (stopPlayButton);
     addAndMakeVisible (recordButton);
     addAndMakeVisible (clearButton);
     addAndMakeVisible (generateAccompanimentButton);
+    addAndMakeVisible (metronomeEnabledButton);
 
     addAndMakeVisible (timeLabel);
     addAndMakeVisible (beatLabel);
@@ -165,16 +170,19 @@ void TransportView::resized()
     FlexItem recordB = FlexItem (recordButton).withFlex (1.0f);
     FlexItem clearB = FlexItem (clearButton).withFlex (1.0f);
     FlexItem generateAccompanimentB = FlexItem (generateAccompanimentButton).withFlex (1.0f);
+    FlexItem metronomeEnabledB = FlexItem (metronomeEnabledButton).withFlex (1.0f);
     goToBeginningB.margin = 5;
     stopPlayB.margin = 5;
     recordB.margin = 5;
     clearB.margin = 5;
     generateAccompanimentB.margin = 5;
+    metronomeEnabledB.margin = 5;
     buttons.items.add (goToBeginningB);
     buttons.items.add (stopPlayB);
     buttons.items.add (recordB);
     buttons.items.add (clearB);
     buttons.items.add (generateAccompanimentB);
+    buttons.items.add (metronomeEnabledB);
 
     FlexItem textFlex = FlexItem (text).withFlex (0.3f);
     FlexItem labelsFlex = FlexItem (labels).withFlex (0.3f);
@@ -262,6 +270,8 @@ void TransportView::buttonClicked (Button* button)
     if (button == &goToBeginningButton)
     {
         transport.playHeadTime = 0.0f;
+        transport.playHeadBeat = 0.0f;
+        beatLabel.setText("0", NotificationType::dontSendNotification);
     }
     else if (button == &stopPlayButton)
     {
@@ -292,6 +302,13 @@ void TransportView::buttonClicked (Button* button)
         MidiFile midiFile = edit.exportToMidi();
         midiFile = Interchange::callPython (midiFile);
         edit.importFromMidi (midiFile, 1, 0.0);
+    }
+    else if (button == &metronomeEnabledButton)
+    {
+        if (bool(edit.masterTrack.metronomeEnabled.get()) == false)
+            edit.masterTrack.metronomeEnabled.setValue(true, nullptr);
+        else
+            edit.masterTrack.metronomeEnabled.setValue(false, nullptr);
     }
 }
 
