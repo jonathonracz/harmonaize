@@ -36,8 +36,8 @@ void ArrangementViewTimelineGrid::paint (Graphics& g)
     while (beatValue <= remapper.end)
     {
         const TimeSignature& timeSignature = edit.masterTrack.timeSignature;
-        const double beatsInBar = timeSignature.getNumeratorAtBeat (beatValue);
-        const double bar = timeSignature.barForBeat (beatValue);
+        //const double beatsInBar = timeSignature.getNumeratorAtBeat (beatValue);
+        //const double bar = timeSignature.barForBeat (beatValue);
         const double beat = std::floor (timeSignature.beatInBar (beatValue));
         const double subBeat = std::fmod (beatValue, 1.0);
 
