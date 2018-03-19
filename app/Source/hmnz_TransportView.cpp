@@ -269,8 +269,8 @@ void TransportView::buttonClicked (Button* button)
     Transport& transport = edit.transport;
     if (button == &goToBeginningButton)
     {
-        transport.playHeadTime = 0.0f;
         transport.playHeadBeat = 0.0f;
+        transport.playHeadTime = 0.0f;
         beatLabel.setText ("0", NotificationType::dontSendNotification);
     }
     else if (button == &stopPlayButton)
