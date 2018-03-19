@@ -19,17 +19,18 @@
 namespace py = pybind11;
 using namespace py::literals;
 
-class Interchange {
+class Interchange
+{
 public:
     static MidiFile callPython (MidiFile song) noexcept
     {
         std::string file = convert (song);
         py::scoped_interpreter guard{};
         py::bytes bytes (file);
-        File fil("./example.mid");
-        FileOutputStream fileStream(fil);
-        song.writeTo(fileStream);
-        py::exec(R"(
+        File fil ("./example.mid");
+        FileOutputStream fileStream (fil);
+        song.writeTo (fileStream);
+        py::exec (R"(
                  import sys
                  import os
                  if "/midiinterchange" in os.getcwd():
@@ -43,7 +44,7 @@ public:
 //        os.attr ("chdir")("harmonaize/midiinterchange/");
         py::module python = py::module::import ("python");
         /*py::object result = */python.attr ("openFile")(bytes);
-//        std::string n = result.cast<std::string>();       
+//        std::string n = result.cast<std::string>();
 //        MemoryBlock block (n.data(), n.size());
         MidiFile newSong = MidiFile();
         File f = File ("./generated_files/accomp.mid");
