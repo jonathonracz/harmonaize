@@ -15,6 +15,7 @@
 #include "hmnz_ArrangementViewTrackList.h"
 #include "hmnz_ArrangementViewPlayHead.h"
 #include "hmnz_ArrangementViewHeaderResizer.h"
+#include "hmnz_ArrangementViewHeaderControls.h"
 
 class Track;
 
@@ -30,6 +31,7 @@ private:
 
     ArrangementViewTopBar topBar;
     ArrangementViewTimelineGrid grid;
+    ArrangementViewHeaderControls headerControls;
     ArrangementViewTrackList trackList;
     ArrangementViewPlayHead playHead;
     ArrangementViewHeaderResizer headerResizer;

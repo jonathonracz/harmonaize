@@ -22,7 +22,7 @@ using namespace py::literals;
 class Interchange
 {
 public:
-    static MidiFile callPython (MidiFile song) noexcept
+    static MidiFile callPython (MidiFile song)
     {
         std::string file = convert (song);
         py::scoped_interpreter guard{};
@@ -54,7 +54,7 @@ public:
     }
 
 private:
-    static std::string convert (MidiFile song) noexcept
+    static std::string convert (MidiFile song)
     {
         MemoryBlock file = MemoryBlock();
         MemoryOutputStream stream (file, false);
