@@ -9,7 +9,6 @@
 */
 
 #include "hmnz_EditWindow.h"
-#include "hmnz_Application.h"
 
 EditWindow::EditWindow()
     : DocumentWindow (HarmonaizeApplication::getApp().getApplicationName(),
@@ -52,11 +51,13 @@ EditWindow::~EditWindow()
 
 StringArray EditWindow::getMenuBarNames()
 {
-    StringArray names;
-    names.add ("File");
-    names.add ("Edit");
-    names.add ("View");
-    return names;
+    return {
+        /*
+        "File",
+        "Edit",
+         */
+        "View"
+    };
 }
 
 PopupMenu EditWindow::getMenuForIndex (int topLevelMenuIndex, const String& /*menuName*/)
@@ -69,6 +70,7 @@ PopupMenu EditWindow::getMenuForIndex (int topLevelMenuIndex, const String& /*me
     
     if (topLevelMenuIndex == 0)
     {
+        /*
         // "File" menu
         menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::newProject);
         menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::openProject);
@@ -82,6 +84,7 @@ PopupMenu EditWindow::getMenuForIndex (int topLevelMenuIndex, const String& /*me
     }
     else if (topLevelMenuIndex == 2)
     {
+         */
         PopupMenu viewMenu;
         menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::scaleUp);
         menu.addCommandItem (&HarmonaizeApplication::getCommandManager(), CommandIDs::scaleDown);
@@ -97,7 +100,6 @@ void EditWindow::menuItemSelected (int menuItemID, int /*topLevelMenuIndex*/)
 
 void EditWindow::getAllCommands (Array<CommandID>& commands)
 {
-    // this returns the set of all commands that this target can perform..
     const CommandID ids[] = {
         CommandIDs::newProject,
         CommandIDs::openProject,
@@ -202,10 +204,16 @@ bool EditWindow::perform (const InvocationInfo& info)
         }
         case CommandIDs::undo:
         {
+            if (currentEdit)
+                undoManager->undo();
+
             break;
         }
         case CommandIDs::redo:
         {
+            if (currentEdit)
+                undoManager->redo();
+
             break;
         }
         case CommandIDs::scaleUp:
