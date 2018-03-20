@@ -13,6 +13,7 @@
 #include "JuceHeader.h"
 #include "hmnz_EditWindow.h"
 #include "hmnz_PreferencesView.h"
+#include "hmnz_SFZInstrumentBank.h"
 
 class EditWindow;
 
@@ -27,6 +28,7 @@ public:
     static AudioFormatManager& getFormatManager();
     static ApplicationCommandManager& getCommandManager();
     static File getInstrumentsDirectory();
+    static SFZInstrumentBank& getInstrumentBank();
 
     const String getApplicationName() override       { return ProjectInfo::projectName; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }
@@ -45,4 +47,5 @@ private:
     UnitTestRunner unitTestRunner;
     AudioDeviceManager audioDeviceManager;
     AudioFormatManager audioFormatManager;
+    SFZInstrumentBank instrumentBank;
 };

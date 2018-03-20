@@ -51,6 +51,11 @@ File HarmonaizeApplication::getInstrumentsDirectory()
     return instrumentsDirectory;
 }
 
+SFZInstrumentBank& HarmonaizeApplication::getInstrumentBank()
+{
+    return getApp().instrumentBank;
+}
+
 void HarmonaizeApplication::initialise (const String& commandLine)
 {
     editWindow = std::unique_ptr<EditWindow> (new EditWindow());

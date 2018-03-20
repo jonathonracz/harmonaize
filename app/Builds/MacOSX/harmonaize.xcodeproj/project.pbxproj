@@ -44,6 +44,7 @@
 		233C074B4441E66302B68EB8 = {isa = PBXBuildFile; fileRef = 7F50C1644145F32B740B7F28; };
 		59CEC1627FB95686EC193B57 = {isa = PBXBuildFile; fileRef = 62A572A1CC890C4548466AF2; };
 		5A425423972B8EB5569F1BD1 = {isa = PBXBuildFile; fileRef = 8F4675BD91E6E03800FCF753; };
+		E461F7FE1615E0243451BCBE = {isa = PBXBuildFile; fileRef = 3F1925285991EA63AF11CA65; };
 		0581211AFC1651C1B8DFB1AA = {isa = PBXBuildFile; fileRef = 525FBD5208C354D1978AAEFE; };
 		7406A4FA569463DFD7E0D99E = {isa = PBXBuildFile; fileRef = EA648E02D3B4E0E1CF7E5F2D; };
 		4D350ED6B82984F9C76038F3 = {isa = PBXBuildFile; fileRef = 8C12789EAB8AA1433C68B99E; };
@@ -88,6 +89,7 @@
 		35AE501C34CFD20C625A7FFA = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ValueTreeObjectArray.h"; path = "../../Source/hmnz_ValueTreeObjectArray.h"; sourceTree = "SOURCE_ROOT"; };
 		384252337C9D31C2989D98BB = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "include_juce_core.mm"; path = "../../JuceLibraryCode/include_juce_core.mm"; sourceTree = "SOURCE_ROOT"; };
 		3EC8195091B15D99E049A8CE = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		3F1925285991EA63AF11CA65 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_SFZInstrumentBank.cpp"; path = "../../Source/hmnz_SFZInstrumentBank.cpp"; sourceTree = "SOURCE_ROOT"; };
 		40BC0E938573723A19DD36FA = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_EditView.h"; path = "../../Source/hmnz_EditView.h"; sourceTree = "SOURCE_ROOT"; };
 		42197ED6F8462F134982395E = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "include_juce_events.mm"; path = "../../JuceLibraryCode/include_juce_events.mm"; sourceTree = "SOURCE_ROOT"; };
 		437F302650991C6AAC24263B = {isa = PBXFileReference; lastKnownFileType = file; name = "jcf_advanced_leak_detector"; path = "../../Source/External/juce_toys/jcf_advanced_leak_detector"; sourceTree = "SOURCE_ROOT"; };
@@ -117,6 +119,7 @@
 		713FEEE9AD423EDF6B6C30D5 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_HomogeneousValueTreeObjectArray.h"; path = "../../Source/hmnz_HomogeneousValueTreeObjectArray.h"; sourceTree = "SOURCE_ROOT"; };
 		717C05CC6F911B905FADDA55 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ClipArray.h"; path = "../../Source/hmnz_ClipArray.h"; sourceTree = "SOURCE_ROOT"; };
 		760E4D1D0CDCBB11E9ADEBB4 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_ArrangementViewTrackList.cpp"; path = "../../Source/hmnz_ArrangementViewTrackList.cpp"; sourceTree = "SOURCE_ROOT"; };
+		76242F8F9021652157A26A24 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_SFZInstrumentBank.h"; path = "../../Source/hmnz_SFZInstrumentBank.h"; sourceTree = "SOURCE_ROOT"; };
 		78FBEF26A982DEC1E2F61C55 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "include_SFZero.cpp"; path = "../../JuceLibraryCode/include_SFZero.cpp"; sourceTree = "SOURCE_ROOT"; };
 		7ADC04E7970E0627C61360C0 = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_events"; path = "../../../harmonaize/external/JUCE/modules/juce_events"; sourceTree = "SOURCE_ROOT"; };
 		7D6E10D8F88B203A7519916B = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_PlaybackEngine.h"; path = "../../Source/hmnz_PlaybackEngine.h"; sourceTree = "SOURCE_ROOT"; };
@@ -247,6 +250,9 @@
 					8F4675BD91E6E03800FCF753,
 					A37EBAB2D13932B00555F1A4,
 					1B0A6265A2479022D62709A0, ); name = Arrangement; sourceTree = "<group>"; };
+		B50DE1E104FE43B3E0008580 = {isa = PBXGroup; children = (
+					3F1925285991EA63AF11CA65,
+					76242F8F9021652157A26A24, ); name = Instrument; sourceTree = "<group>"; };
 		12E8BBE8911128216D0E905B = {isa = PBXGroup; children = (
 					63ECFE5DAA76D7B16CEA736E,
 					C409C08200C0343959C0F44C,
@@ -268,6 +274,7 @@
 					261542B6055C7771714D0895, ); name = Utility; sourceTree = "<group>"; };
 		2047F3BFFB2BE3AF145A4C05 = {isa = PBXGroup; children = (
 					A26602A26CFEF6E226D392E6,
+					B50DE1E104FE43B3E0008580,
 					12E8BBE8911128216D0E905B,
 					AC3BBC9987D7D17A87E38334,
 					8C12789EAB8AA1433C68B99E,
@@ -339,7 +346,7 @@
 					EBD33AD89318835C768BDF22,
 					E83C0C7D65B43E7730E25CE2, ); name = Source; sourceTree = "<group>"; };
 		46657038D4ABF0C816F5881D = {isa = XCBuildConfiguration; buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
@@ -371,7 +378,7 @@
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Debug; };
 		D26320213B96576B9AC9DA29 = {isa = XCBuildConfiguration; buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
@@ -513,6 +520,7 @@
 					233C074B4441E66302B68EB8,
 					59CEC1627FB95686EC193B57,
 					5A425423972B8EB5569F1BD1,
+					E461F7FE1615E0243451BCBE,
 					0581211AFC1651C1B8DFB1AA,
 					7406A4FA569463DFD7E0D99E,
 					4D350ED6B82984F9C76038F3,

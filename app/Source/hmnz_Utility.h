@@ -88,4 +88,12 @@ inline Type roundToNearestInterval (Type value, Type interval)
     return toNearestInterval<Type, std::round> (value, interval);
 }
 
+struct FileHashGenerator
+{
+    int generateHash (const File& key, int upperLimit) const
+    {
+        return key.hashCode() % upperLimit;
+    }
+};
+
 }
