@@ -222,26 +222,24 @@ class ChordProg():
 
 
 	def advancedChordProg(self):
-		chordList = []
-		BEATS_PER_MEASURE = 4
-		MEASURE_NUM = 0
+		measure_num = 0
 		while(True):
-			measure_cutoff = MEASURE_NUM*BEATS_PER_MEASURE + BEATS_PER_MEASURE
-			result = self.oneMeasureAnalysis(measure_cutoff)
-			if not result[0]:
+			if measure_num > len(self.beat_map) - 1:
 				print("Done")
 				print(chordList)
 				return chordList
 
+			result = self.oneMeasureAnalysis(measure_num)
+		
 			if result[1] == "M6":
 				chordList.append(self.makeMinor(self.intervalJump("M6")))
 			else:
 				chordList.append(self.intervalJump(result[1]))
-			MEASURE_NUM = MEASURE_NUM + 1
+			measure_num = measure_num + 1
 
 
 
-	def oneMeasureAnalysis(self, measure_cutoff):
+	def oneMeasureAnalysis(self, measure_num):
 		INTEREST_CHORDS = [
 							Chord("P1"), 
 							Chord("M3"),
@@ -252,10 +250,9 @@ class ChordProg():
 
 		# Generate Note List
 		notes = []
-		for beat, note_list in self.beat_map.items():
-			if beat <= measure_cutoff and beat >= measure_cutoff - 4:
-				for note in note_list:
-					notes.append(note)
+		note_list = self.beat_map[measure_num]
+		for note in note_list:
+			notes.append(note)
 
 		# Alert that we're done
 		if not notes:
