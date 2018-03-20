@@ -239,8 +239,10 @@ class ChordProg():
 				return chordList
 
 			result = self.oneMeasureAnalysis(measure_num)
-		
-			if result[1] == "M6":
+			
+			if not result:
+				chordList.append(self.tonic)
+			elif result[1] == "M6":
 				chordList.append(self.makeMinor(self.intervalJump("M6")))
 			else:
 				chordList.append(self.intervalJump(result[1]))
