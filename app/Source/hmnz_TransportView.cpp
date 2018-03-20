@@ -34,7 +34,7 @@ TransportView::TransportView (Edit& _edit)
     goToBeginningButton.setButtonText (translate ("Go to beginning"));
     stopPlayButton.setButtonText (translate ("Play"));
     recordButton.setButtonText (translate ("Record"));
-    clearButton.setButtonText (translate ("Clear"));
+    clearButton.setButtonText (translate ("Reset"));
     generateAccompanimentButton.setButtonText (translate ("Generate\nAccompaniment"));
     metronomeEnabledButton.setButtonText (translate ("Metronome"));
     
@@ -292,15 +292,8 @@ void TransportView::buttonClicked (Button* button)
     {
         // TODO: This belongs in some sort of arrangement controller, not transport.
         // TODO: Also, this is stupidly written and hacky
-
-        int indexToRemove = Utility::getIndexOfImmediateChildWithName (edit.getState(), Track::identifier);
-        while (indexToRemove >= 0)
-        {
-            edit.getState().removeChild (indexToRemove, transport.getUndoManager());
-            indexToRemove = Utility::getIndexOfImmediateChildWithName (edit.getState(), Track::identifier);
-        }
-
-        edit.getState().addChild (Track::createDefaultState(), -1, transport.getUndoManager());
+        edit.trackList.getState().removeAllChildren (edit.getUndoManager());
+        edit.trackList.tracks.addState (Track::createDefaultState());
     }
     else if (button == &generateAccompanimentButton)
     {

@@ -31,7 +31,6 @@ private:
     std::unique_ptr<ProgressBarBackground> progressBarBackground;
 
     void resized() override;
-    void paint (Graphics&) override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
     void valueTreeChildAdded (ValueTree&, ValueTree&) override {}

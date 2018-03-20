@@ -29,7 +29,8 @@ ArrangementView::ArrangementView (Edit& _edit)
 {
     addAndMakeVisible (topBar);
     addAndMakeVisible (grid);
-    addAndMakeVisible (headerControls);
+    //addAndMakeVisible (headerControls);
+    addChildComponent (headerControls);
     addAndMakeVisible (trackList);
     addAndMakeVisible (playHead);
     addAndMakeVisible (headerResizer);

@@ -15,7 +15,7 @@ struct ArrangementViewTrackHeader::ProgressBarBackground : public LookAndFeel_V4
 {
     void drawProgressBar (Graphics & g, ProgressBar &, int width, int height, double progress, const String &textToShow) override
     {
-        //g.fillAll (findColour (ProgressBar::ColourIds::backgroundColourId));
+        g.fillAll (findColour (ProgressBar::ColourIds::backgroundColourId));
         g.setColour (findColour (ProgressBar::ColourIds::foregroundColourId));
         g.fillRect (0, 0, std::abs (static_cast<int> (width * progress)), height);
     }
@@ -49,11 +49,6 @@ void ArrangementViewTrackHeader::resized()
 {
     loadProgress.setBounds (getLocalBounds());
     name.setBounds (getLocalBounds());
-}
-
-void ArrangementViewTrackHeader::paint (Graphics& g)
-{
-    //g.fillAll (track.color);
 }
 
 void ArrangementViewTrackHeader::valueTreePropertyChanged (ValueTree&, const Identifier& property)
