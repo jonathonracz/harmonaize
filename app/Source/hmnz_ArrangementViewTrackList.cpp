@@ -15,7 +15,7 @@ ArrangementViewTrackList::ArrangementViewTrackList (Edit& _edit)
     : edit (_edit)
 {
     edit.arrangementViewModel.getState().addListener (this);
-    edit.trackList.getState().addListener (this);
+    edit.trackList.tracks.addListener (this);
 
     for (int i = 0; i < edit.trackList.tracks.size(); ++i)
         objectAdded (edit.trackList.tracks[i], i, &edit.trackList.tracks);
@@ -24,7 +24,7 @@ ArrangementViewTrackList::ArrangementViewTrackList (Edit& _edit)
 ArrangementViewTrackList::~ArrangementViewTrackList()
 {
     edit.arrangementViewModel.getState().removeListener (this);
-    edit.trackList.getState().removeListener (this);
+    edit.trackList.tracks.removeListener (this);
 }
 
 void ArrangementViewTrackList::resized()

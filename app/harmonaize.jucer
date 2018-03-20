@@ -15,6 +15,10 @@
             file="Source/hmnz_PlaybackEngine.h"/>
     </GROUP>
     <GROUP id="{4C57DD66-0DB0-A254-59EF-09BAA05140B1}" name="GUI">
+      <FILE id="rjfdNK" name="hmnz_ArrangementViewHeaderControls.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewHeaderControls.cpp"/>
+      <FILE id="tcFCkJ" name="hmnz_ArrangementViewHeaderControls.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewHeaderControls.h"/>
       <FILE id="Go2CrJ" name="hmnz_ArrangementViewHeaderResizer.cpp" compile="1"
             resource="0" file="Source/hmnz_ArrangementViewHeaderResizer.cpp"/>
       <FILE id="CKmMAJ" name="hmnz_ArrangementViewHeaderResizer.h" compile="0"

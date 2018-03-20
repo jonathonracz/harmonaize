@@ -292,6 +292,7 @@ void TransportView::buttonClicked (Button* button)
     {
         // TODO: This belongs in some sort of arrangement controller, not transport.
         // TODO: Also, this is stupidly written and hacky
+
         int indexToRemove = Utility::getIndexOfImmediateChildWithName (edit.getState(), Track::identifier);
         while (indexToRemove >= 0)
         {
