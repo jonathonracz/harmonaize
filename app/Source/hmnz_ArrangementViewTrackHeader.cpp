@@ -22,7 +22,7 @@ struct ArrangementViewTrackHeader::ProgressBarBackground : public LookAndFeel_V4
 };
 
 ArrangementViewTrackHeader::ArrangementViewTrackHeader (Track& _track)
-    : track (_track), loadProgress (*_track.loadFuture.progress)
+    : track (_track), loadProgress (*_track.loadProgress)
 {
     loadProgress.setPercentageDisplay (false);
     progressBarBackground = std::unique_ptr<ProgressBarBackground> (new ProgressBarBackground());
@@ -32,9 +32,13 @@ ArrangementViewTrackHeader::ArrangementViewTrackHeader (Track& _track)
 
     addAndMakeVisible (loadProgress);
     addAndMakeVisible (name);
+    addAndMakeVisible (instrumentSelector);
 
     name.addListener (this);
     name.setEditable (true, true, false);
+    instrumentSelector.addListener (this);
+    instrumentSelector.setButtonText (translate ("Load Inst."));
+
     track.getState().addListener (this);
     track.getState().sendPropertyChangeMessage (track.name.getPropertyID());
 }
@@ -48,7 +52,8 @@ ArrangementViewTrackHeader::~ArrangementViewTrackHeader()
 void ArrangementViewTrackHeader::resized()
 {
     loadProgress.setBounds (getLocalBounds());
-    name.setBounds (getLocalBounds());
+    name.setBounds (getLocalBounds().withBottom (getHeight() / 2));
+    instrumentSelector.setBounds (getLocalBounds().withTop (getHeight() / 2));
 }
 
 void ArrangementViewTrackHeader::valueTreePropertyChanged (ValueTree&, const Identifier& property)
@@ -62,4 +67,12 @@ void ArrangementViewTrackHeader::valueTreePropertyChanged (ValueTree&, const Ide
 void ArrangementViewTrackHeader::editorHidden (Label *labelThatHasChanged, TextEditor& textEditor)
 {
     track.name = textEditor.getText();
+}
+
+void ArrangementViewTrackHeader::buttonClicked (Button *)
+{
+    FileChooser chooser (translate ("Load SFZ instrument"), SFZInstrumentBank::getInstrumentsDirectory(), "*.sfz");
+    bool result = chooser.browseForFileToOpen();
+    if (result)
+        track.loadSFZInstrument (chooser.getResult());
 }

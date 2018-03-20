@@ -29,7 +29,7 @@ File SFZInstrumentBank::getInstrumentsDirectory()
     return instrumentsDirectory;
 }
 
-SFZInstrumentBank::LoadFuture SFZInstrumentBank::loadSFZ (const File& file)
+SFZInstrumentBank::LoadFuture SFZInstrumentBank::loadSFZ (const File& file, std::shared_ptr<double> progress)
 {
     std::promise<sfzero::Sound::Ptr> fileToLoad;
     LoadFuture ret;
@@ -44,7 +44,7 @@ SFZInstrumentBank::LoadFuture SFZInstrumentBank::loadSFZ (const File& file)
         }
     }
 
-    loadQueue.enqueue ({ file, ret.progress, std::move (fileToLoad) });
+    loadQueue.enqueue ({ file, progress, std::move (fileToLoad) });
     notify();
     return ret;
 }

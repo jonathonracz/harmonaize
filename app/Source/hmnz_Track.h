@@ -39,6 +39,8 @@ public:
     MidiMessageSequence getMidiMessageSequence() const;
     void addMidiMessageSequenceAsClip (double start, double length, const MidiMessageSequence& sequence);
 
+    void loadSFZInstrument (const File& sfzInstrument);
+
     CachedValue<String> name;
     CachedValue<Colour> color;
     CachedValue<Identifier> type;
@@ -47,9 +49,11 @@ public:
 
     Edit& edit;
     ClipList clipList;
-    SFZInstrumentBank::LoadFuture loadFuture;
+
+    std::shared_ptr<double> loadProgress = std::make_shared<double> (-1.0);
 
 private:
+    SFZInstrumentBank::LoadFuture loadFuture;
     std::atomic<bool> isPrepared = { false };
     AudioBuffer<float> audioBuffer;
     MidiBuffer midiBuffer;

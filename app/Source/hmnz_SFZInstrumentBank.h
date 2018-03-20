@@ -26,10 +26,9 @@ public:
     struct LoadFuture
     {
         std::future<sfzero::Sound::Ptr> future;
-        std::shared_ptr<double> progress = std::make_shared<double> (-1.0);
     };
 
-    LoadFuture loadSFZ (const File& file);
+    LoadFuture loadSFZ (const File& file, std::shared_ptr<double> progress);
 
 private:
     struct LoadQueueItem

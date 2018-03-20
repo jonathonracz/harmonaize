@@ -32,9 +32,8 @@ Track::Track (const ValueTree& v, UndoManager* um, Edit& _edit)
         synthesizer.addVoice (new sfzero::Voice);
 
     File instrumentsDirectory = SFZInstrumentBank::getInstrumentsDirectory();
-    instrumentsDirectory = instrumentsDirectory.getChildFile ("./UprightPiano/UprightPiano.sfz");
-    loadFuture = HarmonaizeApplication::getInstrumentBank().loadSFZ (instrumentsDirectory);
-    startTimer (1000);
+    instrumentsDirectory = instrumentsDirectory.getChildFile ("./VSCO-2-CE/UprightPiano.sfz");
+    loadSFZInstrument (instrumentsDirectory);
 }
 
 void Track::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
@@ -128,6 +127,13 @@ MidiMessageSequence Track::getMidiMessageSequence() const
 void Track::addMidiMessageSequenceAsClip (double start, double length, const MidiMessageSequence& sequence)
 {
     clipList.clips.insertStateAtObjectIndex (Clip::createState (start, length, sequence, color), -1);
+}
+
+void Track::loadSFZInstrument (const File& sfzInstrument)
+{
+    synthesizer.clearSounds();
+    loadFuture = HarmonaizeApplication::getInstrumentBank().loadSFZ (sfzInstrument, loadProgress);
+    startTimer (1000);
 }
 
 void Track::updateMidiReadCache()
