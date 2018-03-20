@@ -12,25 +12,23 @@ from grooves import GROOVES
 
 def genAccompaniment(midi=None):
 	parser = MidiParser(midi)
-
-	note_counts, beat_map = parser.getMidiInfo()
 	selector = GrooveSelector(parser.getTempo(), parser.getTimeSignature())
 
 	FileAttributes = {
 		'tempo': parser.getTempo(),
 		'tonic': parser.getTonic(),
 		'time_signature': parser.getTimeSignature(),
-		'note_counts': note_counts,
-		'beat_map': beat_map,
+		'note_counts': parser.getNoteCounts(),
+		'measure_map': parser.getMeasureMap(),
 		'groove': selector.select_groove(),
 	}
 
 	generator = ChordProg(FileAttributes, "generated_files/accomp.mma")
 
-	if len(FileAttributes['beat_map'].items()) == 0:
-		generator.generateMMAFormat()
-	else:
-		generator.genMmaFileWithExactChords()
+	# if len(FileAttributes['measure_map'].items()) == 0:
+	generator.generateMMAFormat()
+	# else:
+	# 	generator.genMmaFileWithExactChords()
 
 	genMidi("generated_files/accomp.mma")
 	return mido.MidiFile("generated_files/accomp.mid")

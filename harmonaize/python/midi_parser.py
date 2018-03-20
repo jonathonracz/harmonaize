@@ -19,6 +19,10 @@ class MidiParser():
 		self.tempo = mido.tempo2bpm(getMessagesWithType(self.meta_messages, 'set_tempo')[0].tempo)
 		self.tonic = getMessagesWithType(self.meta_messages, 'key_signature')[0].key
 
+		self.note_counts = makeNoteCounts(self.note_messages)
+		self.measure_map = makeMeasureMap(self.tempo, self.time_signature, self.note_messages)
+		print(self.measure_map)
+
 	def getTempo(self):
 		return self.tempo
 
@@ -28,39 +32,44 @@ class MidiParser():
 	def getTonic(self):
 		return self.tonic
 
-	def getMidiInfo(self):
-		# Get note counts and beat mapping
+	def getNoteCounts(self):
+		return self.note_counts
 
-		beat_map = {}
-		note_counts = {}
+	def getMeasureMap(self):
+		return self.measure_map
 
-		tempo = self.tempo
-		current_beat = 0
+def makeNoteCounts(messages):
+	note_counts = {}
 
-		for message in self.note_messages:
-			if message.type == 'note_on':
+	for message in messages:
+		if message.type == 'note_on':
+			note = MODDED_NOTES[message.note % 12]
+			if note in note_counts:
+				note_counts[note] += 1
+			else:
+				note_counts[note] = 1
 
-				beat_value = round((message.time * tempo / 1000 / 60) ) 
-				current_beat += beat_value
-				note = MODDED_NOTES[message.note % 12]
+	return note_counts
 
-				relative = message.note % 12 - MODDED_NOTES.index(self.tonic)
+def makeMeasureMap(tempo, time_signature, messages):
+	measure_map = []
+	current_beat = 0
 
-				if relative != 0 and relative != 5 and relative != 7:
-					note += 'm'
+	for message in messages:
 
-				if current_beat not in beat_map:
-					beat_map[current_beat] = [note]
-				else:
-					beat_map[current_beat].append(note)
+		beat_value = message.time * tempo / 1000 / 60 / 2
+		current_beat += beat_value
 
-				if note in note_counts:
-					note_counts[note] += 1
-				else:
-					note_counts[note] = 1
+		if message.type == 'note_on':
+			current_measure = math.floor(current_beat / time_signature[0])
 
-		print(beat_map)
-		return (note_counts, beat_map)
+			while current_measure >= len(measure_map):
+				measure_map.append([])
+
+			note = MODDED_NOTES[message.note % 12]
+			measure_map[current_measure].append(note)
+
+	return measure_map
 
 def getMessagesWithType(messages, msg_type):
 	msg_list = [msg for msg in messages if msg.type == msg_type]
