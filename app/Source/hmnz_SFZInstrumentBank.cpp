@@ -24,7 +24,7 @@ SFZInstrumentBank::~SFZInstrumentBank()
 
 File SFZInstrumentBank::getInstrumentsDirectory()
 {
-    File instrumentsDirectory = File::getSpecialLocation (File::SpecialLocationType::currentApplicationFile).getChildFile("../../../../../Source/Instruments");
+    File instrumentsDirectory = File::getSpecialLocation (File::SpecialLocationType::currentApplicationFile).getChildFile("Contents/Resources/Instruments");
     jassert (instrumentsDirectory.isDirectory());
     return instrumentsDirectory;
 }

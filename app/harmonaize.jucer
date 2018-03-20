@@ -2,8 +2,8 @@
 
 <JUCERPROJECT id="OexI64" name="HarmonAIze" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.harmonaize.harmonaize" includeBinaryInAppConfig="1"
-              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.3.0"
-              displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark">
+              companyCopyright="" jucerVersion="5.2.1" displaySplashScreen="0"
+              reportAppUsage="0" splashScreenColour="Dark">
   <MAINGROUP id="TpvEFM" name="HarmonAIze">
     <GROUP id="{EBA6D256-AB9F-0FDF-FF12-7B37C747D39F}" name="Binary">
       <FILE id="HOW6YQ" name="appicon.png" compile="0" resource="1" file="Design/appicon.png"/>
@@ -116,6 +116,12 @@
               file="Source/hmnz_TrackArray.h"/>
         <FILE id="Wry2bl" name="hmnz_TrackList.h" compile="0" resource="0"
               file="Source/hmnz_TrackList.h"/>
+      </GROUP>
+      <GROUP id="{8D67FC02-18A3-C09C-A583-3E7AFD4B8A66}" name="Instrument">
+        <FILE id="Jz7Rlt" name="hmnz_SFZInstrumentBank.cpp" compile="1" resource="0"
+              file="Source/hmnz_SFZInstrumentBank.cpp"/>
+        <FILE id="GbHYeV" name="hmnz_SFZInstrumentBank.h" compile="0" resource="0"
+              file="Source/hmnz_SFZInstrumentBank.h"/>
       </GROUP>
       <GROUP id="{113B8590-9FBD-441F-5100-C595C8B99F47}" name="Time">
         <FILE id="lvaPMG" name="hmnz_Tempo.h" compile="0" resource="0" file="Source/hmnz_Tempo.h"/>
