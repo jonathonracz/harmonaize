@@ -2,7 +2,7 @@
 # Adam Heins
 
 import math
-import parse_midi as midiUtil
+# import parse_midi as midiUtil
 import mido
 
 
@@ -113,74 +113,74 @@ class ChordProg():
 		self.groove = FileAttributes['groove']
 
 		self.num_reps = 4
-		self.beat_map = FileAttributes['beat_map']
+		self.measure_map = FileAttributes['measure_map']
 		self.time_signature = FileAttributes['time_signature']
 
-	def genMmaFileWithExactChords(self):
-		# beat_map = self.condenseBeatMap(self.beat_map)
-		beat_map = self.beat_map
+	# def genMmaFileWithExactChords(self):
+	# 	# beat_map = self.condenseBeatMap(self.beat_map)
+	# 	beat_map = self.measure_map
 
-		measures = []
-		measure = []
-		beat_num = 1
+	# 	measures = []
+	# 	measure = []
+	# 	beat_num = 1
 
-		for beat, note_list in beat_map.items():
-			if beat_num in beat_map:
-				measure.append(self.getNextChord(measure, note_list))
+	# 	for beat, note_list in beat_map.items():
+	# 		if beat_num in beat_map:
+	# 			measure.append(self.getNextChord(measure, note_list))
 
-			elif beat_num % self.time_signature[0] == 1:
-				measure.append(self.tonic)
+	# 		elif beat_num % self.time_signature[0] == 1:
+	# 			measure.append(self.tonic)
 
-			else:
-				measure.append('/')
+	# 		else:
+	# 			measure.append('/')
 
-			if beat_num % self.time_signature[0] == 0:
-				measures.append(measure)
-				measure = []
+	# 		if beat_num % self.time_signature[0] == 0:
+	# 			measures.append(measure)
+	# 			measure = []
 
-			beat_num += 1
+	# 		beat_num += 1
 
-		file = open(self.filename, 'w')
-		self.writeMMAHeader(file)
+	# 	file = open(self.filename, 'w')
+	# 	self.writeMMAHeader(file)
 
-		measure_num = 1
+	# 	measure_num = 1
 
-		for _ in range(self.num_reps):
-			for measure_notes in measures:
+	# 	for _ in range(self.num_reps):
+	# 		for measure_notes in measures:
 
-				file.write(str(measure_num))
-				for note in measure_notes:
-					file.write(" " + note)
-				file.write('\n')
+	# 			file.write(str(measure_num))
+	# 			for note in measure_notes:
+	# 				file.write(" " + note)
+	# 			file.write('\n')
 
-				measure_num += 1
+	# 			measure_num += 1
 
-		file.close()
+	# 	file.close()
 
-	def condenseBeatMap(self, beat_map):
-		new_map = {}
-		current_beat = 1
-		for beat, note_list in beat_map.items():
-			if beat - current_beat >= 1:
-				current_beat += math.floor(beat - current_beat)
+	# def condenseBeatMap(self, beat_map):
+	# 	new_map = {}
+	# 	current_beat = 1
+	# 	for beat, note_list in beat_map.items():
+	# 		if beat - current_beat >= 1:
+	# 			current_beat += math.floor(beat - current_beat)
 
-			if current_beat in new_map:
-				for note in note_list:
-					new_map[current_beat].append(note)
-			else:
-				new_map[current_beat] = note_list
+	# 		if current_beat in new_map:
+	# 			for note in note_list:
+	# 				new_map[current_beat].append(note)
+	# 		else:
+	# 			new_map[current_beat] = note_list
 
-		return new_map
+	# 	return new_map
 
-	def getNextChord(self, chords, notes):
-		print(chords, notes)
+	# def getNextChord(self, chords, notes):
+	# 	print(chords, notes)
 
-		if notes[0] == '/' and len(chords) == 0:
-			return self.tonic
-		if len(chords) % 2 == 1:
-			return chords[len(chords)-1]
-		else:
-			return notes[0]
+	# 	if notes[0] == '/' and len(chords) == 0:
+	# 		return self.tonic
+	# 	if len(chords) % 2 == 1:
+	# 		return chords[len(chords)-1]
+	# 	else:
+	# 		return notes[0]
 
 	def intervalJump(self, interval, root=None):
 		if root is None:
@@ -231,8 +231,9 @@ class ChordProg():
 
 	def advancedChordProg(self):
 		measure_num = 0
+		chordList = []
 		while(True):
-			if measure_num > len(self.beat_map) - 1:
+			if measure_num > len(self.measure_map) - 1:
 				print("Done")
 				print(chordList)
 				return chordList
@@ -258,7 +259,7 @@ class ChordProg():
 
 		# Generate Note List
 		notes = []
-		note_list = self.beat_map[measure_num]
+		note_list = self.measure_map[measure_num]
 		for note in note_list:
 			notes.append(note)
 
@@ -306,7 +307,7 @@ class ChordProg():
 
 if __name__ == "__main__":
 	midi = mido.MidiFile("test/MIDI_sample.mid")
-	attributes = midiUtil.parseMidi(midi)
+	# attributes = midiUtil.parseMidi(midi)
 	generator = ChordProg(attributes, "generated_files/accomp.mma")
 	generator.advancedChordProg()
 	# generator.generateMMAFormat()
