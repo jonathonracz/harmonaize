@@ -20,6 +20,7 @@ ArrangementView::ArrangementView (Edit& _edit)
       grid (_edit,
           _edit.arrangementViewModel.timeStart,
           _edit.arrangementViewModel.timeEnd),
+      headerControls (_edit),
       trackList (_edit),
       playHead (_edit,
           _edit.arrangementViewModel.timeStart,
@@ -28,6 +29,7 @@ ArrangementView::ArrangementView (Edit& _edit)
 {
     addAndMakeVisible (topBar);
     addAndMakeVisible (grid);
+    addAndMakeVisible (headerControls);
     addAndMakeVisible (trackList);
     addAndMakeVisible (playHead);
     addAndMakeVisible (headerResizer);
@@ -53,8 +55,13 @@ void ArrangementView::resized()
     timelineGroup.items.add (FlexItem (topBar).withHeight (topBarHeight));
     timelineGroup.items.add (FlexItem (grid).withFlex (1.0f));
 
+    FlexBox headerGroup;
+    headerGroup.flexDirection = FlexBox::Direction::column;
+    headerGroup.items.add (FlexItem (headerControls).withHeight (topBarHeight));
+    headerGroup.items.add (FlexItem ().withFlex (1.0f));
+
     layout.items.add (FlexItem (timelineGroup).withFlex (1.0f));
-    layout.items.add (FlexItem ().withWidth (model.headerWidth.get()));
+    layout.items.add (FlexItem (headerGroup).withWidth (model.headerWidth.get()));
 
     layout.performLayout (getLocalBounds());
 
