@@ -44,13 +44,6 @@ ApplicationCommandManager& HarmonaizeApplication::getCommandManager()
     return getApp().commandManager;
 }
 
-File HarmonaizeApplication::getInstrumentsDirectory()
-{
-    File instrumentsDirectory = File::getSpecialLocation (File::SpecialLocationType::currentApplicationFile).getChildFile("../../../../../Source/Instruments");
-    jassert (instrumentsDirectory.isDirectory());
-    return instrumentsDirectory;
-}
-
 SFZInstrumentBank& HarmonaizeApplication::getInstrumentBank()
 {
     return getApp().instrumentBank;

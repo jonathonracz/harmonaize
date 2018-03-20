@@ -17,6 +17,18 @@ SFZInstrumentBank::SFZInstrumentBank()
     startThread();
 }
 
+SFZInstrumentBank::~SFZInstrumentBank()
+{
+    stopThread (5000);
+}
+
+File SFZInstrumentBank::getInstrumentsDirectory()
+{
+    File instrumentsDirectory = File::getSpecialLocation (File::SpecialLocationType::currentApplicationFile).getChildFile("../../../../../Source/Instruments");
+    jassert (instrumentsDirectory.isDirectory());
+    return instrumentsDirectory;
+}
+
 SFZInstrumentBank::LoadFuture SFZInstrumentBank::loadSFZ (const File& file)
 {
     std::promise<sfzero::Sound::Ptr> fileToLoad;
@@ -56,6 +68,7 @@ void SFZInstrumentBank::run()
             sfzero::Sound::Ptr newSound = new sfzero::Sound (queueItem.file);
             newSound->loadRegions();
             newSound->loadSamples (&HarmonaizeApplication::getFormatManager(), queueItem.progress.get(), this);
+            sounds.set (queueItem.file, newSound);
             queueItem.sound.set_value (newSound);
         }
 

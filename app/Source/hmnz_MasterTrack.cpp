@@ -20,7 +20,7 @@ MasterTrack::MasterTrack (const ValueTree& v, UndoManager* um)
 {
     midiBuffer.ensureSize (2048);
 
-    File instrumentsDirectory = HarmonaizeApplication::getInstrumentsDirectory();
+    File instrumentsDirectory = SFZInstrumentBank::getInstrumentsDirectory();
     metronome.addVoice (new sfzero::Voice);
     sfzero::Sound* metronomeSound = new sfzero::Sound (instrumentsDirectory.getChildFile ("./Metronome/Metronome.sfz"));
     metronomeSound->loadRegions();

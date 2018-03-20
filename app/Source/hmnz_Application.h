@@ -27,7 +27,6 @@ public:
     static AudioDeviceManager& getDeviceManager();
     static AudioFormatManager& getFormatManager();
     static ApplicationCommandManager& getCommandManager();
-    static File getInstrumentsDirectory();
     static SFZInstrumentBank& getInstrumentBank();
 
     const String getApplicationName() override       { return ProjectInfo::projectName; }

@@ -31,7 +31,7 @@ Track::Track (const ValueTree& v, UndoManager* um, Edit& _edit)
     for (int i = 0; i < 16; ++i)
         synthesizer.addVoice (new sfzero::Voice);
 
-    File instrumentsDirectory = HarmonaizeApplication::getInstrumentsDirectory();
+    File instrumentsDirectory = SFZInstrumentBank::getInstrumentsDirectory();
     instrumentsDirectory = instrumentsDirectory.getChildFile ("./UprightPiano/UprightPiano.sfz");
     loadFuture = HarmonaizeApplication::getInstrumentBank().loadSFZ (instrumentsDirectory);
     startTimer (1000);

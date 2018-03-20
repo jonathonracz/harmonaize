@@ -19,6 +19,9 @@ class SFZInstrumentBank : private Thread
 {
 public:
     SFZInstrumentBank();
+    ~SFZInstrumentBank();
+
+    static File getInstrumentsDirectory();
 
     struct LoadFuture
     {
