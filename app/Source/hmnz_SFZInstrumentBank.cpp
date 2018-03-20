@@ -14,6 +14,7 @@
 SFZInstrumentBank::SFZInstrumentBank()
     : Thread ("SFZ Loader Thread")
 {
+    startThread();
 }
 
 SFZInstrumentBank::LoadFuture SFZInstrumentBank::loadSFZ (const File& file)

@@ -25,6 +25,10 @@ public:
 private:
     Track& track;
     Label name;
+    ProgressBar loadProgress;
+
+    class ProgressBarBackground;
+    std::unique_ptr<ProgressBarBackground> progressBarBackground;
 
     void resized() override;
     void paint (Graphics&) override;

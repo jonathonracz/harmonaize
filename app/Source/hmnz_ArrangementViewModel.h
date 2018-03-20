@@ -21,7 +21,7 @@ public:
         : ValueTreeObject (v, nullptr),
           timeStart (getState(), IDs::ArrangementViewModelProps::TimeStart, nullptr, 0.0),
           timeEnd (getState(), IDs::ArrangementViewModelProps::TimeEnd, nullptr, 60.0),
-          headerWidth (getState(), IDs::ArrangementViewModelProps::HeaderWidth, nullptr, 64),
+          headerWidth (getState(), IDs::ArrangementViewModelProps::HeaderWidth, nullptr, 96),
           scrollPosition (getState(), IDs::ArrangementViewModelProps::ScrollPosition, nullptr, 0.0)
     {
     }

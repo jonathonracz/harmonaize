@@ -16,6 +16,7 @@
 #include "hmnz_PlaybackEngine.h"
 #include "hmnz_CacheValueWrappers.h"
 #include "hmnz_PlaybackEngine.h"
+#include "hmnz_SFZInstrumentBank.h"
 #include "External/readerwriterqueue/readerwriterqueue.h"
 
 class Edit;
@@ -23,7 +24,8 @@ class Edit;
 class Track : public ValueTreeObject<IDs::Track>,
               public PlaybackEngine::PlaybackTarget,
               public AsyncUpdater,
-              public ValueTree::Listener
+              public ValueTree::Listener,
+              private Timer
 {
 public:
     Track (const ValueTree& v, UndoManager* um, Edit& edit);
@@ -40,11 +42,12 @@ public:
     CachedValue<String> name;
     CachedValue<Colour> color;
     CachedValue<Identifier> type;
-    CachedValue<MinMaxConstrainerWrapper<int, 8, 64>> height;
+    CachedValue<MinMaxConstrainerWrapper<int, 32, 128>> height;
     CachedValue<SPSCAtomicWrapper<bool>> recordArmed;
 
     Edit& edit;
     ClipList clipList;
+    SFZInstrumentBank::LoadFuture loadFuture;
 
 private:
     std::atomic<bool> isPrepared = { false };
@@ -74,6 +77,8 @@ private:
     void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override;
     void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
     void valueTreeParentChanged (ValueTree&) override {}
+
+    void timerCallback() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Track)
 };

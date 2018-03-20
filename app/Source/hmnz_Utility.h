@@ -92,7 +92,7 @@ struct FileHashGenerator
 {
     int generateHash (const File& key, int upperLimit) const
     {
-        return key.hashCode() % upperLimit;
+        return std::abs (key.hashCode() % upperLimit);
     }
 };
 

@@ -23,7 +23,7 @@ public:
     struct LoadFuture
     {
         std::future<sfzero::Sound::Ptr> future;
-        std::shared_ptr<double> progress = std::make_shared<double> (0.0);
+        std::shared_ptr<double> progress = std::make_shared<double> (-1.0);
     };
 
     LoadFuture loadSFZ (const File& file);

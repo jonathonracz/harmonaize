@@ -16,7 +16,7 @@ Track::Track (const ValueTree& v, UndoManager* um, Edit& _edit)
       name (getState(), IDs::TrackProps::Name, getUndoManager(), "New Track"),
       color (getState(), IDs::TrackProps::Color, getUndoManager(), Utility::randomColor()),
       type (getState(), IDs::TrackProps::Type, getUndoManager(), IDs::TrackProps::Types::Midi),
-      height (getState(), IDs::TrackProps::Height, nullptr, 16),
+      height (getState(), IDs::TrackProps::Height, nullptr, 48),
       recordArmed (getState(), IDs::TrackProps::RecordArmed, nullptr, false),
       edit (_edit),
       clipList (getState().getOrCreateChildWithName (IDs::ClipList, nullptr), getUndoManager(), *this)
@@ -32,10 +32,9 @@ Track::Track (const ValueTree& v, UndoManager* um, Edit& _edit)
         synthesizer.addVoice (new sfzero::Voice);
 
     File instrumentsDirectory = HarmonaizeApplication::getInstrumentsDirectory();
-    sfzero::Sound* pianoSound = new sfzero::Sound (instrumentsDirectory.getChildFile ("./UprightPiano/UprightPiano.sfz"));
-    pianoSound->loadRegions();
-    pianoSound->loadSamples (&HarmonaizeApplication::getFormatManager());
-    synthesizer.addSound (pianoSound);
+    instrumentsDirectory = instrumentsDirectory.getChildFile ("./UprightPiano/UprightPiano.sfz");
+    loadFuture = HarmonaizeApplication::getInstrumentBank().loadSFZ (instrumentsDirectory);
+    startTimer (1000);
 }
 
 void Track::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
@@ -198,5 +197,14 @@ void Track::valueTreeChildRemoved (ValueTree& parent, ValueTree& removedChild, i
     if (parent == clipList.getState())
     {
         // TODO: if statements are missing cases
+    }
+}
+
+void Track::timerCallback()
+{
+    if (loadFuture.future.wait_for (std::chrono::seconds (0)) == std::future_status::ready)
+    {
+        synthesizer.addSound (loadFuture.future.get());
+        stopTimer();
     }
 }
