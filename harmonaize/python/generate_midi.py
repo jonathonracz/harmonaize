@@ -71,7 +71,7 @@ def genMultipleAccompaniments(midi=None):
 	return (accomp1, accomp2, accomp3)
 
 def genMidi(path_to_fakebook):
-	os.system('python mma/mma.py -G && python mma/mma.py ' + path_to_fakebook)
+	os.system('python mma/mma.py -G > ' + PATH_TO_TEMP_DIR + '/junk && python mma/mma.py ' + path_to_fakebook + ' > ' + PATH_TO_TEMP_DIR + '/junk')
 
 if __name__ == '__main__':
 	midi_file = mido.MidiFile('example.mid')
