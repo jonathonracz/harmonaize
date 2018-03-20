@@ -28,7 +28,7 @@ int main (int argc, char* argv[])
     s.resize(clocksMemory.getSize());
     memcpy(&s[0], clocksMemory.getData(), clocksMemory.getSize());
 //    std::cout << s.size() << std::endl;
-    interchange ic = interchange();
+    Interchange ic = Interchange();
     MidiFile result = ic.callPython(clocks);
     File file("./example.mid");
     FileOutputStream fileStream(file);

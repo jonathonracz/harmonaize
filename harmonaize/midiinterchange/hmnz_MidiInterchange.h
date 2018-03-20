@@ -22,39 +22,33 @@ using namespace py::literals;
 class Interchange
 {
 public:
-    static MidiFile callPython (MidiFile song)
+    static MidiFile callPython (MidiFile song) noexcept
     {
+        File currentFile = File::getSpecialLocation (File::SpecialLocationType::currentApplicationFile);
+        String path = currentFile.getFullPathName();
         std::string file = convert (song);
         py::scoped_interpreter guard{};
+        py::module os = py::module::import ("os");
+//        os.attr ("chdir")(path);
+        std::string run = "import os\nos.chdir('" + path.toStdString() + "/Contents/Resources')";
+        py::exec (run.c_str());
         py::bytes bytes (file);
-        File fil ("./example.mid");
-        FileOutputStream fileStream (fil);
-        song.writeTo (fileStream);
-        py::exec (R"(
-                 import sys
-                 import os
-                 if "/midiinterchange" in os.getcwd():
-                    os.chdir('../external/mido/')
-                 else:
-                    os.chdir("../../../../../harmonaize/external/mido/")
-                 import mido
-                 os.chdir("../../midiinterchange/")
-                 )");
-//        py::module os = py::module::import ("os");
-//        os.attr ("chdir")("harmonaize/midiinterchange/");
         py::module python = py::module::import ("python");
-        /*py::object result = */python.attr ("openFile")(bytes);
-//        std::string n = result.cast<std::string>();
-//        MemoryBlock block (n.data(), n.size());
+        py::object result = python.attr ("openFile")(bytes);
+        if (result.is_none())
+        {
+            return MidiFile();
+        }
+        std::string n = result.cast<std::string>();
+        MemoryBlock block (n.data(), n.size());
         MidiFile newSong = MidiFile();
-        File f = File ("./generated_files/accomp.mid");
-        FileInputStream is (f);
+        MemoryInputStream is (block, false);
         newSong.readFrom (is);
         return newSong;
     }
 
 private:
-    static std::string convert (MidiFile song)
+    static std::string convert (MidiFile song) noexcept
     {
         MemoryBlock file = MemoryBlock();
         MemoryOutputStream stream (file, false);

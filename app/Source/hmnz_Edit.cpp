@@ -49,6 +49,7 @@ MidiFile Edit::exportToMidi() const
 
 void Edit::importFromMidi (const MidiFile& midiFile, int trackOffset, double timeOffset)
 {
+    if (midiFile.getNumTracks() == 0) return;
     jassert (midiFile.getTimeFormat() > 0); // Only support PPQ.
 
     double length = midiFile.getLastTimestamp() / midiFile.getTimeFormat();

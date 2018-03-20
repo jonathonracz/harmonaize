@@ -3,7 +3,7 @@
 <JUCERPROJECT id="bK3BJy" name="InterchangeTest" displaySplashScreen="1" reportAppUsage="1"
               splashScreenColour="Dark" projectType="consoleapp" version="1.0.0"
               bundleIdentifier="com.yourcompany.InterchangeTest" includeBinaryInAppConfig="1"
-              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.2.0"
+              cppLanguageStandard="11" companyCopyright="" jucerVersion="5.3.0"
               headerPath="/usr/local/Cellar/python3/3.6.4_2/Frameworks/Python.framework/Versions/3.6/include/python3.6m/"
               defines="">
   <MAINGROUP id="C5JZny" name="InterchangeTest">
@@ -12,10 +12,9 @@
       <FILE id="Tnei56" name="Skyfall.mid" compile="0" resource="1" file="Source/Skyfall.mid"/>
       <FILE id="dycTP3" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>
-    <FILE id="YXOliU" name="hmnz_MidiInterchange.cpp" compile="1" resource="0"
-          file="../hmnz_MidiInterchange.cpp"/>
     <FILE id="XOMV6Z" name="hmnz_MidiInterchange.h" compile="0" resource="0"
           file="../hmnz_MidiInterchange.h"/>
+    <FILE id="DDL7XO" name="python.py" compile="0" resource="1" file="../python.py"/>
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-Wno-range-loop-analysis"
