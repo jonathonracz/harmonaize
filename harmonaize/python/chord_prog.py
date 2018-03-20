@@ -58,7 +58,6 @@ class Chord():
 		self.num = number
 		self.type = chord_type
 
-
 class ChordProg():
 	def __init__(self, FileAttributes, filename):
 		self.keyMap = {
@@ -118,7 +117,8 @@ class ChordProg():
 		self.time_signature = FileAttributes['time_signature']
 
 	def genMmaFileWithExactChords(self):
-		beat_map = self.condenseBeatMap(self.beat_map)
+		# beat_map = self.condenseBeatMap(self.beat_map)
+		beat_map = self.beat_map
 
 		measures = []
 		measure = []
@@ -127,6 +127,10 @@ class ChordProg():
 		for beat, note_list in beat_map.items():
 			if beat_num in beat_map:
 				measure.append(self.getNextChord(measure, note_list))
+
+			elif beat_num % self.time_signature[0] == 1:
+				measure.append(self.tonic)
+
 			else:
 				measure.append('/')
 
@@ -169,8 +173,12 @@ class ChordProg():
 		return new_map
 
 	def getNextChord(self, chords, notes):
+		print(chords, notes)
+
+		if notes[0] == '/' and len(chords) == 0:
+			return self.tonic
 		if len(chords) % 2 == 1:
-			return '/'
+			return chords[len(chords)-1]
 		else:
 			return notes[0]
 

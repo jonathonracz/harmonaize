@@ -6,7 +6,8 @@ from midi_notes import MODDED_NOTES
 from collections import defaultdict
 
 def parseMidi(midi):
-	messages = midi.tracks[0]
+	meta_messages = midi.tracks[0]
+	note_messages = midi.tracks[1]
 
 	FileAttributes = {
 		'tempo': 0,
@@ -15,7 +16,7 @@ def parseMidi(midi):
 		'groove': '60srock',
 	}
 
-	time_sig_msg = getMessageWithType(messages, 'time_signature')
+	time_sig_msg = getMessageWithType(meta_messages, 'time_signature')
 	FileAttributes['time_signature'] = (time_sig_msg.numerator, time_sig_msg.denominator)
 	FileAttributes['tempo'] = mido.tempo2bpm(getMessageWithType(messages, 'set_tempo').tempo)
 	try:
@@ -23,9 +24,9 @@ def parseMidi(midi):
 	except:
 		FileAttributes['tonic'] = 'C'
 
+	note_counts, beat_map = getMidiInfo(FileAttributes, note_messages)
+
 	FileAttributes['groove'] = chooseBestGroove(FileAttributes['tempo'], FileAttributes['time_signature'])
-	messages = midi.tracks[1]
-	note_counts, beat_map = getMidiInfo(FileAttributes, messages)
 	FileAttributes['note_counts'] = note_counts
 	FileAttributes['beat_map'] = beat_map
 
@@ -57,9 +58,10 @@ def getMidiInfo(FileAttributes, messages):
 
 	for message in messages:
 		if message.type == 'note_on':
-			beat_value = round((message.time * tempo / 1000 / 60) * 12) / 12
+			beat_value = round(message.time * tempo / 1000 / 60)
 			current_beat += beat_value
 			note = MODDED_NOTES[message.note % 12]
+			
 			if current_beat not in beat_map:
 				beat_map[int(current_beat)] = [note]
 			else:
@@ -69,9 +71,6 @@ def getMidiInfo(FileAttributes, messages):
 				note_counts[note] += 1
 			else:
 				note_counts[note] = 1
-	# 		print(message)
-	# print(note_counts)
-	# print(beat_map)
 
 	return (note_counts, beat_map)
 

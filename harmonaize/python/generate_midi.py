@@ -26,10 +26,14 @@ def genAccompaniment(midi=None):
 	}
 
 	generator = ChordProg(FileAttributes, "generated_files/accomp.mma")
-	generator.generateMMAFormat()
+
+	if len(FileAttributes['beat_map'].items()) == 0:
+		generator.generateMMAFormat()
+	else:
+		generator.genMmaFileWithExactChords()
 
 	genMidi("generated_files/accomp.mma")
-	return mido.MidiFile("../midiinterchange/generated_files/accomp.mid")
+	return mido.MidiFile("generated_files/accomp.mid")
 
 def genMultipleAccompaniments(midi=None):
 	FileAttributes1 = parseMidi(midi)
@@ -62,8 +66,8 @@ def genMultipleAccompaniments(midi=None):
 	return (accomp1, accomp2, accomp3)
 
 def genMidi(path_to_fakebook):
-	os.system('../external/mma/mma.py -g && python ../external/mma/mma.py ' + path_to_fakebook)
+	os.system('python ../external/mma/mma.py -G && python ../external/mma/mma.py ' + path_to_fakebook)
 
 if __name__ == '__main__':
-	midi_file = mido.MidiFile('../../app/Design/test.mid')
+	midi_file = mido.MidiFile('example.mid')
 	genAccompaniment(midi_file)
