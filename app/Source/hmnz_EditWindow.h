@@ -33,25 +33,27 @@ public:
     void getCommandInfo (CommandID, ApplicationCommandInfo&) override;
     bool perform (const InvocationInfo&) override;
 
-    void setEdit (const ValueTree& edit);
-
-    void saveState();
     void newProject();
     void openProject();
-    void changeFile (File file);
+    void saveProject();
+    void saveProjectAs();
 
 private:
+    File projectDiskLocation;
+    bool modifiedSinceLastSave = false;
     std::unique_ptr<PlaybackEngine> playbackEngine;
     std::unique_ptr<Edit> currentEdit;
     std::unique_ptr<UndoManager> undoManager;
     jcf::ValueTreeDebugger editDebugger;
 
-    File state;
+    bool attemptToCloseProject();
+    void setEdit (const ValueTree& edit);
+    void updateTitleBarText();
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
-    void valueTreeChildAdded (ValueTree&, ValueTree&) override;
-    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override;
-    void valueTreeChildOrderChanged (ValueTree&, int, int) override;
+    void valueTreeChildAdded (ValueTree&, ValueTree&) override {}
+    void valueTreeChildRemoved (ValueTree&, ValueTree&, int) override {}
+    void valueTreeChildOrderChanged (ValueTree&, int, int) override {}
     void valueTreeParentChanged (ValueTree&) override { jassertfalse; }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditWindow)

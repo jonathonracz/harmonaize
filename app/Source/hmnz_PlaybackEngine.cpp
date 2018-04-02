@@ -38,7 +38,7 @@ PlaybackEngine::~PlaybackEngine()
 
 bool PlaybackEngine::getCurrentPosition (AudioPlayHead::CurrentPositionInfo& result)
 {
-    result = currentPositionInfo.load (std::memory_order_release);
+    result = currentPositionInfo.load (std::memory_order_acquire);
     return true;
 }
 
