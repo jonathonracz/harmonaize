@@ -351,16 +351,24 @@ void EditWindow::setEdit (const ValueTree& edit)
         undoManager.reset();
     }
 
+    undoManager = std::unique_ptr<UndoManager> (new UndoManager);
+
     if (edit.getType() == IDs::Edit)
     {
-        undoManager = std::unique_ptr<UndoManager> (new UndoManager);
         currentEdit = std::unique_ptr<Edit> (new Edit (edit, undoManager.get()));
-        currentEdit->getState().addListener (this);
-        editDebugger.setSource (currentEdit->getState());
-        editDebugger.setVisible (false);
-        playbackEngine = std::unique_ptr<PlaybackEngine> (new PlaybackEngine (*currentEdit));
-        setContentOwned (new EditView (*currentEdit), false);
     }
+    else
+    {
+        AlertWindow::showNativeDialogBox ({}, translate ("Could not open edit."), false);
+        ValueTree defaultEdit = Edit::createDefaultState();
+        currentEdit = std::unique_ptr<Edit> (new Edit (defaultEdit, undoManager.get()));
+    }
+
+    currentEdit->getState().addListener (this);
+    editDebugger.setSource (currentEdit->getState());
+    editDebugger.setVisible (false);
+    playbackEngine = std::unique_ptr<PlaybackEngine> (new PlaybackEngine (*currentEdit));
+    setContentOwned (new EditView (*currentEdit), false);
 }
 
 void EditWindow::updateTitleBarText()
@@ -372,8 +380,11 @@ void EditWindow::updateTitleBarText()
     setName (projectName);
 }
 
-void EditWindow::valueTreePropertyChanged (ValueTree&, const Identifier&)
+void EditWindow::valueTreePropertyChanged (ValueTree& tree, const Identifier&)
 {
-    modifiedSinceLastSave = true;
-    updateTitleBarText();
+    if (tree.getType() != IDs::Transport)
+    {
+        modifiedSinceLastSave = true;
+        updateTitleBarText();
+    }
 }

@@ -18,8 +18,8 @@ EditView::EditView (Edit& _edit)
     addAndMakeVisible (arrangementView);
     addAndMakeVisible (keyboard.get());
 
-    keyboard->setKeyWidth(53);
-    keyboard->setLowestVisibleKey(60);
+    keyboard->setKeyWidth (53);
+    keyboard->setLowestVisibleKey (60);
 }
 
 EditView::~EditView()

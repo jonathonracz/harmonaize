@@ -21,6 +21,8 @@ Track::Track (const ValueTree& v, UndoManager* um, Edit& _edit)
       edit (_edit),
       clipList (getState().getOrCreateChildWithName (IDs::ClipList, nullptr), getUndoManager(), *this)
 {
+    Utility::writeBackDefault (color);
+
     // May not entirely prevent allocation in the audio callback, but it will
     // at least provide a good starting point. 2048 is what's used internally
     // by JUCE.

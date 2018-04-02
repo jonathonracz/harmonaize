@@ -114,7 +114,7 @@ public:
         this->addObjects();
     }
 
-private:
+protected:
     ObjectType* createNewObject (const ValueTree& v, UndoManager* um) override
     {
         return new ObjectType (v, um);
