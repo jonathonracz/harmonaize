@@ -20,11 +20,6 @@ Clip::Clip (const ValueTree& v, UndoManager* um, Track& _track)
       midiMessageSequenceModel (getState().getOrCreateChildWithName (MidiMessageSequenceModel::identifier, nullptr), getUndoManager()),
       track (_track)
 {
-    if (midiMessageSequenceModel.midiMessages.size() > 0)
-    {
-        adjustBoundsToFitMessageTimestamp (midiMessageSequenceModel.midiMessages.getFirst()->timestamp);
-        adjustBoundsToFitMessageTimestamp (midiMessageSequenceModel.midiMessages.getLast()->timestamp);
-    }
 }
 
 MidiMessageSequence Clip::getMidiMessageSequence (double timeDelta) const

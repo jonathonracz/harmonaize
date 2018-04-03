@@ -14,7 +14,7 @@
 ClipArray::ClipArray (const ValueTree& v, UndoManager* um, Track& _track) :
     HomogeneousValueTreeObjectArray<Clip> (v, um), track (_track)
 {
-
+    addObjects();
 }
 
 Clip* ClipArray::createNewObject (const ValueTree& v, UndoManager* um)
