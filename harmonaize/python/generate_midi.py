@@ -27,15 +27,9 @@ def genAccompaniment(midi=None):
 		'measure_map': parser.getMeasureMap(),
 		'groove': selector.select_groove(),
 	}
-	if not FileAttributes["note_counts"]:
-		return
 
 	generator = ChordProg(FileAttributes, PATH_TO_TEMP_DIR + "/accomp.mma")
-
-	# if len(FileAttributes['measure_map'].items()) == 0:
 	generator.generateMMAFormat()
-	# else:
-	# 	generator.genMmaFileWithExactChords()
 
 	genMidi(PATH_TO_TEMP_DIR + "/accomp.mma")
 	return mido.MidiFile(PATH_TO_TEMP_DIR + "/accomp.mid")

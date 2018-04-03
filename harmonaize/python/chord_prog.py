@@ -202,22 +202,13 @@ class ChordProg():
 			newChord = newChord + 'm'
 		return newChord
 
-	def basicChordProg1(self):
+	def basicChordProg(self):
 		chordList = []
-		chordList.append(self.tonic)
-		chordList.append(self.intervalJump("P4"))
-		chordList.append(self.makeMinor(self.intervalJump("M6")))
-		chordList.append(self.intervalJump("P5"))
-		return chordList
-
-	def basicChordProg2(self):
-		chordList = []
-		chordList.append(self.tonic)
-		chordList.append(self.intervalJump("P5"))
-		chordList.append(self.makeMinor(self.intervalJump("M6")))
-		chordList.append(self.makeMinor(self.intervalJump("M3")))
-		chordList.append(self.intervalJump("P4"))
-		print(chordList)
+		for _ in range(4):
+			chordList.append(self.tonic)
+			chordList.append(self.intervalJump("P5"))
+			chordList.append(self.makeMinor(self.intervalJump("M6")))
+			chordList.append(self.intervalJump("P4"))
 		return chordList
 
 
@@ -294,11 +285,14 @@ class ChordProg():
 		file.write("Groove " + self.groove + "\n")
 
 	def generateMMAFormat(self):
-		print(self.filename)
 		file = open(self.filename, 'w')
 		self.writeMMAHeader(file)
 
-		chordList = self.advancedChordProg()
+		if len(self.measure_map) == 0:
+			chordList = self.basicChordProg()
+		else:
+			chordList = self.advancedChordProg()
+			
 		for chord in chordList:
 			file.write(str(self.counter) + " " + chord + "\n")
 			self.counter = self.counter + 1
