@@ -19,9 +19,7 @@ class GrooveSelector():
 		return grooves
 
 	def select_groove(self):
-		return 'basicrock'
-
 		if len(self.grooves) > 0:
-			return random.choice(self.grooves)
+			return random.choice(list(self.grooves.values()))[0]
 		else:
-			return random.choice(GROOVES)
+			return random.choice(list(GROOVES.values()))[0]
