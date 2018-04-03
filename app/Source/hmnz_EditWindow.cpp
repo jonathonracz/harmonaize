@@ -155,12 +155,12 @@ void EditWindow::getCommandInfo (const CommandID commandID, ApplicationCommandIn
             break;
 
         case CommandIDs::undo:
-            result.setInfo ("Undo", String(), category, 0);
+            result.setInfo ("Undo", String(), category, (undoManager && undoManager->canUndo()) ? 0 : ApplicationCommandInfo::CommandFlags::isDisabled);
             result.addDefaultKeypress ('z', ModifierKeys::commandModifier);
             break;
 
         case CommandIDs::redo:
-            result.setInfo ("Redo", String(), category, 0);
+            result.setInfo ("Redo", String(), category, (undoManager && undoManager->canRedo()) ? 0 : ApplicationCommandInfo::CommandFlags::isDisabled);
             result.defaultKeypresses.add (KeyPress ('z', ModifierKeys::shiftModifier | ModifierKeys::commandModifier, 0));
             break;
 
@@ -226,6 +226,7 @@ bool EditWindow::perform (const InvocationInfo& info)
             if (currentEdit)
                 undoManager->undo();
 
+            HarmonaizeApplication::getApp().commandManager.commandStatusChanged();
             break;
         }
         case CommandIDs::redo:
@@ -233,6 +234,7 @@ bool EditWindow::perform (const InvocationInfo& info)
             if (currentEdit)
                 undoManager->redo();
 
+            HarmonaizeApplication::getApp().commandManager.commandStatusChanged();
             break;
         }
         case CommandIDs::scaleUp:
@@ -267,7 +269,7 @@ void EditWindow::openProject()
 {
     if (attemptToCloseProject())
     {
-        FileChooser chooser(translate("Open Edit"), projectDiskLocation.getParentDirectory(), "*.hmnz");
+        FileChooser chooser(translate ("Open Edit"), projectDiskLocation.getParentDirectory(), "*.hmnz");
         bool result = chooser.browseForFileToOpen();
         if (result)
         {
@@ -284,10 +286,10 @@ void EditWindow::openProject()
                     return;
                 }
 
-                AlertWindow::showNativeDialogBox({}, translate("Could not open " + chooser.getResult().getFileName()), false);
+                AlertWindow::showNativeDialogBox({}, translate ("Could not open " + chooser.getResult().getFileName()), false);
             }
 
-            AlertWindow::showNativeDialogBox({}, translate("Could not read " + chooser.getResult().getFileName()), false);
+            AlertWindow::showNativeDialogBox({}, translate ("Could not read " + chooser.getResult().getFileName()), false);
         }
     }
 }
@@ -382,6 +384,8 @@ void EditWindow::updateTitleBarText()
 
 void EditWindow::valueTreePropertyChanged (ValueTree& tree, const Identifier&)
 {
+    HarmonaizeApplication::getApp().commandManager.commandStatusChanged();
+
     if (tree.getType() != IDs::Transport)
     {
         modifiedSinceLastSave = true;
