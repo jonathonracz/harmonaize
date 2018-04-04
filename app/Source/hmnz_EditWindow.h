@@ -47,8 +47,11 @@ private:
     jcf::ValueTreeDebugger editDebugger;
 
     bool attemptToCloseProject();
+    void closeProject();
     void setEdit (const ValueTree& edit);
     void updateTitleBarText();
+
+    void closeButtonPressed() override;
 
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
     void valueTreeChildAdded (ValueTree&, ValueTree&) override {}

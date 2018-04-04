@@ -324,6 +324,22 @@ void EditWindow::saveProjectAs()
     }
 }
 
+void EditWindow::closeProject()
+{
+    if (modifiedSinceLastSave)
+    {
+        if (AlertWindow::showOkCancelBox (
+            AlertWindow::AlertIconType::QuestionIcon,
+            String(),
+            translate ("The project has been modified. Save changes?"),
+            translate ("Yes"),
+            translate ("No")))
+        {
+            saveProject();
+        }
+    }
+}
+
 bool EditWindow::attemptToCloseProject()
 {
     if (modifiedSinceLastSave)
@@ -353,19 +369,16 @@ void EditWindow::setEdit (const ValueTree& edit)
         undoManager.reset();
     }
 
+    if (edit.getType() != IDs::Edit)
+    {
+        if (edit.isValid())
+            AlertWindow::showNativeDialogBox ({}, translate ("Could not open edit."), false);
+
+        return;
+    }
+
     undoManager = std::unique_ptr<UndoManager> (new UndoManager);
-
-    if (edit.getType() == IDs::Edit)
-    {
-        currentEdit = std::unique_ptr<Edit> (new Edit (edit, undoManager.get()));
-    }
-    else
-    {
-        AlertWindow::showNativeDialogBox ({}, translate ("Could not open edit."), false);
-        ValueTree defaultEdit = Edit::createDefaultState();
-        currentEdit = std::unique_ptr<Edit> (new Edit (defaultEdit, undoManager.get()));
-    }
-
+    currentEdit = std::unique_ptr<Edit> (new Edit (edit, undoManager.get()));
     currentEdit->getState().addListener (this);
     editDebugger.setSource (currentEdit->getState());
     editDebugger.setVisible (false);
@@ -380,6 +393,12 @@ void EditWindow::updateTitleBarText()
         projectName += "*";
 
     setName (projectName);
+}
+
+void EditWindow::closeButtonPressed()
+{
+    closeProject();
+    HarmonaizeApplication::getApp().quit();
 }
 
 void EditWindow::valueTreePropertyChanged (ValueTree& tree, const Identifier&)
