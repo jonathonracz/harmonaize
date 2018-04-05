@@ -37,7 +37,7 @@ TransportView::TransportView (Edit& _edit)
     clearButton.setButtonText (translate ("Reset"));
     generateAccompanimentButton.setButtonText (translate ("Generate\nAccompaniment"));
     metronomeEnabledButton.setButtonText (translate ("Metronome"));
-    
+
     recordButton.setColour (TextButton::ColourIds::buttonOnColourId, Colours::red);
     metronomeEnabledButton.setColour (TextButton::ColourIds::buttonOnColourId, Colours::green);
 
@@ -146,7 +146,7 @@ void TransportView::resized()
     FlexItem beatL = FlexItem (beatLabel).withFlex (0.5f);
     FlexItem tempoL = FlexItem (tempoSlider).withFlex (0.5f);
     FlexItem keySigL = FlexItem (keySignatureComboBox).withFlex (0.5f);
-    
+
     FlexBox timeSig;
     timeSig.flexDirection = FlexBox::Direction::column;
     FlexItem timeSigN = FlexItem (timeSignatureNumerator).withFlex (0.5f);
@@ -154,7 +154,7 @@ void TransportView::resized()
     timeSig.items.add (timeSigN);
     timeSig.items.add (timeSigD);
     FlexItem timeSigFlex = FlexItem (timeSig).withFlex (0.5f);
-    
+
     labels.items.add (FlexItem().withFlex (1.0f));
     labels.items.add (timeL);
     labels.items.add (beatL);
@@ -344,7 +344,7 @@ void TransportView::labelTextChanged(Label* label)
         if (val.getIntValue() != 0)
             edit.transport.playHeadTimeSigNumerator = val.getIntValue();
         else
-            label->setText(String (edit.transport.playHeadTimeSigNumerator), NotificationType::dontSendNotification);
+            label->setText (String (edit.transport.playHeadTimeSigNumerator), NotificationType::dontSendNotification);
     }
     else if (label == &timeSignatureDenominator)
     {
@@ -352,6 +352,6 @@ void TransportView::labelTextChanged(Label* label)
         if (val.getIntValue() != 0)
             edit.transport.playHeadTimeSigDenominator = val.getIntValue();
         else
-            label->setText(String (edit.transport.playHeadTimeSigDenominator), NotificationType::dontSendNotification);
+            label->setText (String (edit.transport.playHeadTimeSigDenominator), NotificationType::dontSendNotification);
     }
 }

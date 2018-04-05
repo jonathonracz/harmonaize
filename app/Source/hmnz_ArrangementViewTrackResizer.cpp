@@ -22,7 +22,7 @@ void ArrangementViewTrackResizer::paint (Graphics& g)
     g.fillAll (Colours::white);
 }
 
-void ArrangementViewTrackResizer::mouseDown(const MouseEvent& event)
+void ArrangementViewTrackResizer::mouseDown (const MouseEvent& event)
 {
     lastDragPos = 0;
 }
