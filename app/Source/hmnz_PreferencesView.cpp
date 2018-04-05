@@ -16,14 +16,14 @@ PreferencesView::PreferencesView()
 {
     setOpaque (true);
     scaleSlider.setRange (0.5f, 2.0f, 0.1f);
-    scaleSlider.setValue(1.0f);
+    scaleSlider.setValue (1.0f);
     scaleSlider.addListener (this);
     scaleSlider.setSliderStyle (Slider::SliderStyle::IncDecButtons);
     addAndMakeVisible (selectorComponent);
-    addAndMakeVisible(scaleSlider);
+    addAndMakeVisible (scaleSlider);
     addAndMakeVisible (scaleLabel);
     addKeyListener (HarmonaizeApplication::getCommandManager().getKeyMappings());
-    scaleLabel.setText (translate("UI Scale"), NotificationType::dontSendNotification);
+    scaleLabel.setText (translate ("UI Scale"), NotificationType::dontSendNotification);
 }
 
 void PreferencesView::resized()
@@ -52,11 +52,12 @@ void PreferencesView::userTriedToCloseWindow()
     this->setVisible (false);
 }
 
-void PreferencesView::sliderValueChanged(Slider* slider)
+void PreferencesView::sliderValueChanged (Slider* slider)
 {
-    float val = slider->getValue();
-    slider->setValue (int (round(val * 10.0))/10.0);
-    Desktop::getInstance().setGlobalScaleFactor (int (val * 10.0)/10.0);
+    // TODO: Landon, can you use the slider interval value here instead?
+    double val = slider->getValue();
+    slider->setValue (int (std::round (val * 10.0)) / 10.0);
+    Desktop::getInstance().setGlobalScaleFactor (int (val * 10.0) / 10.0);
 }
 
 void PreferencesView::scaleUp()
