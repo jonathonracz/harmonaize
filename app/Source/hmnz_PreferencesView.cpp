@@ -15,7 +15,7 @@ PreferencesView::PreferencesView()
     : selectorComponent (HarmonaizeApplication::getDeviceManager(), 0, 2, 0, 2, true, false, true, true)
 {
     setOpaque (true);
-    scaleSlider.setRange (0.5f, 2.0f, 0.1f);
+    scaleSlider.setRange (1.0f, 2.0f, 0.1f);
     scaleSlider.setValue (1.0f);
     scaleSlider.addListener (this);
     scaleSlider.setSliderStyle (Slider::SliderStyle::IncDecButtons);
@@ -33,6 +33,9 @@ void PreferencesView::resized()
     FlexBox scale;
     scale.flexDirection = FlexBox::Direction::row;
     scaleLabel.setJustificationType (Justification::centred);
+//    Font font = scaleLabel.getFont();
+//    font.setHeight(25 * scaleSlider.getValue());
+//    scaleLabel.setFont(font);
     scale.items.add (FlexItem (scaleLabel).withFlex (0.25f));
     scale.items.add (FlexItem (scaleSlider).withFlex (0.75f));
 
@@ -54,10 +57,13 @@ void PreferencesView::userTriedToCloseWindow()
 
 void PreferencesView::sliderValueChanged (Slider* slider)
 {
-    // TODO: Landon, can you use the slider interval value here instead?
     double val = slider->getValue();
     slider->setValue (int (std::round (val * 10.0)) / 10.0);
-    Desktop::getInstance().setGlobalScaleFactor (int (val * 10.0) / 10.0);
+    EditView* editView = static_cast<EditView*>(HarmonaizeApplication::getApp().editWindow.get()->getContentComponent());
+    editView->customLookAndFeel->setFontScale(val);
+    editView->lookAndFeelChanged();
+    editView->repaint();
+    repaint();
 }
 
 void PreferencesView::scaleUp()

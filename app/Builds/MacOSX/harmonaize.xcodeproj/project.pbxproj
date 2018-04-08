@@ -26,6 +26,7 @@
 		77C595DB2D5EE51856C6F849 = {isa = PBXBuildFile; fileRef = FD7F1601DE6497D38A60D756; };
 		547EF07B5A891ECB83EE4B8A = {isa = PBXBuildFile; fileRef = 49B662B8534731474C6C9FD3; };
 		5618CA053B0221932F546168 = {isa = PBXBuildFile; fileRef = BA9FB4ED25D33CEF7FB1FAD7; };
+		7FDCE6685A3BF0E35C8EC9DA = {isa = PBXBuildFile; fileRef = FB51CFDDA0580FEB063B4F2C; };
 		1FFD34B40F4317C290D9A2D1 = {isa = PBXBuildFile; fileRef = 9591FA9A7A4D25ECD6065783; };
 		4460A35DA791674C28743FCB = {isa = PBXBuildFile; fileRef = 8CFFBA0C1703AB237F64EAB9; };
 		125E9D187D55B01A8BF9B799 = {isa = PBXBuildFile; fileRef = AD9AE6C82379841E308C0A2C; };
@@ -90,6 +91,7 @@
 		2B1B1F427C26EAA21D3F4CEC = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_Identifiers.h"; path = "../../Source/hmnz_Identifiers.h"; sourceTree = "SOURCE_ROOT"; };
 		2DFE307B5C63AB94496CE421 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_PreferencesView.cpp"; path = "../../Source/hmnz_PreferencesView.cpp"; sourceTree = "SOURCE_ROOT"; };
 		2EFBC99B09E569171A40766C = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_gui_basics"; path = "../../../harmonaize/external/JUCE/modules/juce_gui_basics"; sourceTree = "SOURCE_ROOT"; };
+		2F149FE08AD95715DEEE9825 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_CustomLookAndFeel.h"; path = "../../Source/hmnz_CustomLookAndFeel.h"; sourceTree = "SOURCE_ROOT"; };
 		3570B17A2837ECB9FEA69EA2 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ArrangementViewModel.h"; path = "../../Source/hmnz_ArrangementViewModel.h"; sourceTree = "SOURCE_ROOT"; };
 		35AE501C34CFD20C625A7FFA = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ValueTreeObjectArray.h"; path = "../../Source/hmnz_ValueTreeObjectArray.h"; sourceTree = "SOURCE_ROOT"; };
 		384252337C9D31C2989D98BB = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "include_juce_core.mm"; path = "../../JuceLibraryCode/include_juce_core.mm"; sourceTree = "SOURCE_ROOT"; };
@@ -196,6 +198,7 @@
 		F872F8E4D9EBF591E455ACEA = {isa = PBXFileReference; lastKnownFileType = folder; name = mido; path = "$(PROJECT_DIR)/../../../harmonaize/external/mido/mido"; sourceTree = "<group>"; };
 		FB015D99BFB559B155740A06 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_ArrangementView.cpp"; path = "../../Source/hmnz_ArrangementView.cpp"; sourceTree = "SOURCE_ROOT"; };
 		FB39B8244568B867AA16E0E1 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_ArrangementViewTimelineComponent.cpp"; path = "../../Source/hmnz_ArrangementViewTimelineComponent.cpp"; sourceTree = "SOURCE_ROOT"; };
+		FB51CFDDA0580FEB063B4F2C = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "hmnz_CustomLookAndFeel.cpp"; path = "../../Source/hmnz_CustomLookAndFeel.cpp"; sourceTree = "SOURCE_ROOT"; };
 		FBFE89331D8E5096FACD84AD = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_audio_basics"; path = "../../../harmonaize/external/JUCE/modules/juce_audio_basics"; sourceTree = "SOURCE_ROOT"; };
 		FD2412823487C70BCD917AC1 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "include_juce_audio_utils.mm"; path = "../../JuceLibraryCode/include_juce_audio_utils.mm"; sourceTree = "SOURCE_ROOT"; };
 		FD7F1601DE6497D38A60D756 = {isa = PBXFileReference; lastKnownFileType = file.nib; name = RecentFilesMenuTemplate.nib; path = RecentFilesMenuTemplate.nib; sourceTree = "SOURCE_ROOT"; };
@@ -206,6 +209,8 @@
 					BA9FB4ED25D33CEF7FB1FAD7,
 					7D6E10D8F88B203A7519916B, ); name = Playback; sourceTree = "<group>"; };
 		7B84D3D14D615AF4871C3521 = {isa = PBXGroup; children = (
+					FB51CFDDA0580FEB063B4F2C,
+					2F149FE08AD95715DEEE9825,
 					9591FA9A7A4D25ECD6065783,
 					0DA808E6EF6C58C5C2ACA84D,
 					8CFFBA0C1703AB237F64EAB9,
@@ -517,6 +522,7 @@
 					547EF07B5A891ECB83EE4B8A, ); runOnlyForDeploymentPostprocessing = 0; };
 		81FDE27828439CAB92A26650 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (
 					5618CA053B0221932F546168,
+					7FDCE6685A3BF0E35C8EC9DA,
 					1FFD34B40F4317C290D9A2D1,
 					4460A35DA791674C28743FCB,
 					125E9D187D55B01A8BF9B799,

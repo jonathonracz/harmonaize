@@ -15,6 +15,10 @@
             file="Source/hmnz_PlaybackEngine.h"/>
     </GROUP>
     <GROUP id="{4C57DD66-0DB0-A254-59EF-09BAA05140B1}" name="GUI">
+      <FILE id="jRqSOa" name="hmnz_CustomLookAndFeel.cpp" compile="1" resource="0"
+            file="Source/hmnz_CustomLookAndFeel.cpp"/>
+      <FILE id="GNselE" name="hmnz_CustomLookAndFeel.h" compile="0" resource="0"
+            file="Source/hmnz_CustomLookAndFeel.h"/>
       <FILE id="rjfdNK" name="hmnz_ArrangementViewHeaderControls.cpp" compile="1"
             resource="0" file="Source/hmnz_ArrangementViewHeaderControls.cpp"/>
       <FILE id="tcFCkJ" name="hmnz_ArrangementViewHeaderControls.h" compile="0"

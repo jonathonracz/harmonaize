@@ -14,6 +14,8 @@ EditView::EditView (Edit& _edit)
     : edit (_edit), transportView (_edit), arrangementView (_edit),
       keyboard (new MidiKeyboardComponent (_edit.getMidiKeyboardState(), MidiKeyboardComponent::Orientation::horizontalKeyboard))
 {
+    customLookAndFeel = new CustomLookAndFeel();
+    LookAndFeel::setDefaultLookAndFeel(customLookAndFeel);
     addAndMakeVisible (transportView);
     addAndMakeVisible (arrangementView);
     addAndMakeVisible (keyboard.get());
@@ -24,6 +26,7 @@ EditView::EditView (Edit& _edit)
 
 EditView::~EditView()
 {
+    delete customLookAndFeel;
 }
 
 void EditView::resized()

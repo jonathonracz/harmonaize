@@ -10,6 +10,7 @@
 
 #include "hmnz_ArrangementViewTopBar.h"
 #include "hmnz_Edit.h"
+#include "hmnz_Application.h"
 
 ArrangementViewTopBar::ArrangementViewTopBar (Edit& _edit, CachedValue<double>& timeStart, CachedValue<double>& timeEnd)
     : ArrangementViewTimelineComponent (timeStart, timeEnd), edit (_edit)
@@ -60,6 +61,9 @@ void ArrangementViewTopBar::paint (Graphics& g)
         int xPos = getXPosForBeat (beatValue);
         if (drawText)
         {
+            EditView* editView = static_cast<EditView*>(HarmonaizeApplication::getApp().editWindow.get()->getContentComponent());
+            double fontSize = editView->customLookAndFeel->getFontScale();
+            g.setFont (15 * fontSize);
             g.drawText (beatText, Rectangle<int> (xPos, 0, getWidth(), getHeight()), Justification::Flags::centredLeft, false);
             g.fillRect (Rectangle<int> (xPos, static_cast<int> (getHeight() * 0.75), 1, static_cast<int> (getHeight() * 0.25)));
         }

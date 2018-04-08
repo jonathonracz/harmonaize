@@ -13,6 +13,7 @@
 #include "hmnz_Edit.h"
 #include "hmnz_TransportView.h"
 #include "hmnz_ArrangementView.h"
+#include "hmnz_CustomLookAndFeel.h"
 
 class EditView  : public Component,
                   public ValueTree::Listener
@@ -21,6 +22,7 @@ public:
     EditView (Edit& edit);
     ~EditView();
 
+    CustomLookAndFeel* customLookAndFeel;
 private:
     Edit& edit;
 
