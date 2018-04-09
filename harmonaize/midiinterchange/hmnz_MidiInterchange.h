@@ -10,8 +10,16 @@
 
 #pragma once
 
+#if JUCE_CLANG
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wrange-loop-analysis"
+#endif
 #include "../external/pybind11/include/pybind11/stl.h"
 #include "../external/pybind11/include/pybind11/embed.h"
+#if JUCE_CLANG
+#pragma clang diagnostic pop
+#endif
+
 #include <iostream>
 #include <vector>
 #include <string>
