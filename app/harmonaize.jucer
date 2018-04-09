@@ -175,14 +175,16 @@
     <FILE id="O1PXYS" name="hmnz_Main.cpp" compile="1" resource="0" file="Source/hmnz_Main.cpp"/>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="" extraFrameworks="/usr/local/opt/python3/Frameworks/Python"
-               extraLinkerFlags="-L/usr/local/opt/python3/Frameworks/Python.framework/Versions/3.6/lib/python3.6/config-3.6m-darwin -lpython3.6m -ldl -framework CoreFoundation"
-               bigIcon="HOW6YQ" smallIcon="HOW6YQ" customXcodeResourceFolders="$(PROJECT_DIR)/../../../harmonaize/midiinterchange/python.py&#10;$(PROJECT_DIR)/../../../harmonaize/external/mido/mido&#10;$(PROJECT_DIR)/../../../harmonaize/external/mma&#10;$(PROJECT_DIR)/../../../harmonaize/python&#10;$(PROJECT_DIR)/../../source/Instruments">
+    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="dl" bigIcon="HOW6YQ"
+               smallIcon="HOW6YQ" customXcodeResourceFolders="$(PROJECT_DIR)/../../../harmonaize/midiinterchange/python.py&#10;$(PROJECT_DIR)/../../../harmonaize/external/mido/mido&#10;$(PROJECT_DIR)/../../../harmonaize/external/mma&#10;$(PROJECT_DIR)/../../../harmonaize/python&#10;$(PROJECT_DIR)/../../source/Instruments"
+               prebuildCommand="#cp -a /usr/local/opt/python3/Frameworks/ ${CONFIGURATION_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/&#10;chown -hR ${INSTALL_OWNER}:${INSTALL_GROUP} ${CONFIGURATION_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}&#10;chmod -R ${INSTALL_MODE_FLAG} ${CONFIGURATION_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}"
+               extraLinkerFlags="-rpath @executable_path/../Frameworks/Python.framework/Versions/3.6/lib -L${CONFIGURATION_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Python.framework/Versions/3.6/lib -lpython3.6m"
+               extraFrameworks="Python" extraCompilerFlags="-I${CONFIGURATION_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Python.framework/Versions/3.6/Headers">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" enablePluginBinaryCopyStep="1" isDebug="1" optimisation="1"
-                       linkTimeOptimisation="0" targetName="harmonaize" headerPath="/usr/local/opt/python3/Frameworks/Python.framework/Versions/3.6/Headers"/>
+                       linkTimeOptimisation="0" targetName="harmonaize"/>
         <CONFIGURATION name="Release" enablePluginBinaryCopyStep="1" isDebug="0" optimisation="3"
-                       linkTimeOptimisation="1" targetName="harmonaize" headerPath="/usr/local/opt/python3/Frameworks/Python.framework/Versions/3.6/Headers"/>
+                       linkTimeOptimisation="1" targetName="harmonaize"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../harmonaize/external/JUCE/modules"/>
