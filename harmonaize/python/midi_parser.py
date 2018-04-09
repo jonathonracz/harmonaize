@@ -57,11 +57,11 @@ def makeMeasureMap(tempo, time_signature, messages):
 
 	for message in messages:
 
-		beat_value = message.time * tempo / 1000 / 60 / 2
+		beat_value = message.time * tempo / 1000 / 60
 		current_beat += beat_value
 
 		if message.type == 'note_on':
-			current_measure = math.floor(current_beat / time_signature[0])
+			current_measure = int(math.floor(current_beat / time_signature[0]))
 
 			while current_measure >= len(measure_map):
 				measure_map.append([])

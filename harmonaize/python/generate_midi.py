@@ -1,8 +1,6 @@
 #!/usr/bin/env python 
 
-import os
-import sys
-
+import os, sys
 sys.path.append(os.path.abspath(os.path.join('..', '..', '..', '..', '..', '..', '..', '..', 'harmonaize', 'external', 'mido')))
 
 import mido
