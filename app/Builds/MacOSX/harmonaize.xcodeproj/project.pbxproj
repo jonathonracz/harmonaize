@@ -393,8 +393,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				OTHER_CPLUSPLUSFLAGS = "-I${CONFIGURATION_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Python.framework/Versions/3.6/Headers";
-				OTHER_LDFLAGS = "-rpath @executable_path/../Frameworks/Python.framework/Versions/3.6/lib -L${CONFIGURATION_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Python.framework/Versions/3.6/lib -lpython3.6m -ldl";
+				OTHER_CPLUSPLUSFLAGS = "-I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Python.framework/Headers";
 				PRODUCT_BUNDLE_IDENTIFIER = com.harmonaize.harmonaize;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Debug; };
@@ -428,8 +427,7 @@
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				OTHER_CPLUSPLUSFLAGS = "-I${CONFIGURATION_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Python.framework/Versions/3.6/Headers";
-				OTHER_LDFLAGS = "-rpath @executable_path/../Frameworks/Python.framework/Versions/3.6/lib -L${CONFIGURATION_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Python.framework/Versions/3.6/lib -lpython3.6m -ldl";
+				OTHER_CPLUSPLUSFLAGS = "-I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Python.framework/Headers";
 				PRODUCT_BUNDLE_IDENTIFIER = com.harmonaize.harmonaize;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Release; };
@@ -514,7 +512,6 @@
 		CF6BB11AA8902E471AD8B3D0 = {isa = XCConfigurationList; buildConfigurations = (
 					46657038D4ABF0C816F5881D,
 					D26320213B96576B9AC9DA29, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug; };
-		40DF681DDCC28BD5CA689349 = {isa = PBXShellScriptBuildPhase; buildActionMask = 2147483647; files = (  ); runOnlyForDeploymentPostprocessing = 0; name = "Pre-build script"; shellPath = /bin/sh; shellScript = "#cp -a /usr/local/opt/python3/Frameworks/ ${CONFIGURATION_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/\nchown -hR ${INSTALL_OWNER}:${INSTALL_GROUP} ${CONFIGURATION_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}\nchmod -R ${INSTALL_MODE_FLAG} ${CONFIGURATION_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}"; };
 		6DE43A21281E16BE208DAD21 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (
 					0155DB47BD8B1A358F13290E,
 					F130E59007C36C3CD72FA287,
@@ -582,7 +579,6 @@
 					F16C182A499B95D33DE9A1B9,
 					39EAA080A2C4CD64973757CB, ); runOnlyForDeploymentPostprocessing = 0; };
 		25AE84CEE39AF2A3202FF6A1 = {isa = PBXNativeTarget; buildConfigurationList = CF6BB11AA8902E471AD8B3D0; buildPhases = (
-					40DF681DDCC28BD5CA689349,
 					6DE43A21281E16BE208DAD21,
 					81FDE27828439CAB92A26650,
 					551ED2426550EA798CEDF063, ); buildRules = ( ); dependencies = (  ); name = "HarmonAIze - App"; productName = HarmonAIze; productReference = 8D0A44853497795D2D1B5E05; productType = "com.apple.product-type.application"; };
