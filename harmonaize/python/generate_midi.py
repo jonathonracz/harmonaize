@@ -2,6 +2,9 @@
 
 import os
 import sys
+
+sys.path.append(os.path.abspath(os.path.join('..', '..', '..', '..', '..', '..', '..', '..', 'harmonaize', 'external', 'mido')))
+
 import mido
 import tempfile
 
@@ -11,9 +14,7 @@ from groove_selector import GrooveSelector
 
 from grooves import GROOVES
 
-tempDir = tempfile.TemporaryDirectory()
-
-PATH_TO_TEMP_DIR = tempDir.name
+PATH_TO_TEMP_DIR = tempfile.mkdtemp()
 
 def genAccompaniment(midi=None):
 	parser = MidiParser(midi)
