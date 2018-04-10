@@ -285,6 +285,7 @@ void TransportView::buttonClicked (Button* button)
     }
     else if (button == &recordButton)
     {
+        edit.getUndoManager()->beginNewTransaction ("Record");
         transport.recordEnabled = button->getToggleState();
         transport.playState = button->getToggleState();
     }
@@ -292,17 +293,20 @@ void TransportView::buttonClicked (Button* button)
     {
         // TODO: This belongs in some sort of arrangement controller, not transport.
         // TODO: Also, this is stupidly written and hacky
+        edit.getUndoManager()->beginNewTransaction ("Clear Project");
         edit.trackList.getState().removeAllChildren (edit.getUndoManager());
         edit.trackList.tracks.addState (Track::createDefaultState());
     }
     else if (button == &generateAccompanimentButton)
     {
+        edit.getUndoManager()->beginNewTransaction ("Generate Accompaniment");
         MidiFile midiFile = edit.exportToMidi();
         midiFile = Interchange::callPython (midiFile);
         edit.importFromMidi (midiFile, 1, 0.0);
     }
     else if (button == &metronomeEnabledButton)
     {
+        edit.getUndoManager()->beginNewTransaction ("Toggle Metronome");
         if (edit.masterTrack.metronomeEnabled.get())
             edit.masterTrack.metronomeEnabled.setValue (false, nullptr);
         else
