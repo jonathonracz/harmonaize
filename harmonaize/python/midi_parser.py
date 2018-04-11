@@ -57,7 +57,7 @@ def makeMeasureMap(tempo, time_signature, messages):
 
 	for message in messages:
 
-		beat_value = message.time * tempo / 1000 / 60
+		beat_value = message.time / 500
 		current_beat += beat_value
 
 		if message.type == 'note_on':
