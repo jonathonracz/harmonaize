@@ -15,6 +15,7 @@
 #include "hmnz_PlaybackEngine.h"
 #include "hmnz_CommandIDs.h"
 #include "hmnz_Application.h"
+#include "../../harmonaize/midiinterchange/hmnz_MidiInterchange.h"
 
 class EditWindow    : public DocumentWindow,
                       public MenuBarModel,

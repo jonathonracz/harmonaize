@@ -82,6 +82,7 @@ TransportView::TransportView (Edit& _edit)
     addAndMakeVisible (keySignatureText);
 
     edit.transport.getState().addListener (this);
+    edit.masterTrack.getState().addListener (this);
 
     edit.transport.getState().sendPropertyChangeMessage (edit.transport.playState.getPropertyID());
     edit.transport.getState().sendPropertyChangeMessage (edit.transport.recordEnabled.getPropertyID());
@@ -92,11 +93,14 @@ TransportView::TransportView (Edit& _edit)
     edit.transport.getState().sendPropertyChangeMessage (edit.transport.playHeadTimeSigDenominator.getPropertyID());
     edit.transport.getState().sendPropertyChangeMessage (edit.transport.playHeadKeySigNumSharpsOrFlats.getPropertyID());
     edit.transport.getState().sendPropertyChangeMessage (edit.transport.playHeadKeySigIsMinor.getPropertyID());
+
+    edit.masterTrack.getState().sendPropertyChangeMessage (edit.masterTrack.metronomeEnabled.getPropertyID());
 }
 
 TransportView::~TransportView()
 {
     edit.transport.getState().removeListener (this);
+    edit.masterTrack.getState().removeListener (this);
 }
 
 void TransportView::resized()
@@ -266,6 +270,13 @@ void TransportView::valueTreePropertyChanged (ValueTree& treeChanged, const Iden
             timeSignatureDenominator.setText (String (transport.playHeadTimeSigDenominator), NotificationType::dontSendNotification);
         }
     }
+    else if (treeChanged == edit.masterTrack.getState())
+    {
+        if (property == edit.masterTrack.metronomeEnabled.getPropertyID())
+        {
+            metronomeEnabledButton.setToggleState (bool (treeChanged[property]), NotificationType::dontSendNotification);
+        }
+    }
 }
 
 void TransportView::buttonClicked (Button* button)
@@ -275,7 +286,8 @@ void TransportView::buttonClicked (Button* button)
     {
         transport.playHeadBeat = 0.0f;
         transport.playHeadTime = 0.0f;
-        beatLabel.setText ("0", NotificationType::dontSendNotification);
+//        beatLabel.setText ("0", NotificationType::dontSendNotification);
+//        timeLabel.setText ("0", NotificationType::dontSendNotification);
     }
     else if (button == &stopPlayButton)
     {
