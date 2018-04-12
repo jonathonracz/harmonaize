@@ -12,6 +12,7 @@
 #include "hmnz_Transport.h"
 #include "hmnz_Edit.h"
 #include "hmnz_Application.h"
+#include "hmnz_Genre.h"
 #include "../../harmonaize/midiinterchange/hmnz_MidiInterchange.h"
 
 TransportView::TransportView (Edit& _edit)
@@ -30,6 +31,7 @@ TransportView::TransportView (Edit& _edit)
     timeSignatureNumerator.addListener (this);
     timeSignatureDenominator.addListener (this);
     keySignatureComboBox.addListener (this);
+    genreComboBox.addListener(this);
 
     goToBeginningButton.setButtonText (translate ("Go to beginning"));
     stopPlayButton.setButtonText (translate ("Play"));
@@ -49,6 +51,7 @@ TransportView::TransportView (Edit& _edit)
     tempoText.setEditable (false);
     timeSignatureText.setText (translate ("Time"), NotificationType::dontSendNotification);
     keySignatureText.setText (translate ("Key"), NotificationType::dontSendNotification);
+    genreText.setText (translate ("Genre"), NotificationType::dontSendNotification);
 
     tempoSlider.setColour (Slider::ColourIds::textBoxOutlineColourId, Colours::transparentWhite);
     tempoSlider.setTextBoxStyle (Slider::TextBoxBelow, 0, 80, 25);
@@ -56,6 +59,8 @@ TransportView::TransportView (Edit& _edit)
     tempoSlider.setTextValueSuffix (" BPM");
     StringArray items = KeySignature::getKeyDescriptions();
     keySignatureComboBox.addItemList (items, 1);
+    StringArray genres = Genre::getGenres();
+    genreComboBox.addItemList (genres, 1);
 
     stopPlayButton.setClickingTogglesState (true);
     recordButton.setClickingTogglesState (true);
@@ -74,12 +79,14 @@ TransportView::TransportView (Edit& _edit)
     addAndMakeVisible (timeSignatureNumerator);
     addAndMakeVisible (timeSignatureDenominator);
     addAndMakeVisible (keySignatureComboBox);
+    addAndMakeVisible(genreComboBox);
 
     addAndMakeVisible (timeText);
     addAndMakeVisible (beatText);
     addAndMakeVisible (tempoText);
     addAndMakeVisible (timeSignatureText);
     addAndMakeVisible (keySignatureText);
+    addAndMakeVisible (genreText);
 
     edit.transport.getState().addListener (this);
 
@@ -111,6 +118,7 @@ void TransportView::resized()
     tempoText.setJustificationType (Justification::centred);
     keySignatureText.setJustificationType (Justification::centred);
     timeSignatureText.setJustificationType (Justification::centred);
+    genreText.setJustificationType (Justification::centred);
 //    Font font = Font (20);
 //    timeText.setFont (font);
 //    beatText.setFont (font);
@@ -122,12 +130,14 @@ void TransportView::resized()
     FlexItem tempoT = FlexItem (tempoText).withFlex (0.5f);
     FlexItem keySigT = FlexItem (keySignatureText).withFlex (0.5f);
     FlexItem timeSigT = FlexItem (timeSignatureText).withFlex (0.5f);
+    FlexItem genreT = FlexItem (genreText).withFlex(0.5f);
     text.items.add (FlexItem().withFlex (1.0f));
     text.items.add (timeT);
     text.items.add (beatT);
     text.items.add (tempoT);
     text.items.add (timeSigT);
     text.items.add (keySigT);
+    text.items.add (genreT);
     text.items.add (FlexItem().withFlex (1.0f));
 
     FlexBox labels;
@@ -146,6 +156,7 @@ void TransportView::resized()
     FlexItem beatL = FlexItem (beatLabel).withFlex (0.5f);
     FlexItem tempoL = FlexItem (tempoSlider).withFlex (0.5f);
     FlexItem keySigL = FlexItem (keySignatureComboBox).withFlex (0.5f);
+    FlexItem genreL = FlexItem (genreComboBox).withFlex(0.5f);
 
     FlexBox timeSig;
     timeSig.flexDirection = FlexBox::Direction::column;
@@ -161,6 +172,7 @@ void TransportView::resized()
     labels.items.add (tempoL);
     labels.items.add (timeSigFlex);
     labels.items.add (keySigL);
+    labels.items.add (genreL);
     labels.items.add (FlexItem().withFlex (1.0f));
 
     FlexBox buttons;
@@ -328,9 +340,16 @@ void TransportView::buttonStateChanged (Button* button)
 void TransportView::comboBoxChanged (ComboBox* comboBox)
 {
     String val = comboBox->getText();
-    std::pair<int, bool> key = KeySignature::createRepresentationFromDescription (val);
-    edit.transport.playHeadKeySigNumSharpsOrFlats = key.first;
-    edit.transport.playHeadKeySigIsMinor = key.second;
+    if (comboBox->getName() == "Key Signature")
+    {
+        std::pair<int, bool> key = KeySignature::createRepresentationFromDescription (val);
+        edit.transport.playHeadKeySigNumSharpsOrFlats = key.first;
+        edit.transport.playHeadKeySigIsMinor = key.second;
+    }
+    else
+    {
+        edit.masterTrack.genre.genre = Genre::getIndexFromString (val);
+    }
 }
 
 void TransportView::sliderValueChanged (Slider* slider)

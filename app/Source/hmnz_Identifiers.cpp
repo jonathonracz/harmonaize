@@ -82,6 +82,12 @@ namespace IDs
         DEFINE_ID (IsMinor)
     }
 
+    DEFINE_ID (Genre)
+    namespace GenreProps
+    {
+        DEFINE_ID (GenreIndex)
+    }
+
     DEFINE_ID (TrackList)
 
     DEFINE_ID (Track)

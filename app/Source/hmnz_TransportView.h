@@ -43,12 +43,14 @@ private:
     
     Slider tempoSlider;
     ComboBox keySignatureComboBox;
+    ComboBox genreComboBox;
 
     Label timeText;
     Label beatText;
     Label tempoText;
     Label timeSignatureText;
     Label keySignatureText;
+    Label genreText;
 
     void resized() override;
     void paint (Graphics&) override;

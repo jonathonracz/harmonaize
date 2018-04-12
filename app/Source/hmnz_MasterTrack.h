@@ -14,6 +14,7 @@
 #include "hmnz_Tempo.h"
 #include "hmnz_TimeSignature.h"
 #include "hmnz_KeySignature.h"
+#include "hmnz_Genre.h"
 #include "hmnz_PlaybackEngine.h"
 
 class Edit;
@@ -36,6 +37,7 @@ public:
     Tempo tempo;
     TimeSignature timeSignature;
     KeySignature keySignature;
+    Genre genre;
 
     CachedValue<SPSCAtomicWrapper<bool>> metronomeEnabled;
 
