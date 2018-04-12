@@ -14,10 +14,14 @@ class MidiParser():
 		self.meta_messages = midi.tracks[0]
 		self.note_messages = midi.tracks[1]
 
+		for message in self.meta_messages:
+			print (message)
+
 		time_sig_msg = getMessagesWithType(self.meta_messages, 'time_signature')[0]
 		self.time_signature = (time_sig_msg.numerator, time_sig_msg.denominator)
 		self.tempo = mido.tempo2bpm(getMessagesWithType(self.meta_messages, 'set_tempo')[0].tempo)
 		self.tonic = getMessagesWithType(self.meta_messages, 'key_signature')[0].key
+		self.genre = getMessagesWithType(self.meta_messages, 'text')[0].text.encode('ascii', 'ignore').lower()
 
 		self.note_counts = makeNoteCounts(self.note_messages)
 		self.measure_map = makeMeasureMap(self.tempo, self.time_signature, self.note_messages)
@@ -31,6 +35,9 @@ class MidiParser():
 
 	def getTonic(self):
 		return self.tonic
+
+	def getGenre(self):
+		return self.genre
 
 	def getNoteCounts(self):
 		return self.note_counts

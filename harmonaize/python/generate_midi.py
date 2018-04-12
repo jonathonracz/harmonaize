@@ -16,7 +16,7 @@ PATH_TO_TEMP_DIR = tempfile.mkdtemp()
 
 def genAccompaniment(midi=None):
 	parser = MidiParser(midi)
-	selector = GrooveSelector(parser.getTempo(), parser.getTimeSignature())
+	selector = GrooveSelector(parser.getTempo(), parser.getTimeSignature(), parser.getGenre())
 
 	FileAttributes = {
 		'tempo': parser.getTempo(),
