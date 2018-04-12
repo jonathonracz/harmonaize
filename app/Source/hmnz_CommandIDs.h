@@ -28,6 +28,13 @@ namespace CommandIDs
         scaleUp                 = 0x300050,
         scaleDown               = 0x300051,
 
+        playPause               = 0x300060,
+        goToBeginning           = 0x300061,
+        toggleMetronome         = 0x300062,
+        reset                   = 0x300063,
+        record                  = 0x300064,
+        generateAccompaniment   = 0x300065,
+
         lastCommandIDEntry
     };
 }

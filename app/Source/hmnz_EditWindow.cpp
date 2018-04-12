@@ -107,7 +107,13 @@ void EditWindow::getAllCommands (Array<CommandID>& commands)
         CommandIDs::undo,
         CommandIDs::redo,
         CommandIDs::scaleUp,
-        CommandIDs::scaleDown
+        CommandIDs::scaleDown,
+        CommandIDs::playPause,
+        CommandIDs::goToBeginning,
+        CommandIDs::toggleMetronome,
+        CommandIDs::reset,
+        CommandIDs::record,
+        CommandIDs::generateAccompaniment
     };
 
     commands.addArray (ids, numElementsInArray (ids));
@@ -166,14 +172,44 @@ void EditWindow::getCommandInfo (const CommandID commandID, ApplicationCommandIn
 
         case CommandIDs::scaleUp:
             result.setInfo ("Scale Up", String(), category, 0);
-            result.addDefaultKeypress ('=', ModifierKeys::commandModifier);
+            result.addDefaultKeypress ('=', ModifierKeys::noModifiers);
             break;
 
         case CommandIDs::scaleDown:
             result.setInfo ("Scale Down", String(), category, 0);
-            result.addDefaultKeypress ('-', ModifierKeys::commandModifier);
+            result.addDefaultKeypress ('-', ModifierKeys::noModifiers);
             break;
 
+        case CommandIDs::playPause:
+            result.setInfo ("Play/Pause", String(), category, 0);
+            result.addDefaultKeypress (' ', ModifierKeys::noModifiers);
+            break;
+
+        case CommandIDs::goToBeginning:
+            result.setInfo ("Go to beginning", String(), category, 0);
+            result.addDefaultKeypress('b', ModifierKeys::noModifiers);
+            break;
+
+        case CommandIDs::toggleMetronome:
+            result.setInfo ("Toggle metronome", String(), category, 0);
+            result.addDefaultKeypress('m', ModifierKeys::noModifiers);
+            break;
+
+        case CommandIDs::reset:
+            result.setInfo ("Reset", String(), category, 0);
+            result.addDefaultKeypress ('c', ModifierKeys::noModifiers);
+            break;
+
+        case CommandIDs::record:
+            result.setInfo ("Record", String(), category, 0);
+            result.addDefaultKeypress ('v', ModifierKeys::noModifiers);
+            break;
+
+        case CommandIDs::generateAccompaniment:
+            result.setInfo ("Generate Accompaniment", String(), category, 0);
+            result.addDefaultKeypress ('g', ModifierKeys::noModifiers);
+            break;
+            
         default:
             break;
     }
@@ -247,6 +283,65 @@ bool EditWindow::perform (const InvocationInfo& info)
             HarmonaizeApplication::getApp().preferencesView->scaleDown();
             break;
         }
+        case CommandIDs::playPause:
+        {
+            Transport* transport = &this->currentEdit.get()->transport;
+            transport->playState = !transport->playState.get();
+            if (!transport->playState.get())
+                transport->recordEnabled = false;
+            break;
+        }
+        case CommandIDs::goToBeginning:
+        {
+            Transport* transport = &this->currentEdit.get()->transport;
+            transport->playHeadBeat = 0.0f;
+            transport->playHeadTime = 0.0f;
+            break;
+        }
+        case CommandIDs::toggleMetronome:
+        {
+            Edit* edit = this->currentEdit.get();
+            edit->getUndoManager()->beginNewTransaction ("Toggle Metronome");
+            if (edit->masterTrack.metronomeEnabled.get())
+                edit->masterTrack.metronomeEnabled.setValue (false, nullptr);
+            else
+                edit->masterTrack.metronomeEnabled.setValue (true, nullptr);
+            break;
+        }
+        case CommandIDs::reset:
+        {
+            Edit* edit = this->currentEdit.get();
+            edit->getUndoManager()->beginNewTransaction ("Clear Project");
+            edit->trackList.getState().removeAllChildren (edit->getUndoManager());
+            edit->trackList.tracks.addState (Track::createDefaultState());
+            break;
+        }
+        case CommandIDs::record:
+        {
+            Edit* edit = this->currentEdit.get();
+            edit->getUndoManager()->beginNewTransaction ("Record");
+            if (edit->transport.recordEnabled.get())
+            {
+                edit->transport.recordEnabled = false;
+                edit->transport.playState = false;
+            }
+            else
+            {
+                edit->transport.recordEnabled = true;
+                edit->transport.playState = true;
+            }
+            break;
+        }
+        case CommandIDs::generateAccompaniment:
+        {
+            Edit* edit = this->currentEdit.get();
+            edit->getUndoManager()->beginNewTransaction ("Generate Accompaniment");
+            MidiFile midiFile = edit->exportToMidi();
+            midiFile = Interchange::callPython (midiFile);
+            edit->importFromMidi (midiFile, 1, 0.0);
+            break;
+        }
+
         default:
             return false;
     }
