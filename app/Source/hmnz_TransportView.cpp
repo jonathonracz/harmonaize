@@ -351,6 +351,7 @@ void TransportView::buttonStateChanged (Button* button)
 
 void TransportView::comboBoxChanged (ComboBox* comboBox)
 {
+    edit.getUndoManager()->beginNewTransaction ("Combo Box Change");
     String val = comboBox->getText();
     if (comboBox->getName() == "Key Signature")
     {
@@ -366,6 +367,7 @@ void TransportView::comboBoxChanged (ComboBox* comboBox)
 
 void TransportView::sliderValueChanged (Slider* slider)
 {
+    edit.getUndoManager()->beginNewTransaction ("Tempo Change");
     int val = static_cast<int> (slider->getValue());
     slider->setValue (val);
     edit.transport.playHeadTempo = val;
@@ -373,6 +375,7 @@ void TransportView::sliderValueChanged (Slider* slider)
 
 void TransportView::labelTextChanged(Label* label)
 {
+    edit.getUndoManager()->beginNewTransaction ("Time Signature Change");
     if (label == &timeSignatureNumerator)
     {
         String val = label->getText();
