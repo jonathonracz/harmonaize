@@ -23,13 +23,13 @@ public:
     static StringArray getGenres ()
     {
         StringArray ret;
-        ret.add ("Jazz");
-        ret.add ("Swing");
-        ret.add ("Pop");
-        ret.add ("Rock");
-        ret.add ("Folk");
-        ret.add ("Ballad");
-        ret.add ("Random");
+        ret.add (translate ("Jazz"));
+        ret.add (translate ("Swing"));
+        ret.add (translate ("Pop"));
+        ret.add (translate ("Rock"));
+        ret.add (translate ("Folk"));
+        ret.add (translate ("Ballad"));
+        ret.add (translate ("Random"));
         return ret;
     }
 
@@ -41,7 +41,7 @@ public:
             if (genres[i] == genre)
                 return i;
         }
-        return 6;
+        return -1;
     }
 
     static String getStringFromIndex (int index)

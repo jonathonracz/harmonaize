@@ -31,7 +31,7 @@ TransportView::TransportView (Edit& _edit)
     timeSignatureNumerator.addListener (this);
     timeSignatureDenominator.addListener (this);
     keySignatureComboBox.addListener (this);
-    genreComboBox.addListener(this);
+    genreComboBox.addListener (this);
 
     goToBeginningButton.setButtonText (translate ("Go to beginning"));
     stopPlayButton.setButtonText (translate ("Play"));
@@ -79,7 +79,7 @@ TransportView::TransportView (Edit& _edit)
     addAndMakeVisible (timeSignatureNumerator);
     addAndMakeVisible (timeSignatureDenominator);
     addAndMakeVisible (keySignatureComboBox);
-    addAndMakeVisible(genreComboBox);
+    addAndMakeVisible (genreComboBox);
 
     addAndMakeVisible (timeText);
     addAndMakeVisible (beatText);
@@ -309,7 +309,7 @@ void TransportView::buttonClicked (Button* button)
     }
     else if (button == &recordButton)
     {
-        edit.getUndoManager()->beginNewTransaction ("Record");
+        edit.getUndoManager()->beginNewTransaction (translate ("Record"));
         transport.recordEnabled = button->getToggleState();
         transport.playState = button->getToggleState();
     }
@@ -317,20 +317,20 @@ void TransportView::buttonClicked (Button* button)
     {
         // TODO: This belongs in some sort of arrangement controller, not transport.
         // TODO: Also, this is stupidly written and hacky
-        edit.getUndoManager()->beginNewTransaction ("Clear Project");
+        edit.getUndoManager()->beginNewTransaction (translate ("Clear Project"));
         edit.trackList.getState().removeAllChildren (edit.getUndoManager());
         edit.trackList.tracks.addState (Track::createDefaultState());
     }
     else if (button == &generateAccompanimentButton)
     {
-        edit.getUndoManager()->beginNewTransaction ("Generate Accompaniment");
+        edit.getUndoManager()->beginNewTransaction (translate ("Generate Accompaniment"));
         MidiFile midiFile = edit.exportToMidi();
         midiFile = Interchange::callPython (midiFile);
         edit.importFromMidi (midiFile, 1, 0.0);
     }
     else if (button == &metronomeEnabledButton)
     {
-        edit.getUndoManager()->beginNewTransaction ("Toggle Metronome");
+        edit.getUndoManager()->beginNewTransaction (translate ("Toggle Metronome"));
         if (edit.masterTrack.metronomeEnabled.get())
             edit.masterTrack.metronomeEnabled.setValue (false, nullptr);
         else
@@ -351,15 +351,15 @@ void TransportView::buttonStateChanged (Button* button)
 
 void TransportView::comboBoxChanged (ComboBox* comboBox)
 {
-    edit.getUndoManager()->beginNewTransaction ("Combo Box Change");
+    edit.getUndoManager()->beginNewTransaction (translate ("Combo Box Change"));
     String val = comboBox->getText();
-    if (comboBox->getName() == "Key Signature")
+    if (comboBox == &keySignatureComboBox)
     {
         std::pair<int, bool> key = KeySignature::createRepresentationFromDescription (val);
         edit.transport.playHeadKeySigNumSharpsOrFlats = key.first;
         edit.transport.playHeadKeySigIsMinor = key.second;
     }
-    else
+    else if (comboBox == &genreComboBox)
     {
         edit.masterTrack.genre.genre = Genre::getIndexFromString (val);
     }
@@ -367,7 +367,7 @@ void TransportView::comboBoxChanged (ComboBox* comboBox)
 
 void TransportView::sliderValueChanged (Slider* slider)
 {
-    edit.getUndoManager()->beginNewTransaction ("Tempo Change");
+    edit.getUndoManager()->beginNewTransaction (translate ("Tempo Change"));
     int val = static_cast<int> (slider->getValue());
     slider->setValue (val);
     edit.transport.playHeadTempo = val;
@@ -375,7 +375,7 @@ void TransportView::sliderValueChanged (Slider* slider)
 
 void TransportView::labelTextChanged(Label* label)
 {
-    edit.getUndoManager()->beginNewTransaction ("Time Signature Change");
+    edit.getUndoManager()->beginNewTransaction (translate ("Time Signature Change"));
     if (label == &timeSignatureNumerator)
     {
         String val = label->getText();

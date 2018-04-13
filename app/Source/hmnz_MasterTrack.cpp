@@ -16,7 +16,7 @@ MasterTrack::MasterTrack (const ValueTree& v, UndoManager* um)
       tempo (getState().getOrCreateChildWithName (Tempo::identifier, nullptr), getUndoManager()),
       timeSignature (getState().getOrCreateChildWithName (TimeSignature::identifier, nullptr), getUndoManager()),
       keySignature (getState().getOrCreateChildWithName (KeySignature::identifier, nullptr), getUndoManager()),
-      genre (getState().getOrCreateChildWithName(IDs::Genre, nullptr), getUndoManager()),
+      genre (getState().getOrCreateChildWithName (IDs::Genre, nullptr), getUndoManager()),
       metronomeEnabled (getState(), IDs::MasterTrackProps::MetronomeEnabled, getUndoManager(), false)
 {
     midiBuffer.ensureSize (2048);
@@ -87,7 +87,7 @@ MidiMessageSequence MasterTrack::createMetaEventsSequence() const
     KeySignature::Snapshot keySig = keySignature.getKeySignatureAtTime (0.0);
     ret.addEvent (MidiMessage::keySignatureMetaEvent (keySig.numSharpsOrFlats, keySig.isMinor));
     String genreName = Genre::getStringFromIndex (genre.genre);
-    ret.addEvent (MidiMessage::textMetaEvent(1, genreName));
+    ret.addEvent (MidiMessage::textMetaEvent (1, genreName));
 
     return ret;
 }
