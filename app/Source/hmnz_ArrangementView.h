@@ -20,7 +20,8 @@
 class Track;
 
 class ArrangementView   : public Component,
-                          public ValueTree::Listener
+                          public ValueTree::Listener,
+                          public SettableTooltipClient
 {
 public:
     ArrangementView (Edit& edit);

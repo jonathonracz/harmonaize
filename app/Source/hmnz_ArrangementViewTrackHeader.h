@@ -17,7 +17,8 @@ class Track;
 class ArrangementViewTrackHeader  : public Component,
                                     public ValueTree::Listener,
                                     public Label::Listener,
-                                    public Button::Listener
+                                    public Button::Listener,
+                                    public SettableTooltipClient
 {
 public:
     ArrangementViewTrackHeader (Track& track);

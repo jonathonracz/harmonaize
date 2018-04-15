@@ -15,6 +15,7 @@
 class Edit;
 
 class TransportView : public Component,
+                      public SettableTooltipClient,
                       public ValueTree::Listener,
                       public Button::Listener,
                       public Label::Listener,
@@ -37,10 +38,9 @@ private:
 
     Label timeLabel;
     Label beatLabel;
-//    Label tempoLabel;
     Label timeSignatureNumerator;
     Label timeSignatureDenominator;
-    
+
     Slider tempoSlider;
     ComboBox keySignatureComboBox;
     ComboBox genreComboBox;
@@ -63,7 +63,7 @@ private:
 
     void buttonClicked (Button*) override;
     void buttonStateChanged (Button*) override;
-    
+
     void comboBoxChanged (ComboBox*) override;
     void sliderValueChanged (Slider*) override;
 

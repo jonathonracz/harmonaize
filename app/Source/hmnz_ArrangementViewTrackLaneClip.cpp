@@ -10,10 +10,12 @@
 
 #include "hmnz_ArrangementViewTrackLaneClip.h"
 #include "hmnz_Clip.h"
+#include "hmnz_HintStrings.h"
 
 ArrangementViewTrackLaneClip::ArrangementViewTrackLaneClip (Clip& _clip)
-    : clip (_clip)
+    : Component (HintStrings::Name::Clip), clip (_clip)
 {
+    setTooltip (HintStrings::Description::Clip);
     clip.getState().addListener (this);
 }
 

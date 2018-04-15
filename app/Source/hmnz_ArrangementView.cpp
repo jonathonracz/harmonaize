@@ -11,9 +11,11 @@
 #include "hmnz_ArrangementView.h"
 #include "hmnz_ArrangementViewModel.h"
 #include "hmnz_Edit.h"
+#include "hmnz_HintStrings.h"
 
 ArrangementView::ArrangementView (Edit& _edit)
-    : edit (_edit),
+    : Component (HintStrings::Name::Arrangement),
+      edit (_edit),
       topBar (_edit,
           _edit.arrangementViewModel.timeStart,
           _edit.arrangementViewModel.timeEnd),
@@ -27,6 +29,8 @@ ArrangementView::ArrangementView (Edit& _edit)
           _edit.arrangementViewModel.timeEnd),
       headerResizer (_edit)
 {
+    setTooltip (HintStrings::Description::Arrangement);
+
     addAndMakeVisible (topBar);
     addAndMakeVisible (grid);
     //addAndMakeVisible (headerControls);

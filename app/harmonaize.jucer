@@ -15,10 +15,10 @@
             file="Source/hmnz_PlaybackEngine.h"/>
     </GROUP>
     <GROUP id="{4C57DD66-0DB0-A254-59EF-09BAA05140B1}" name="GUI">
-      <FILE id="jRqSOa" name="hmnz_CustomLookAndFeel.cpp" compile="1" resource="0"
-            file="Source/hmnz_CustomLookAndFeel.cpp"/>
-      <FILE id="GNselE" name="hmnz_CustomLookAndFeel.h" compile="0" resource="0"
-            file="Source/hmnz_CustomLookAndFeel.h"/>
+      <FILE id="Ar7tIw" name="hmnz_ArrangementView.cpp" compile="1" resource="0"
+            file="Source/hmnz_ArrangementView.cpp"/>
+      <FILE id="E8saIS" name="hmnz_ArrangementView.h" compile="0" resource="0"
+            file="Source/hmnz_ArrangementView.h"/>
       <FILE id="rjfdNK" name="hmnz_ArrangementViewHeaderControls.cpp" compile="1"
             resource="0" file="Source/hmnz_ArrangementViewHeaderControls.cpp"/>
       <FILE id="tcFCkJ" name="hmnz_ArrangementViewHeaderControls.h" compile="0"
@@ -27,26 +27,10 @@
             resource="0" file="Source/hmnz_ArrangementViewHeaderResizer.cpp"/>
       <FILE id="CKmMAJ" name="hmnz_ArrangementViewHeaderResizer.h" compile="0"
             resource="0" file="Source/hmnz_ArrangementViewHeaderResizer.h"/>
-      <FILE id="lSQl7u" name="hmnz_ArrangementViewTrackResizer.cpp" compile="1"
-            resource="0" file="Source/hmnz_ArrangementViewTrackResizer.cpp"/>
-      <FILE id="O7hxGs" name="hmnz_ArrangementViewTrackResizer.h" compile="0"
-            resource="0" file="Source/hmnz_ArrangementViewTrackResizer.h"/>
       <FILE id="qF78Z6" name="hmnz_ArrangementViewPlayHead.cpp" compile="1"
             resource="0" file="Source/hmnz_ArrangementViewPlayHead.cpp"/>
       <FILE id="iPUeZF" name="hmnz_ArrangementViewPlayHead.h" compile="0"
             resource="0" file="Source/hmnz_ArrangementViewPlayHead.h"/>
-      <FILE id="QVsY2J" name="hmnz_ArrangementViewTrack.cpp" compile="1"
-            resource="0" file="Source/hmnz_ArrangementViewTrack.cpp"/>
-      <FILE id="q45wJi" name="hmnz_ArrangementViewTrack.h" compile="0" resource="0"
-            file="Source/hmnz_ArrangementViewTrack.h"/>
-      <FILE id="kWcc9r" name="hmnz_ArrangementViewTrackList.cpp" compile="1"
-            resource="0" file="Source/hmnz_ArrangementViewTrackList.cpp"/>
-      <FILE id="OR02V7" name="hmnz_ArrangementViewTrackList.h" compile="0"
-            resource="0" file="Source/hmnz_ArrangementViewTrackList.h"/>
-      <FILE id="Ar7tIw" name="hmnz_ArrangementView.cpp" compile="1" resource="0"
-            file="Source/hmnz_ArrangementView.cpp"/>
-      <FILE id="E8saIS" name="hmnz_ArrangementView.h" compile="0" resource="0"
-            file="Source/hmnz_ArrangementView.h"/>
       <FILE id="WYKWjA" name="hmnz_ArrangementViewTimelineComponent.cpp"
             compile="1" resource="0" file="Source/hmnz_ArrangementViewTimelineComponent.cpp"/>
       <FILE id="Usmz7j" name="hmnz_ArrangementViewTimelineComponent.h" compile="0"
@@ -59,6 +43,10 @@
             resource="0" file="Source/hmnz_ArrangementViewTopBar.cpp"/>
       <FILE id="F8JqNN" name="hmnz_ArrangementViewTopBar.h" compile="0" resource="0"
             file="Source/hmnz_ArrangementViewTopBar.h"/>
+      <FILE id="QVsY2J" name="hmnz_ArrangementViewTrack.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewTrack.cpp"/>
+      <FILE id="q45wJi" name="hmnz_ArrangementViewTrack.h" compile="0" resource="0"
+            file="Source/hmnz_ArrangementViewTrack.h"/>
       <FILE id="lwuglm" name="hmnz_ArrangementViewTrackHeader.cpp" compile="1"
             resource="0" file="Source/hmnz_ArrangementViewTrackHeader.cpp"/>
       <FILE id="peIslz" name="hmnz_ArrangementViewTrackHeader.h" compile="0"
@@ -71,6 +59,20 @@
             resource="0" file="Source/hmnz_ArrangementViewTrackLaneClip.cpp"/>
       <FILE id="BrCGHC" name="hmnz_ArrangementViewTrackLaneClip.h" compile="0"
             resource="0" file="Source/hmnz_ArrangementViewTrackLaneClip.h"/>
+      <FILE id="kWcc9r" name="hmnz_ArrangementViewTrackList.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewTrackList.cpp"/>
+      <FILE id="OR02V7" name="hmnz_ArrangementViewTrackList.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewTrackList.h"/>
+      <FILE id="lSQl7u" name="hmnz_ArrangementViewTrackResizer.cpp" compile="1"
+            resource="0" file="Source/hmnz_ArrangementViewTrackResizer.cpp"/>
+      <FILE id="O7hxGs" name="hmnz_ArrangementViewTrackResizer.h" compile="0"
+            resource="0" file="Source/hmnz_ArrangementViewTrackResizer.h"/>
+      <FILE id="apghKU" name="hmnz_CommandIDs.h" compile="0" resource="0"
+            file="Source/hmnz_CommandIDs.h"/>
+      <FILE id="jRqSOa" name="hmnz_CustomLookAndFeel.cpp" compile="1" resource="0"
+            file="Source/hmnz_CustomLookAndFeel.cpp"/>
+      <FILE id="GNselE" name="hmnz_CustomLookAndFeel.h" compile="0" resource="0"
+            file="Source/hmnz_CustomLookAndFeel.h"/>
       <FILE id="IlADi2" name="hmnz_EditView.cpp" compile="1" resource="0"
             file="Source/hmnz_EditView.cpp"/>
       <FILE id="uFs8Cd" name="hmnz_EditView.h" compile="0" resource="0" file="Source/hmnz_EditView.h"/>
@@ -78,6 +80,13 @@
             file="Source/hmnz_EditWindow.cpp"/>
       <FILE id="DtfSsB" name="hmnz_EditWindow.h" compile="0" resource="0"
             file="Source/hmnz_EditWindow.h"/>
+      <FILE id="tUwGwf" name="hmnz_HintStrings.cpp" compile="1" resource="0"
+            file="Source/hmnz_HintStrings.cpp"/>
+      <FILE id="qVj0UQ" name="hmnz_HintStrings.h" compile="0" resource="0"
+            file="Source/hmnz_HintStrings.h"/>
+      <FILE id="MMj16b" name="hmnz_HintView.cpp" compile="1" resource="0"
+            file="Source/hmnz_HintView.cpp"/>
+      <FILE id="G0HuP2" name="hmnz_HintView.h" compile="0" resource="0" file="Source/hmnz_HintView.h"/>
       <FILE id="IsiKKq" name="hmnz_PreferencesView.cpp" compile="1" resource="0"
             file="Source/hmnz_PreferencesView.cpp"/>
       <FILE id="OJwva3" name="hmnz_PreferencesView.h" compile="0" resource="0"
@@ -86,8 +95,6 @@
             file="Source/hmnz_TransportView.cpp"/>
       <FILE id="KG4fSG" name="hmnz_TransportView.h" compile="0" resource="0"
             file="Source/hmnz_TransportView.h"/>
-      <FILE id="apghKU" name="hmnz_CommandIDs.h" compile="0" resource="0"
-            file="Source/hmnz_CommandIDs.h"/>
     </GROUP>
     <GROUP id="{186A05D2-465A-EAF5-224F-706A2514D5F8}" name="Model">
       <GROUP id="{AEDE0B43-3142-F84C-109A-EE06E1489CBA}" name="Generation">

@@ -13,11 +13,42 @@
 #include "hmnz_Edit.h"
 #include "hmnz_Application.h"
 #include "hmnz_Genre.h"
+#include "hmnz_HintStrings.h"
 #include "../../harmonaize/midiinterchange/hmnz_MidiInterchange.h"
 
 TransportView::TransportView (Edit& _edit)
-    : edit (_edit)
+    : Component (HintStrings::Name::Transport), edit (_edit)
 {
+    setTooltip (HintStrings::Description::Transport);
+
+    timeLabel.setName (HintStrings::Name::Seconds);
+    beatLabel.setName (HintStrings::Name::Beat);
+    tempoSlider.setName (HintStrings::Name::Tempo);
+    timeSignatureNumerator.setName (HintStrings::Name::TimeSignature);
+    timeSignatureDenominator.setName (HintStrings::Name::TimeSignature);
+    keySignatureComboBox.setName (HintStrings::Name::KeySignature);
+    genreComboBox.setName (HintStrings::Name::Genre);
+    goToBeginningButton.setName (HintStrings::Name::GoToBeginning);
+    stopPlayButton.setName (HintStrings::Name::Play);
+    recordButton.setName (HintStrings::Name::Record);
+    clearButton.setName (HintStrings::Name::Reset);
+    generateAccompanimentButton.setName (HintStrings::Name::GenerateAccompaniment);
+    metronomeEnabledButton.setName (HintStrings::Name::Metronome);
+
+    timeLabel.setTooltip (HintStrings::Description::Seconds);
+    beatLabel.setTooltip (HintStrings::Description::Beat);
+    tempoSlider.setTooltip (HintStrings::Description::Tempo);
+    timeSignatureNumerator.setTooltip (HintStrings::Description::TimeSignature);
+    timeSignatureDenominator.setTooltip (HintStrings::Description::TimeSignature);
+    keySignatureComboBox.setTooltip (HintStrings::Description::KeySignature);
+    genreComboBox.setTooltip (HintStrings::Description::Genre);
+    goToBeginningButton.setTooltip (HintStrings::Description::GoToBeginning);
+    stopPlayButton.setTooltip (HintStrings::Description::Play);
+    recordButton.setTooltip (HintStrings::Description::Record);
+    clearButton.setTooltip (HintStrings::Description::Reset);
+    generateAccompanimentButton.setTooltip (HintStrings::Description::GenerateAccompaniment);
+    metronomeEnabledButton.setTooltip (HintStrings::Description::Metronome);
+
     goToBeginningButton.addListener (this);
     stopPlayButton.addListener (this);
     recordButton.addListener (this);
@@ -123,12 +154,7 @@ void TransportView::resized()
     keySignatureText.setJustificationType (Justification::centred);
     timeSignatureText.setJustificationType (Justification::centred);
     genreText.setJustificationType (Justification::centred);
-//    Font font = Font (20);
-//    timeText.setFont (font);
-//    beatText.setFont (font);
-//    tempoText.setFont (font);
-//    keySignatureText.setFont (font);
-//    timeSignatureText.setFont (font);
+
     FlexItem timeT = FlexItem (timeText).withFlex (0.5f);
     FlexItem beatT = FlexItem (beatText).withFlex (0.5f);
     FlexItem tempoT = FlexItem (tempoText).withFlex (0.5f);
@@ -150,11 +176,8 @@ void TransportView::resized()
     beatLabel.setJustificationType (Justification::centred);
     timeSignatureNumerator.setJustificationType (Justification::centred);
     timeSignatureDenominator.setJustificationType (Justification::centred);
-//    timeLabel.setFont (font);
-//    beatLabel.setFont (font);
-//    timeSignatureNumerator.setFont (font);
+
     timeSignatureNumerator.setEditable (true);
-//    timeSignatureDenominator.setFont (font);
     timeSignatureDenominator.setEditable (true);
     FlexItem timeL = FlexItem (timeLabel).withFlex (0.5f);
     FlexItem beatL = FlexItem (beatLabel).withFlex (0.5f);
@@ -298,8 +321,6 @@ void TransportView::buttonClicked (Button* button)
     {
         transport.playHeadBeat = 0.0f;
         transport.playHeadTime = 0.0f;
-//        beatLabel.setText ("0", NotificationType::dontSendNotification);
-//        timeLabel.setText ("0", NotificationType::dontSendNotification);
     }
     else if (button == &stopPlayButton)
     {

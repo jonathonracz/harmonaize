@@ -10,6 +10,7 @@
 
 #include "hmnz_ArrangementViewTrackHeader.h"
 #include "hmnz_Track.h"
+#include "hmnz_HintStrings.h"
 
 struct ArrangementViewTrackHeader::ProgressBarBackground : public LookAndFeel_V4
 {
@@ -22,8 +23,13 @@ struct ArrangementViewTrackHeader::ProgressBarBackground : public LookAndFeel_V4
 };
 
 ArrangementViewTrackHeader::ArrangementViewTrackHeader (Track& _track)
-    : track (_track), loadProgress (*_track.loadProgress)
+    : Component (HintStrings::Name::TrackHeader), track (_track), loadProgress (*_track.loadProgress)
 {
+    setTooltip (HintStrings::Description::TrackHeader);
+
+    instrumentSelector.setName (HintStrings::Name::LoadInstrument);
+    instrumentSelector.setTooltip (HintStrings::Description::LoadInstrument);
+
     loadProgress.setPercentageDisplay (false);
     progressBarBackground = std::unique_ptr<ProgressBarBackground> (new ProgressBarBackground());
     progressBarBackground->setColour (ProgressBar::ColourIds::foregroundColourId, track.color);

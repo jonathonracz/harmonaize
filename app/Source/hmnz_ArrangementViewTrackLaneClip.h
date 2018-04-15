@@ -15,7 +15,8 @@
 class Clip;
 
 class ArrangementViewTrackLaneClip  : public Component,
-                                      public ValueTree::Listener
+                                      public ValueTree::Listener,
+                                      public SettableTooltipClient
 {
 public:
     ArrangementViewTrackLaneClip (Clip& clip);
