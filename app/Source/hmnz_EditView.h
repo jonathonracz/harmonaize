@@ -24,8 +24,6 @@ public:
     EditView (Edit& edit);
     ~EditView();
 
-    CustomLookAndFeel* customLookAndFeel;
-
 private:
     Edit& edit;
 

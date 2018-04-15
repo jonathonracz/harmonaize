@@ -59,8 +59,8 @@ void PreferencesView::sliderValueChanged (Slider* slider)
 {
     double val = slider->getValue();
     slider->setValue (int (std::round (val * 10.0)) / 10.0);
+    CustomLookAndFeel::getHarmonaizeLookAndFeel().setFontScale (static_cast<float> (val));
     EditView* editView = static_cast<EditView*>(HarmonaizeApplication::getApp().editWindow.get()->getContentComponent());
-    editView->customLookAndFeel->setFontScale(val);
     editView->lookAndFeelChanged();
     editView->repaint();
     repaint();

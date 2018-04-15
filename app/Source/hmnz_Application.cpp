@@ -17,6 +17,8 @@ HarmonaizeApplication::HarmonaizeApplication()
     // TODO: Hardcoded yuckiness here
     audioDeviceManager.initialiseWithDefaultDevices (0, 2);
     audioFormatManager.registerBasicFormats();
+
+    LookAndFeel::setDefaultLookAndFeel (&lookAndFeel);
 }
 
 HarmonaizeApplication::~HarmonaizeApplication()

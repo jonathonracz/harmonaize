@@ -47,4 +47,5 @@ private:
     AudioDeviceManager audioDeviceManager;
     AudioFormatManager audioFormatManager;
     SFZInstrumentBank instrumentBank;
+    CustomLookAndFeel lookAndFeel;
 };

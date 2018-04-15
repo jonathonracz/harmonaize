@@ -18,8 +18,6 @@ EditView::EditView (Edit& _edit)
 {
     setTooltip (HintStrings::Description::Edit);
 
-    customLookAndFeel = new CustomLookAndFeel();
-    LookAndFeel::setDefaultLookAndFeel (customLookAndFeel);
     addAndMakeVisible (hintView);
     addAndMakeVisible (transportView);
     addAndMakeVisible (arrangementView);
@@ -35,7 +33,6 @@ EditView::EditView (Edit& _edit)
 
 EditView::~EditView()
 {
-    delete customLookAndFeel;
 }
 
 void EditView::resized()
@@ -45,7 +42,7 @@ void EditView::resized()
 
     FlexBox transportBox;
     transportBox.items.add (FlexItem (transportView).withFlex (1.0f));
-    transportBox.items.add (FlexItem (hintView).withWidth (200));
+    transportBox.items.add (FlexItem (hintView).withWidth (120));
 
     mainBox.items.add (FlexItem (transportBox).withFlex (1.0f));
     mainBox.items.add (FlexItem (arrangementView).withFlex (1.0f));

@@ -17,13 +17,16 @@ class CustomLookAndFeel : public LookAndFeel_V4
 public:
     CustomLookAndFeel();
     virtual ~CustomLookAndFeel();
-    void setFontScale(double scale);
-    double getFontScale();
+    void setFontScale (float scale);
+    float getFontScale();
+
+    static CustomLookAndFeel& getHarmonaizeLookAndFeel();
+
 private:
     virtual Font getComboBoxFont (ComboBox&);
-    virtual Font getTextButtonFont (TextButton&, int buttonHeight);
+    virtual Font getTextButtonFont (TextButton&, int);
     virtual Font getLabelFont (Label&);
     virtual Font getSliderPopupFont (Slider&);
 
-    double fontScale;
+    float fontScale = 1.0f;
 };

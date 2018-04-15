@@ -43,7 +43,7 @@ void HintView::mouseExit (const MouseEvent& event)
 void HintView::resized()
 {
     int nameHeight = static_cast<int> (std::ceil (name.getFont().getHeight())) + name.getBorderSize().getTopAndBottom();
-    name.setBounds (0, 0, getWidth(), nameHeight);
+    name.setBounds (0, 0, getWidth(), nameHeight * 2);
     description.setBounds (0, name.getHeight(), getWidth(), getHeight() - name.getHeight());
 }
 

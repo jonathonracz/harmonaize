@@ -27,6 +27,7 @@ ArrangementViewTopBar::~ArrangementViewTopBar()
 
 void ArrangementViewTopBar::paint (Graphics& g)
 {
+    g.setFont (g.getCurrentFont().getHeight() * CustomLookAndFeel::getHarmonaizeLookAndFeel().getFontScale());
     NormalisableRange<double> remapper (timeStart.get(), timeEnd.get());
     const int minimumLineSpacing = 14; // Arbitrary - controls how close lines can get before the grid size increases
     double linesPerBeat = getLinesPerBeatForMinimumLineSpacing (minimumLineSpacing);
@@ -61,9 +62,6 @@ void ArrangementViewTopBar::paint (Graphics& g)
         int xPos = getXPosForBeat (beatValue);
         if (drawText)
         {
-            EditView* editView = static_cast<EditView*>(HarmonaizeApplication::getApp().editWindow.get()->getContentComponent());
-            double fontSize = editView->customLookAndFeel->getFontScale();
-            g.setFont (15 * fontSize);
             g.drawText (beatText, Rectangle<int> (xPos, 0, getWidth(), getHeight()), Justification::Flags::centredLeft, false);
             g.fillRect (Rectangle<int> (xPos, static_cast<int> (getHeight() * 0.75), 1, static_cast<int> (getHeight() * 0.25)));
         }
