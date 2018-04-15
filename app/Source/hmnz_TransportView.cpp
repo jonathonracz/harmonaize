@@ -319,7 +319,6 @@ void TransportView::buttonClicked (Button* button)
     Transport& transport = edit.transport;
     if (button == &goToBeginningButton)
     {
-        transport.playHeadBeat = 0.0f;
         transport.playHeadTime = 0.0f;
     }
     else if (button == &stopPlayButton)

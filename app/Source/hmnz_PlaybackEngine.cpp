@@ -187,14 +187,28 @@ void PlaybackEngine::valueTreePropertyChanged (ValueTree& tree, const Identifier
         if (identifier == transport.playHeadTime.getPropertyID())
         {
             double time = std::max (0.0, transport.playHeadTime.get());
+
+            if (!beatSecondsRecursionGuard)
+            {
+                beatSecondsRecursionGuard = true;
+                transport.playHeadBeat = edit.masterTrack.tempo.beat (time);
+                beatSecondsRecursionGuard = false;
+            }
+
             setPositionSecond (transport.playHeadTime);
-            tree.setPropertyExcludingListener (this, transport.playHeadBeat.getPropertyID(), edit.masterTrack.tempo.beat (time), nullptr);
         }
         else if (identifier == transport.playHeadBeat.getPropertyID())
         {
             double beat = std::max (0.0, transport.playHeadBeat.get());
+
+            if (!beatSecondsRecursionGuard)
+            {
+                beatSecondsRecursionGuard = true;
+                transport.playHeadTime = edit.masterTrack.tempo.time (beat);
+                beatSecondsRecursionGuard = false;
+            }
+
             setPositionBeat (beat);
-            tree.setPropertyExcludingListener (this, transport.playHeadTime.getPropertyID(), edit.masterTrack.tempo.time (beat), nullptr);
         }
         else if (identifier == transport.recordEnabled.getPropertyID())
         {

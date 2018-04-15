@@ -40,13 +40,13 @@ void EditView::resized()
     FlexBox mainBox;
     mainBox.flexDirection = FlexBox::Direction::column;
 
-    FlexBox transportBox;
-    transportBox.items.add (FlexItem (transportView).withFlex (1.0f));
-    transportBox.items.add (FlexItem (hintView).withWidth (120));
+    FlexBox bottomBox;
+    bottomBox.items.add (FlexItem (hintView).withWidth (120));
+    bottomBox.items.add (FlexItem (*keyboard).withFlex (1.0f));
 
-    mainBox.items.add (FlexItem (transportBox).withFlex (1.0f));
+    mainBox.items.add (FlexItem (transportView).withFlex (1.0f));
     mainBox.items.add (FlexItem (arrangementView).withFlex (1.0f));
-    mainBox.items.add (FlexItem (*keyboard).withFlex (1.0f));
+    mainBox.items.add (FlexItem (bottomBox).withFlex (1.0f));
 
     mainBox.performLayout (getLocalBounds());
 }

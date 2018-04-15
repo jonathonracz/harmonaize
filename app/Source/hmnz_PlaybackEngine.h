@@ -74,6 +74,8 @@ private:
     double activeSampleRate = 0.0;
     std::atomic<uint64> recordOperationID = { 0 };
 
+    bool beatSecondsRecursionGuard = false;
+
     // MIDI bits
     MidiMessageCollector midiMessageCollector;
     MidiBuffer midiStopBuffer;
