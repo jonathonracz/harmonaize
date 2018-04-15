@@ -24,7 +24,7 @@ class MidiParser():
 		self.genre = getMessagesWithType(self.meta_messages, 'text')[0].text.encode('ascii', 'ignore').lower()
 
 		self.note_counts = makeNoteCounts(self.note_messages)
-		self.measure_map = makeMeasureMap(self.tempo, self.time_signature, self.note_messages)
+		self.measure_map = makeMeasureMap(self.note_messages)
 		print(self.measure_map)
 
 	def getTempo(self):
@@ -58,7 +58,7 @@ def makeNoteCounts(messages):
 
 	return note_counts
 
-def makeMeasureMap(tempo, time_signature, messages):
+def makeMeasureMap(messages):
 	measure_map = []
 	current_beat = 0
 
@@ -68,7 +68,7 @@ def makeMeasureMap(tempo, time_signature, messages):
 		current_beat += beat_value
 
 		if message.type == 'note_on':
-			current_measure = int(math.floor(current_beat / time_signature[0]))
+			current_measure = int(math.floor(current_beat / 4))
 
 			while current_measure >= len(measure_map):
 				measure_map.append([])
