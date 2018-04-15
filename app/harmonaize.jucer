@@ -2,8 +2,8 @@
 
 <JUCERPROJECT id="OexI64" name="HarmonAIze" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.harmonaize.harmonaize" includeBinaryInAppConfig="1"
-              companyCopyright="" jucerVersion="5.2.1" displaySplashScreen="0"
-              reportAppUsage="0" splashScreenColour="Dark">
+              companyCopyright="" jucerVersion="5.2.0" displaySplashScreen="1"
+              reportAppUsage="1" splashScreenColour="Dark" cppLanguageStandard="11">
   <MAINGROUP id="TpvEFM" name="HarmonAIze">
     <GROUP id="{EBA6D256-AB9F-0FDF-FF12-7B37C747D39F}" name="Binary">
       <FILE id="HOW6YQ" name="appicon.png" compile="0" resource="1" file="Design/appicon.png"/>
@@ -90,6 +90,9 @@
             file="Source/hmnz_CommandIDs.h"/>
     </GROUP>
     <GROUP id="{186A05D2-465A-EAF5-224F-706A2514D5F8}" name="Model">
+      <GROUP id="{AEDE0B43-3142-F84C-109A-EE06E1489CBA}" name="Generation">
+        <FILE id="sxWSIx" name="hmnz_Genre.h" compile="0" resource="0" file="Source/hmnz_Genre.h"/>
+      </GROUP>
       <GROUP id="{F1611D00-5B76-00F5-E54F-78CD868347B4}" name="Arrangement">
         <FILE id="QVyG9G" name="hmnz_ArrangementViewModel.h" compile="0" resource="0"
               file="Source/hmnz_ArrangementViewModel.h"/>
