@@ -10,14 +10,28 @@ class GrooveSelector():
 		self.grooves = self.filter_grooves(tempo, time_signature, genre)
 
 	def filter_grooves(self, tempo, time_signature, genre):
-		if tempo < 90:
-			grooves = GROOVES[('slow', time_signature)]
-		elif tempo < 150:
-			grooves = GROOVES[('regular', time_signature)]
-		else:
-			grooves = GROOVES[('fast', time_signature)]
+		grooves = {}
 
-		return self.filter_genre(grooves, genre)
+		if tempo < 90:
+			speed = 'slow'
+		elif tempo < 150:
+			speed = 'regular'
+		else:
+			speed = 'fast'
+		
+		if (speed, time_signature) in GROOVES:
+			grooves = GROOVES[(speed, time_signature)]
+			grooves = self.filter_genre(grooves, genre)
+
+		if len(grooves) == 0:
+			all_grooves = GROOVES.values()
+			all_grooves_dict = {}
+			for groove_dict in all_grooves:
+				all_grooves_dict.update(groove_dict)
+
+			grooves = self.filter_genre(all_grooves_dict, genre)
+
+		return grooves
 
 	def filter_genre(self, grooves, genre):
 			print (genre)
@@ -29,7 +43,4 @@ class GrooveSelector():
 
 
 	def select_groove(self):
-		if len(self.grooves) > 0:
-			return random.choice(list(self.grooves.values()))[0]
-		else:
-			return random.choice(list(GROOVES.values()))[0]
+		return random.choice(list(self.grooves.values()))[0]
