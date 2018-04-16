@@ -20,28 +20,28 @@ namespace HintStrings
 
     DEFINE_HINT (Transport, "Transport", "Contains all controls for navigating and editing the project.")
 
-    DEFINE_HINT (Seconds, "Seconds", "")
-    DEFINE_HINT (Beat, "Beat", "")
-    DEFINE_HINT (Tempo, "Tempo", "")
-    DEFINE_HINT (TimeSignature, "Time Signature", "")
-    DEFINE_HINT (KeySignature, "Key Signature", "")
-    DEFINE_HINT (Genre, "Genre", "")
+    DEFINE_HINT (Seconds, "Seconds", "Location of the playhead in terms of time.")
+    DEFINE_HINT (Beat, "Beat", "Location of the playhead in terms of beat.")
+    DEFINE_HINT (Tempo, "Tempo", "Choose how fast the playhead moves in terms of beats per minute.")
+    DEFINE_HINT (TimeSignature, "Time Signature", "Choose a time signature for your project.")
+    DEFINE_HINT (KeySignature, "Key Signature", "Choose a key for your accompaniment.")
+    DEFINE_HINT (Genre, "Genre", "Choose a genre for you accompaniment.")
 
-    DEFINE_HINT (GoToBeginning, "Go To Beginning", "")
-    DEFINE_HINT (Play, "Play", "")
-    DEFINE_HINT (Record, "Record", "")
-    DEFINE_HINT (Reset, "Reset", "")
-    DEFINE_HINT (GenerateAccompaniment, "Generate Accompaniment", "")
-    DEFINE_HINT (Metronome, "Metronome", "")
+    DEFINE_HINT (GoToBeginning, "Go To Beginning", "Click to return the playhead to the start of the project.")
+    DEFINE_HINT (Play, "Play", "Click to hear you project.")
+    DEFINE_HINT (Record, "Record", "Click to begin recording a melody.")
+    DEFINE_HINT (Reset, "Reset", "Click to delete all current work on your project.")
+    DEFINE_HINT (GenerateAccompaniment, "Generate Accompaniment", "Click to generate an accompaniment.")
+    DEFINE_HINT (Metronome, "Metronome", "Click to toggle a metronome when you record.")
 
-    DEFINE_HINT (HintViewer, "Hint Viewer", "")
+    DEFINE_HINT (HintViewer, "Hint Viewer", "I'm the hint viewer. I'm here to tell you what's what.")
 
-    DEFINE_HINT (Arrangement, "Arrangement", "")
-    DEFINE_HINT (Clip, "Clip", "")
-    DEFINE_HINT (TrackHeader, "Track Header", "")
-    DEFINE_HINT (LoadInstrument, "Load Instrument", "")
+    DEFINE_HINT (Arrangement, "Arrangement", "Visual representation of your existing tracks.")
+    DEFINE_HINT (Clip, "Clip", "Visual representation of a single track.")
+    DEFINE_HINT (TrackHeader, "Track Header", "Name your tracks. Click to edit.")
+    DEFINE_HINT (LoadInstrument, "Load Instrument", "Click to select the track instrument.")
 
-    DEFINE_HINT (VirtualKeyboard, "Virtual Keyboard", "")
+    DEFINE_HINT (VirtualKeyboard, "Virtual Keyboard", "Functional keyboard component. Click to play!")
 
 #undef DEFINE_HINT
 }
