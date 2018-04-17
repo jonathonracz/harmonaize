@@ -79,6 +79,7 @@
 		0DA808E6EF6C58C5C2ACA84D = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ArrangementViewHeaderControls.h"; path = "../../Source/hmnz_ArrangementViewHeaderControls.h"; sourceTree = "SOURCE_ROOT"; };
 		0FA222D3E84C912A161C935C = {isa = PBXFileReference; lastKnownFileType = file; name = "jcf_debug"; path = "../../Source/External/juce_toys/jcf_debug"; sourceTree = "SOURCE_ROOT"; };
 		113BB3F244B850B76157F955 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ValueTreeObjectUnitTest.h"; path = "../../Source/hmnz_ValueTreeObjectUnitTest.h"; sourceTree = "SOURCE_ROOT"; };
+		1449D4D08E9A3FE76C93E4DD = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_Genre.h"; path = "../../Source/hmnz_Genre.h"; sourceTree = "SOURCE_ROOT"; };
 		15665F0BB406EBC696190730 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "hmnz_ArrangementView.h"; path = "../../Source/hmnz_ArrangementView.h"; sourceTree = "SOURCE_ROOT"; };
 		16B39511A8A792C9643C92A8 = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_graphics"; path = "../../../harmonaize/external/JUCE/modules/juce_graphics"; sourceTree = "SOURCE_ROOT"; };
 		18861274A888DEE2378E1D98 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeader.h; path = ../../JuceLibraryCode/JuceHeader.h; sourceTree = "SOURCE_ROOT"; };
@@ -256,6 +257,8 @@
 					DE242B914DA97B51F3F74038,
 					C4F041FC23A1FDBB2E66985B,
 					A26F129AFCB8AEA0286A4BD8, ); name = GUI; sourceTree = "<group>"; };
+		14BF43D2927D68AB04846024 = {isa = PBXGroup; children = (
+					1449D4D08E9A3FE76C93E4DD, ); name = Generation; sourceTree = "<group>"; };
 		A26602A26CFEF6E226D392E6 = {isa = PBXGroup; children = (
 					3570B17A2837ECB9FEA69EA2,
 					08390396B8D675039444FB82,
@@ -298,6 +301,7 @@
 					A0DCA2E161B9C1A952F22081,
 					261542B6055C7771714D0895, ); name = Utility; sourceTree = "<group>"; };
 		2047F3BFFB2BE3AF145A4C05 = {isa = PBXGroup; children = (
+					14BF43D2927D68AB04846024,
 					A26602A26CFEF6E226D392E6,
 					B50DE1E104FE43B3E0008580,
 					12E8BBE8911128216D0E905B,
@@ -376,7 +380,7 @@
 					EBD33AD89318835C768BDF22,
 					E83C0C7D65B43E7730E25CE2, ); name = Source; sourceTree = "<group>"; };
 		46657038D4ABF0C816F5881D = {isa = XCBuildConfiguration; buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
@@ -408,7 +412,7 @@
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Debug; };
 		D26320213B96576B9AC9DA29 = {isa = XCBuildConfiguration; buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";

@@ -161,14 +161,14 @@ void TransportView::resized()
     FlexItem keySigT = FlexItem (keySignatureText).withFlex (0.5f);
     FlexItem timeSigT = FlexItem (timeSignatureText).withFlex (0.5f);
     FlexItem genreT = FlexItem (genreText).withFlex(0.5f);
-    text.items.add (FlexItem().withFlex (1.0f));
+    text.items.add (FlexItem().withFlex (0.5f));
     text.items.add (timeT);
     text.items.add (beatT);
     text.items.add (tempoT);
     text.items.add (timeSigT);
     text.items.add (keySigT);
     text.items.add (genreT);
-    text.items.add (FlexItem().withFlex (1.0f));
+    text.items.add (FlexItem().withFlex (0.5f));
 
     FlexBox labels;
     labels.flexDirection = FlexBox::Direction::row;
@@ -193,14 +193,14 @@ void TransportView::resized()
     timeSig.items.add (timeSigD);
     FlexItem timeSigFlex = FlexItem (timeSig).withFlex (0.5f);
 
-    labels.items.add (FlexItem().withFlex (1.0f));
+    labels.items.add (FlexItem().withFlex (0.5f));
     labels.items.add (timeL);
     labels.items.add (beatL);
     labels.items.add (tempoL);
     labels.items.add (timeSigFlex);
     labels.items.add (keySigL);
     labels.items.add (genreL);
-    labels.items.add (FlexItem().withFlex (1.0f));
+    labels.items.add (FlexItem().withFlex (0.5f));
 
     FlexBox buttons;
     buttons.flexDirection = FlexBox::Direction::row;

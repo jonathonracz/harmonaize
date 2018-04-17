@@ -132,7 +132,7 @@ void EditWindow::getCommandInfo (const CommandID commandID, ApplicationCommandIn
     {
         case CommandIDs::newProject:
             result.setInfo ("New...", "Creates a new edit", category, 0);
-            result.defaultKeypresses.add (KeyPress('n', ModifierKeys::commandModifier, 0));
+            result.defaultKeypresses.add (KeyPress ('n', ModifierKeys::commandModifier, 0));
             break;
 
         case CommandIDs::openProject:

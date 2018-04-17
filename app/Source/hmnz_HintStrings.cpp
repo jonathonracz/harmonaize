@@ -23,16 +23,16 @@ namespace HintStrings
     DEFINE_HINT (Seconds, "Seconds", "Location of the playhead in terms of time.")
     DEFINE_HINT (Beat, "Beat", "Location of the playhead in terms of beat.")
     DEFINE_HINT (Tempo, "Tempo", "Choose how fast the playhead moves in terms of beats per minute.")
-    DEFINE_HINT (TimeSignature, "Time Signature", "Choose a time signature for your project.")
+    DEFINE_HINT (TimeSignature, "Time Signature", "Choose a time signature for your project. Click to edit.")
     DEFINE_HINT (KeySignature, "Key Signature", "Choose a key for your accompaniment.")
     DEFINE_HINT (Genre, "Genre", "Choose a genre for you accompaniment.")
 
-    DEFINE_HINT (GoToBeginning, "Go To Beginning", "Click to return the playhead to the start of the project.")
-    DEFINE_HINT (Play, "Play", "Click to hear you project.")
-    DEFINE_HINT (Record, "Record", "Click to begin recording a melody.")
-    DEFINE_HINT (Reset, "Reset", "Click to delete all current work on your project.")
-    DEFINE_HINT (GenerateAccompaniment, "Generate Accompaniment", "Click to generate an accompaniment.")
-    DEFINE_HINT (Metronome, "Metronome", "Click to toggle a metronome when you record.")
+    DEFINE_HINT (GoToBeginning, "Go To Beginning", "Click to return the playhead to the start of the project.\nShortcut: 'b'")
+    DEFINE_HINT (Play, "Play", "Click to hear your project.\nShortcut: 'Space'")
+    DEFINE_HINT (Record, "Record", "Click to begin recording a melody.\nShortcut: 'v'")
+    DEFINE_HINT (Reset, "Reset", "Click to delete all current work on your project.\nShortcut: 'c'")
+    DEFINE_HINT (GenerateAccompaniment, "Generate Accompaniment", "Click have an accompaniment generated.\nShortcut: 'g'")
+    DEFINE_HINT (Metronome, "Metronome", "Click to toggle a metronome when you record.\nShortcut: 'm'")
 
     DEFINE_HINT (HintViewer, "Hint Viewer", "I'm the hint viewer. I'm here to tell you what's what.")
 
