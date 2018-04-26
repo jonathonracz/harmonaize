@@ -16,11 +16,11 @@ class Genre : public ValueTreeObject<IDs::Genre>
 {
 public:
     Genre (const ValueTree& v, UndoManager* um)
-    : ValueTreeObject (v, um), genre (getState(), IDs::GenreProps::GenreIndex, getUndoManager(), 0)
+        : ValueTreeObject (v, um), genre (getState(), IDs::GenreProps::GenreIndex, getUndoManager(), 0)
     {
     }
 
-    static StringArray getGenres ()
+    static StringArray getGenres()
     {
         StringArray ret;
         ret.add (translate ("Jazz"));
@@ -33,7 +33,7 @@ public:
         return ret;
     }
 
-    static int getIndexFromString (String genre)
+    static int getIndexFromString (const String& genre)
     {
         StringArray genres = getGenres();
         for (int i = 0; i < 7; ++i)

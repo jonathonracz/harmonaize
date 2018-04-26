@@ -25,7 +25,7 @@ namespace HintStrings
     DEFINE_HINT (Tempo, "Tempo", "Choose how fast the playhead moves in terms of beats per minute.")
     DEFINE_HINT (TimeSignature, "Time Signature", "Choose a time signature for your project. Click to edit.")
     DEFINE_HINT (KeySignature, "Key Signature", "Choose a key for your accompaniment.")
-    DEFINE_HINT (Genre, "Genre", "Choose a genre for you accompaniment.")
+    DEFINE_HINT (Genre, "Genre", "Choose a genre for your accompaniment.")
 
     DEFINE_HINT (GoToBeginning, "Go To Beginning", "Click to return the playhead to the start of the project.\nShortcut: 'b'")
     DEFINE_HINT (Play, "Play", "Click to hear your project.\nShortcut: 'Space'")
